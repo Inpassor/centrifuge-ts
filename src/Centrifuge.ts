@@ -1,4 +1,4 @@
-declare const ActiveXObject: ActiveXObject;
+declare var ActiveXObject: ActiveXObject;
 
 import {
     isUndefined,
@@ -73,7 +73,7 @@ export class Centrifuge extends Observable {
 
     public connect(callback?: Function): void {
         if (this.isConnected()) {
-            this._debug('connect called when already connected');
+            this._debug('Connect called when already connected');
             return;
         }
 
@@ -81,7 +81,7 @@ export class Centrifuge extends Observable {
             return;
         }
 
-        this._debug('start connecting');
+        this._debug('Start connecting');
 
         this._setStatus('connecting');
 
@@ -167,7 +167,7 @@ export class Centrifuge extends Observable {
 
         const cb = (error: boolean, data: any) => {
             if (error === true) {
-                this._debug('authorization request failed');
+                this._debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
@@ -403,7 +403,7 @@ export class Centrifuge extends Observable {
         if (Object.keys(headers).length > 0) {
             Centrifuge.log('Only AJAX request allows to send custom headers, it is not possible with JSONP.');
         }
-        this._debug('sending JSONP request to', url);
+        this._debug('Sending JSONP request to', url);
 
         const callbackName = 'centrifuge_jsonp_' + Centrifuge.nextJSONPCallbackID.toString();
         Centrifuge.nextJSONPCallbackID++;
@@ -433,7 +433,7 @@ export class Centrifuge extends Observable {
     }
 
     private _ajax(url: string, params: any, headers: any, data: any, callback: Function) {
-        this._debug('sending AJAX request to', url);
+        this._debug('Sending AJAX request to', url);
 
         const xhr = (XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
 
@@ -515,31 +515,11 @@ export class Centrifuge extends Observable {
         }
         config.url = stripSlash(config.url);
 
-        if (endsWith(config.url, 'connection/websocket')) {
-            this._debug('client will connect to raw Websocket endpoint');
-        } else {
-            if (endsWith(config.url, 'connection')) {
-                this._debug('client will connect to SockJS endpoint');
-            } else {
-                this._debug('client will detect connection endpoint itself');
-            }
-            if (config.sockJS !== null) {
-                this._debug('SockJS explicitly provided in options');
-            } else {
-                if (isUndefined(global['SockJS'])) {
-                    throw 'Include SockJS client library before Centrifuge javascript client library or provide SockJS object in options or use raw Websocket connection endpoint';
-                } else {
-                    this._debug('Use globally defined SockJS');
-                    config.sockJS = global['SockJS'];
-                }
-            }
-        }
-
         if (!config.user) {
             if (!config.insecure) {
                 throw 'Missing required configuration parameter \'user\' specifying user\'s unique ID in your application';
             } else {
-                this._debug('user not found but this is OK for insecure mode - anonymous access will be used');
+                this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
             }
         } else {
             if (!isString(config.user)) {
@@ -551,7 +531,7 @@ export class Centrifuge extends Observable {
             if (!config.insecure) {
                 throw 'Missing required configuration parameter \'timestamp\'';
             } else {
-                this._debug('Configuration parameter \'v\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
             }
         } else {
             if (!isString(config.timestamp)) {
@@ -669,7 +649,7 @@ export class Centrifuge extends Observable {
         if (this.isDisconnected()) {
             return;
         }
-        this._debug('disconnected:', reason, shouldReconnect);
+        this._debug('Disconnected:', reason, shouldReconnect);
 
         const reconnect = shouldReconnect || false;
         if (reconnect === false) {
@@ -743,7 +723,7 @@ export class Centrifuge extends Observable {
     }
 
     private _resetRetry(): void {
-        this._debug('reset retries count to 0');
+        this._debug('Reset retries count to 0');
         this._retries = 0;
     }
 
@@ -770,10 +750,10 @@ export class Centrifuge extends Observable {
     private _refresh(): void {
         // ask web app for connection parameters - user ID,
         // timestamp, info and token
-        this._debug('refresh credentials');
+        this._debug('Refresh credentials');
 
         if (this._config.refreshAttempts === 0) {
-            this._debug('refresh attempts set to 0, do not send refresh request at all');
+            this._debug('Refresh attempts set to 0, do not send refresh request at all');
             this._refreshFailed();
             return;
         }
@@ -786,7 +766,7 @@ export class Centrifuge extends Observable {
             if (error === true) {
                 // We don't perform any connection status related actions here as we are
                 // relying on Centrifugo that must close connection eventually.
-                this._debug('error getting connection credentials from refresh endpoint', data);
+                this._debug('Error getting connection credentials from refresh endpoint', data);
                 this._numRefreshFailed++;
                 if (this._refreshTimeout) {
                     clearTimeout(this._refreshTimeout);
@@ -810,10 +790,10 @@ export class Centrifuge extends Observable {
                 data.info = '';
             }
             if (this.isDisconnected()) {
-                this._debug('credentials refreshed, connect from scratch');
+                this._debug('Credentials refreshed, connect from scratch');
                 this.connect();
             } else {
-                this._debug('send refreshed credentials');
+                this._debug('Send refreshed credentials');
                 this.addMessage(<ICentrifugeRefreshMessage>{
                     method: 'refresh',
                     params: data,
@@ -1015,7 +995,7 @@ export class Centrifuge extends Observable {
 
     private _dispatchMessage(message: any): void {
         if (message === undefined || message === null) {
-            this._debug('dispatch: got undefined or null message');
+            this._debug('Dispatch: got undefined or null message');
             return;
         }
         switch (message.method) {
@@ -1090,13 +1070,6 @@ export class Centrifuge extends Observable {
 
             this._resetRetry();
 
-            if (!isString(this._config.user)) {
-                Centrifuge.log('user expected to be string');
-            }
-            if (!isString(this._config.info)) {
-                Centrifuge.log('info expected to be string');
-            }
-
             const msg: ICentrifugeConnectMessage = {
                 method: 'connect',
                 params: {
@@ -1118,7 +1091,7 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onerror = (error: any) => {
-            this._debug('transport level error', error);
+            this._debug('Transport level error', error);
         };
 
         this._transport.onclose = (event: any) => {
@@ -1128,12 +1101,12 @@ export class Centrifuge extends Observable {
             if (event && 'reason' in event && event.reason) {
                 try {
                     const advice = JSON.parse(event.reason);
-                    this._debug('reason is an advice object', advice);
+                    this._debug(reason + ': reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 } catch (e) {
                     reason = event.reason;
-                    this._debug('reason is a plain string', reason);
+                    this._debug(reason + ': reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }
@@ -1155,7 +1128,7 @@ export class Centrifuge extends Observable {
             if (this._reconnect === true) {
                 this._reconnecting = true;
                 const interval = this._getRetryInterval();
-                this._debug('reconnect after ' + interval + ' milliseconds');
+                this._debug('Reconnect after ' + interval + ' milliseconds');
                 setTimeout(() => {
                     if (this._reconnect === true) {
                         this.connect();
