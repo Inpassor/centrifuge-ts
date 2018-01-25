@@ -1,3 +1,5 @@
+declare const ActiveXObject: ActiveXObject;
+
 import {
     isUndefined,
     isFunction,
@@ -33,8 +35,6 @@ import {
 interface ActiveXObject {
     new(s: string): any;
 }
-
-declare var ActiveXObject: ActiveXObject;
 
 export class Centrifuge extends Observable {
 
