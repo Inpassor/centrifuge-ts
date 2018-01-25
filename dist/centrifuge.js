@@ -79,10 +79,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Centrifuge", function() { return Centrifuge; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Centrifuge", function() { return Centrifuge; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Functions__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Observable__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Subscription__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Subscription__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -129,13 +129,13 @@ var Centrifuge = (function (_super) {
     }
     Centrifuge.prototype.connect = function (callback) {
         if (this.isConnected()) {
-            this._debug('connect called when already connected');
+            this._debug('Connect called when already connected');
             return;
         }
         if (this._status === 'connecting') {
             return;
         }
-        this._debug('start connecting');
+        this._debug('Start connecting');
         this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
@@ -197,7 +197,7 @@ var Centrifuge = (function (_super) {
         }
         var cb = function (error, data) {
             if (error === true) {
-                _this._debug('authorization request failed');
+                _this._debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
@@ -319,7 +319,7 @@ var Centrifuge = (function (_super) {
             return;
         }
         sub.setSubscribing();
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* startsWith */])(channel, this._config.privateChannelPrefix)) {
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["g" /* startsWith */])(channel, this._config.privateChannelPrefix)) {
             if (this._isAuthBatching) {
                 this._authChannels[channel] = true;
             }
@@ -407,7 +407,7 @@ var Centrifuge = (function (_super) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* log */])('info', args);
+        Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */])('info', args);
     };
     Centrifuge.prototype._debug = function () {
         var args = [];
@@ -415,14 +415,14 @@ var Centrifuge = (function (_super) {
             args[_i] = arguments[_i];
         }
         if (this._config.debug === true) {
-            Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* log */])('debug', args);
+            Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */])('debug', args);
         }
     };
     Centrifuge.prototype._jsonp = function (url, params, headers, data, callback) {
         if (Object.keys(headers).length > 0) {
             Centrifuge.log('Only AJAX request allows to send custom headers, it is not possible with JSONP.');
         }
-        this._debug('sending JSONP request to', url);
+        this._debug('Sending JSONP request to', url);
         var callbackName = 'centrifuge_jsonp_' + Centrifuge.nextJSONPCallbackID.toString();
         Centrifuge.nextJSONPCallbackID++;
         var script = document.createElement('script');
@@ -440,14 +440,14 @@ var Centrifuge = (function (_super) {
         script.src = this._config.authEndpoint +
             '?callback=' + encodeURIComponent(callback_name) +
             '&data=' + encodeURIComponent(JSON.stringify(data)) +
-            '&' + Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["g" /* objectToQuery */])(params);
+            '&' + Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
         var head = document.getElementsByTagName('head')[0] || document.documentElement;
         head.insertBefore(script, head.firstChild);
     };
     Centrifuge.prototype._ajax = function (url, params, headers, data, callback) {
-        this._debug('sending AJAX request to', url);
+        this._debug('Sending AJAX request to', url);
         var xhr = (XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
-        var query = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["g" /* objectToQuery */])(params);
+        var query = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
         if (query.length > 0) {
             query = '?' + query;
         }
@@ -517,36 +517,13 @@ var Centrifuge = (function (_super) {
         if (!config.url) {
             throw 'Missing required configuration parameter \'url\' specifying server URL';
         }
-        config.url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["i" /* stripSlash */])(config.url);
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["a" /* endsWith */])(config.url, 'connection/websocket')) {
-            this._debug('client will connect to raw Websocket endpoint');
-        }
-        else {
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["a" /* endsWith */])(config.url, 'connection')) {
-                this._debug('client will connect to SockJS endpoint');
-            }
-            else {
-                this._debug('client will detect connection endpoint itself');
-            }
-            if (config.sockJS !== null) {
-                this._debug('SockJS explicitly provided in options');
-            }
-            else {
-                if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* isUndefined */])(global['SockJS'])) {
-                    throw 'Include SockJS client library before Centrifuge javascript client library or provide SockJS object in options or use raw Websocket connection endpoint';
-                }
-                else {
-                    this._debug('Use globally defined SockJS');
-                    config.sockJS = global['SockJS'];
-                }
-            }
-        }
+        config.url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* stripSlash */])(config.url);
         if (!config.user) {
             if (!config.insecure) {
                 throw 'Missing required configuration parameter \'user\' specifying user\'s unique ID in your application';
             }
             else {
-                this._debug('user not found but this is OK for insecure mode - anonymous access will be used');
+                this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
             }
         }
         else {
@@ -559,7 +536,7 @@ var Centrifuge = (function (_super) {
                 throw 'Missing required configuration parameter \'timestamp\'';
             }
             else {
-                this._debug('Configuration parameter \'v\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
             }
         }
         else {
@@ -590,7 +567,7 @@ var Centrifuge = (function (_super) {
         url = url
             .replace('ws://', 'http://')
             .replace('wss://', 'https://');
-        url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["i" /* stripSlash */])(url);
+        url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* stripSlash */])(url);
         if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["a" /* endsWith */])(this._config.url, 'connection')) {
             url = url + '/connection';
         }
@@ -601,7 +578,7 @@ var Centrifuge = (function (_super) {
         url = url
             .replace('http://', 'ws://')
             .replace('https://', 'wss://');
-        url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["i" /* stripSlash */])(url);
+        url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* stripSlash */])(url);
         if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["a" /* endsWith */])(this._config.url, 'connection/websocket')) {
             url = url + '/connection/websocket';
         }
@@ -665,7 +642,7 @@ var Centrifuge = (function (_super) {
         if (this.isDisconnected()) {
             return;
         }
-        this._debug('disconnected:', reason, shouldReconnect);
+        this._debug('Disconnected:', reason, shouldReconnect);
         var reconnect = shouldReconnect || false;
         if (reconnect === false) {
             this._reconnect = false;
@@ -730,7 +707,7 @@ var Centrifuge = (function (_super) {
         this._startPing();
     };
     Centrifuge.prototype._resetRetry = function () {
-        this._debug('reset retries count to 0');
+        this._debug('Reset retries count to 0');
         this._retries = 0;
     };
     Centrifuge.prototype._getRetryInterval = function () {
@@ -753,9 +730,9 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._refresh = function () {
         var _this = this;
-        this._debug('refresh credentials');
+        this._debug('Refresh credentials');
         if (this._config.refreshAttempts === 0) {
-            this._debug('refresh attempts set to 0, do not send refresh request at all');
+            this._debug('Refresh attempts set to 0, do not send refresh request at all');
             this._refreshFailed();
             return;
         }
@@ -764,7 +741,7 @@ var Centrifuge = (function (_super) {
         }
         var cb = function (error, data) {
             if (error === true) {
-                _this._debug('error getting connection credentials from refresh endpoint', data);
+                _this._debug('Error getting connection credentials from refresh endpoint', data);
                 _this._numRefreshFailed++;
                 if (_this._refreshTimeout) {
                     clearTimeout(_this._refreshTimeout);
@@ -789,11 +766,11 @@ var Centrifuge = (function (_super) {
                 data.info = '';
             }
             if (_this.isDisconnected()) {
-                _this._debug('credentials refreshed, connect from scratch');
+                _this._debug('Credentials refreshed, connect from scratch');
                 _this.connect();
             }
             else {
-                _this._debug('send refreshed credentials');
+                _this._debug('Send refreshed credentials');
                 _this.addMessage({
                     method: 'refresh',
                     params: data,
@@ -982,7 +959,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._dispatchMessage = function (message) {
         if (message === undefined || message === null) {
-            this._debug('dispatch: got undefined or null message');
+            this._debug('Dispatch: got undefined or null message');
             return;
         }
         switch (message.method) {
@@ -1053,12 +1030,6 @@ var Centrifuge = (function (_super) {
                 _this._transportName = 'raw-websocket';
             }
             _this._resetRetry();
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(_this._config.user)) {
-                Centrifuge.log('user expected to be string');
-            }
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(_this._config.info)) {
-                Centrifuge.log('info expected to be string');
-            }
             var msg = {
                 method: 'connect',
                 params: {
@@ -1077,7 +1048,7 @@ var Centrifuge = (function (_super) {
             });
         };
         this._transport.onerror = function (error) {
-            _this._debug('transport level error', error);
+            _this._debug('Transport level error', error);
         };
         this._transport.onclose = function (event) {
             _this._transportClosed = true;
@@ -1086,13 +1057,13 @@ var Centrifuge = (function (_super) {
             if (event && 'reason' in event && event.reason) {
                 try {
                     var advice = JSON.parse(event.reason);
-                    _this._debug('reason is an advice object', advice);
+                    _this._debug(reason + ': reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 }
                 catch (e) {
                     reason = event.reason;
-                    _this._debug('reason is a plain string', reason);
+                    _this._debug(reason + ': reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }
@@ -1107,7 +1078,7 @@ var Centrifuge = (function (_super) {
             if (_this._reconnect === true) {
                 _this._reconnecting = true;
                 var interval = _this._getRetryInterval();
-                _this._debug('reconnect after ' + interval + ' milliseconds');
+                _this._debug('Reconnect after ' + interval + ' milliseconds');
                 setTimeout(function () {
                     if (_this._reconnect === true) {
                         _this.connect();
@@ -1133,22 +1104,21 @@ var Centrifuge = (function (_super) {
 }(__WEBPACK_IMPORTED_MODULE_1__Observable__["a" /* Observable */]));
 
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
 
 /***/ }),
 /* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = isUndefined;
+/* unused harmony export isUndefined */
 /* harmony export (immutable) */ __webpack_exports__["c"] = isFunction;
 /* harmony export (immutable) */ __webpack_exports__["d"] = isString;
-/* harmony export (immutable) */ __webpack_exports__["f"] = log;
-/* harmony export (immutable) */ __webpack_exports__["i"] = stripSlash;
-/* harmony export (immutable) */ __webpack_exports__["h"] = startsWith;
+/* harmony export (immutable) */ __webpack_exports__["e"] = log;
+/* harmony export (immutable) */ __webpack_exports__["h"] = stripSlash;
+/* harmony export (immutable) */ __webpack_exports__["g"] = startsWith;
 /* harmony export (immutable) */ __webpack_exports__["a"] = endsWith;
 /* harmony export (immutable) */ __webpack_exports__["b"] = errorExists;
-/* harmony export (immutable) */ __webpack_exports__["g"] = objectToQuery;
+/* harmony export (immutable) */ __webpack_exports__["f"] = objectToQuery;
 function isUndefined(value) {
     return typeof value === 'undefined';
 }
@@ -1261,33 +1231,6 @@ var Observable = (function () {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
