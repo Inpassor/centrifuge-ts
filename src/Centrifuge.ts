@@ -1,7 +1,6 @@
 declare var ActiveXObject: ActiveXObject;
 
 import {
-    isUndefined,
     isFunction,
     isString,
     log,
@@ -484,7 +483,7 @@ export class Centrifuge extends Observable {
     }
 
     private _configure(config: ICentrifugeConfig): void {
-        this._debug('Configuring centrifuge object with', config);
+        this._debug('Configuring Centrifuge with', config);
         config = Object.assign({
             retry: 1000,
             maxRetry: 20000,
@@ -640,7 +639,7 @@ export class Centrifuge extends Observable {
 
     private _setStatus(newStatus: string): void {
         if (this._status !== newStatus) {
-            this._debug('Status', this._status, '->', newStatus);
+            this._debug('Status:', this._status, '->', newStatus);
             this._status = newStatus;
         }
     }
@@ -649,7 +648,7 @@ export class Centrifuge extends Observable {
         if (this.isDisconnected()) {
             return;
         }
-        this._debug('Disconnected:', reason, shouldReconnect);
+        this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
 
         const reconnect = shouldReconnect || false;
         if (reconnect === false) {
@@ -680,12 +679,12 @@ export class Centrifuge extends Observable {
         if (!messages.length) {
             return;
         }
-        this._debug('Send', messages);
         let encodedMessages = [];
         for (const i in messages) {
             encodedMessages.push(JSON.stringify(messages[i]))
         }
         this._transport.send(encodedMessages.join("\n"));
+        this._debug('Send', messages.length === 1 ? messages[0] : messages);
     }
 
     private _getNextMessageId(): number {
@@ -1096,17 +1095,17 @@ export class Centrifuge extends Observable {
 
         this._transport.onclose = (event: any) => {
             this._transportClosed = true;
-            let reason = 'connection closed';
+            let reason = 'Connection closed';
             let reconnect = true;
             if (event && 'reason' in event && event.reason) {
                 try {
                     const advice = JSON.parse(event.reason);
-                    this._debug(reason + ': reason is an advice object:', advice);
+                    this._debug(reason + '. Reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 } catch (e) {
                     reason = event.reason;
-                    this._debug(reason + ': reason is a plain string:', reason);
+                    this._debug(reason + '. Reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }

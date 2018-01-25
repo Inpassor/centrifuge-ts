@@ -489,7 +489,7 @@ var Centrifuge = (function (_super) {
         return xhr;
     };
     Centrifuge.prototype._configure = function (config) {
-        this._debug('Configuring centrifuge object with', config);
+        this._debug('Configuring Centrifuge with', config);
         config = Object.assign({
             retry: 1000,
             maxRetry: 20000,
@@ -634,7 +634,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._setStatus = function (newStatus) {
         if (this._status !== newStatus) {
-            this._debug('Status', this._status, '->', newStatus);
+            this._debug('Status:', this._status, '->', newStatus);
             this._status = newStatus;
         }
     };
@@ -642,7 +642,7 @@ var Centrifuge = (function (_super) {
         if (this.isDisconnected()) {
             return;
         }
-        this._debug('Disconnected:', reason, shouldReconnect);
+        this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
         var reconnect = shouldReconnect || false;
         if (reconnect === false) {
             this._reconnect = false;
@@ -668,12 +668,12 @@ var Centrifuge = (function (_super) {
         if (!messages.length) {
             return;
         }
-        this._debug('Send', messages);
         var encodedMessages = [];
         for (var i in messages) {
             encodedMessages.push(JSON.stringify(messages[i]));
         }
         this._transport.send(encodedMessages.join("\n"));
+        this._debug('Send', messages.length === 1 ? messages[0] : messages);
     };
     Centrifuge.prototype._getNextMessageId = function () {
         return ++this._messageId;
@@ -1052,18 +1052,18 @@ var Centrifuge = (function (_super) {
         };
         this._transport.onclose = function (event) {
             _this._transportClosed = true;
-            var reason = 'connection closed';
+            var reason = 'Connection closed';
             var reconnect = true;
             if (event && 'reason' in event && event.reason) {
                 try {
                     var advice = JSON.parse(event.reason);
-                    _this._debug(reason + ': reason is an advice object:', advice);
+                    _this._debug(reason + '. Reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 }
                 catch (e) {
                     reason = event.reason;
-                    _this._debug(reason + ': reason is a plain string:', reason);
+                    _this._debug(reason + '. Reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }
@@ -1110,25 +1110,21 @@ var Centrifuge = (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export isUndefined */
-/* harmony export (immutable) */ __webpack_exports__["c"] = isFunction;
-/* harmony export (immutable) */ __webpack_exports__["d"] = isString;
-/* harmony export (immutable) */ __webpack_exports__["e"] = log;
-/* harmony export (immutable) */ __webpack_exports__["h"] = stripSlash;
-/* harmony export (immutable) */ __webpack_exports__["g"] = startsWith;
-/* harmony export (immutable) */ __webpack_exports__["a"] = endsWith;
-/* harmony export (immutable) */ __webpack_exports__["b"] = errorExists;
-/* harmony export (immutable) */ __webpack_exports__["f"] = objectToQuery;
-function isUndefined(value) {
-    return typeof value === 'undefined';
-}
-function isFunction(value) {
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return isFunction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return isString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return log; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return stripSlash; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return startsWith; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return endsWith; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return errorExists; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return objectToQuery; });
+var isFunction = function (value) {
     return typeof value === 'function';
-}
-function isString(value) {
+};
+var isString = function (value) {
     return typeof value === 'string';
-}
-function log(level) {
+};
+var log = function (level) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {
         args[_i - 1] = arguments[_i];
@@ -1142,20 +1138,20 @@ function log(level) {
             logger.apply(logger, args);
         }
     }
-}
-function stripSlash(value) {
+};
+var stripSlash = function (value) {
     return value.replace(/\/$/, '');
-}
-function startsWith(value, prefix) {
+};
+var startsWith = function (value, prefix) {
     return value.lastIndexOf(prefix, 0) === 0;
-}
-function endsWith(value, suffix) {
+};
+var endsWith = function (value, suffix) {
     return value.indexOf(suffix, value.length - suffix.length) !== -1;
-}
-function errorExists(data) {
+};
+var errorExists = function (data) {
     return 'error' in data && data.error !== null && data.error !== '';
-}
-function objectToQuery(object) {
+};
+var objectToQuery = function (object) {
     var p = [];
     for (var i in object) {
         if (object.hasOwnProperty(i)) {
@@ -1163,7 +1159,7 @@ function objectToQuery(object) {
         }
     }
     return p.join('&');
-}
+};
 
 
 /***/ }),
