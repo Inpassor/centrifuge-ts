@@ -5,6 +5,7 @@
     "main": "dist/centrifuge.js",
     "dependencies": {},
     "devDependencies": {
+        "@types/node": "^9.3.0",
         "protobufjs": "^6.8.4",
         "ts-loader": "^3.3.1",
         "typescript": "^2.6.2",

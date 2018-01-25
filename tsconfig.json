@@ -7,6 +7,9 @@
         "sourceMap": false,
         "declaration": false,
         "removeComments": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
         "lib": [
             "es6",
             "dom"
