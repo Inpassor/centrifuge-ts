@@ -70,32 +70,24 @@ export class Centrifuge extends Observable {
         this._configure(config);
     }
 
-    public connect(callback?: Function): void {
+    public connect(): void {
         if (this.isConnected()) {
             this._debug('Connect called when already connected');
             return;
         }
-
         if (this._status === 'connecting') {
             return;
         }
 
         this._debug('Start connecting');
-
-        this._setStatus('connecting');
-
         this._clientID = null;
         this._reconnect = true;
-
-        if (callback) {
-            this.on('connect', callback);
-        }
-
+        this._setStatus('connecting');
         this._setTransport();
     }
 
     public disconnect(): void {
-        this._disconnect('client', false);
+        this._disconnect('client');
     }
 
     public isConnected(): boolean {
@@ -109,7 +101,9 @@ export class Centrifuge extends Observable {
     public ping(): void {
         this.addMessage(<ICentrifugePingMessage>{
             method: 'ping'
-        }, false);
+        }).then((response: any) => {
+        }, (error: ICentrifugeError) => {
+        });
     }
 
     public startBatching(): void {
@@ -118,9 +112,8 @@ export class Centrifuge extends Observable {
         this._isBatching = true;
     }
 
-    public stopBatching(flush?: boolean): void {
+    public stopBatching(flush: boolean = false): void {
         // stop collecting messages
-        flush = flush || false;
         this._isBatching = false;
         if (flush === true) {
             this.flush();
@@ -363,7 +356,7 @@ export class Centrifuge extends Observable {
         }, this._config.timeout);
     }
 
-    public addMessage(message: ICentrifugeMessage, registerCall?: boolean): Promise<any> {
+    public addMessage(message: ICentrifugeMessage): Promise<any> {
         return new Promise((resolve: Function, reject: Function) => {
             const uid = this._getNextMessageId() + '';
             message.uid = uid;
@@ -372,9 +365,7 @@ export class Centrifuge extends Observable {
             } else {
                 this._send([message]);
             }
-            if (registerCall !== false) {
-                this.registerCall(uid, resolve, reject);
-            }
+            this.registerCall(uid, resolve, reject);
         });
     }
 
@@ -637,25 +628,24 @@ export class Centrifuge extends Observable {
         }
     }
 
-    private _setStatus(newStatus: string): void {
-        if (this._status !== newStatus) {
-            this._debug('Status:', this._status, '->', newStatus);
-            this._status = newStatus;
+    private _setStatus(status: string): void {
+        if (this._status !== status) {
+            this._debug('Status:', this._status, '->', status);
+            this._status = status;
         }
     }
 
-    private _disconnect(reason: string, shouldReconnect?: boolean): void {
+    private _disconnect(reason: string, shouldReconnect: boolean = false): void {
         if (this.isDisconnected()) {
             return;
         }
         this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
 
-        const reconnect = shouldReconnect || false;
-        if (reconnect === false) {
+        if (shouldReconnect === false) {
             this._reconnect = false;
         }
 
-        this._clearConnectedState(reconnect);
+        this._clearConnectedState(shouldReconnect);
 
         if (!this.isDisconnected()) {
             this._setStatus('disconnected');
@@ -665,7 +655,7 @@ export class Centrifuge extends Observable {
             if (this._reconnecting === false) {
                 this.trigger('disconnect', [{
                     reason,
-                    reconnect,
+                    reconnect: shouldReconnect,
                 }]);
             }
         }

@@ -7,22 +7,21 @@ import {
     ICentrifugeMessage,
     ICentrifugeError,
     ISubscriptionMessage,
-    ISubscriptionError,
     ISubscriptionSuccess,
 } from './interfaces';
 
 export class Subscription extends Observable {
 
-    static STATE_NEW: number = 0;
-    static STATE_SUBSCRIBING: number = 1;
-    static STATE_SUCCESS: number = 2;
-    static STATE_ERROR: number = 3;
-    static STATE_UNSUBSCRIBED: number = 4;
+    public static STATE_NEW: number = 0;
+    public static STATE_SUBSCRIBING: number = 1;
+    public static STATE_SUCCESS: number = 2;
+    public static STATE_ERROR: number = 3;
+    public static STATE_UNSUBSCRIBED: number = 4;
 
     public channel: string = null;
 
     private _status: number = Subscription.STATE_NEW;
-    private _error: ISubscriptionError = null;
+    private _error: ICentrifugeError = null;
     private _centrifuge: Centrifuge = null;
     private _isResubscribe: boolean = false;
     private _recovered: boolean = false;
@@ -92,12 +91,12 @@ export class Subscription extends Observable {
         this._resolve(successContext);
     }
 
-    public setSubscribeError(err: any): void {
+    public setSubscribeError(error: ICentrifugeError): void {
         if (this._status === Subscription.STATE_ERROR) {
             return;
         }
         this._status = Subscription.STATE_ERROR;
-        this._error = err;
+        this._error = error;
         const errContext = this._getSubscribeError();
         this.trigger('error', [errContext]);
         this._reject(errContext);
@@ -182,7 +181,7 @@ export class Subscription extends Observable {
         };
     }
 
-    private _getSubscribeError(): ISubscriptionError {
+    private _getSubscribeError(): ICentrifugeError {
         const subscribeError = this._error;
         subscribeError.channel = this.channel;
         subscribeError.isResubscribe = this._isResubscribe;

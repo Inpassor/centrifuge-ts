@@ -127,7 +127,7 @@ var Centrifuge = (function (_super) {
         _this._configure(config);
         return _this;
     }
-    Centrifuge.prototype.connect = function (callback) {
+    Centrifuge.prototype.connect = function () {
         if (this.isConnected()) {
             this._debug('Connect called when already connected');
             return;
@@ -136,16 +136,13 @@ var Centrifuge = (function (_super) {
             return;
         }
         this._debug('Start connecting');
-        this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
-        if (callback) {
-            this.on('connect', callback);
-        }
+        this._setStatus('connecting');
         this._setTransport();
     };
     Centrifuge.prototype.disconnect = function () {
-        this._disconnect('client', false);
+        this._disconnect('client');
     };
     Centrifuge.prototype.isConnected = function () {
         return this._status === 'connected';
@@ -156,13 +153,15 @@ var Centrifuge = (function (_super) {
     Centrifuge.prototype.ping = function () {
         this.addMessage({
             method: 'ping'
-        }, false);
+        }).then(function (response) {
+        }, function (error) {
+        });
     };
     Centrifuge.prototype.startBatching = function () {
         this._isBatching = true;
     };
     Centrifuge.prototype.stopBatching = function (flush) {
-        flush = flush || false;
+        if (flush === void 0) { flush = false; }
         this._isBatching = false;
         if (flush === true) {
             this.flush();
@@ -377,7 +376,7 @@ var Centrifuge = (function (_super) {
             }
         }, this._config.timeout);
     };
-    Centrifuge.prototype.addMessage = function (message, registerCall) {
+    Centrifuge.prototype.addMessage = function (message) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var uid = _this._getNextMessageId() + '';
@@ -388,9 +387,7 @@ var Centrifuge = (function (_super) {
             else {
                 _this._send([message]);
             }
-            if (registerCall !== false) {
-                _this.registerCall(uid, resolve, reject);
-            }
+            _this.registerCall(uid, resolve, reject);
         });
     };
     Centrifuge.createErrorObject = function (error, advice) {
@@ -632,22 +629,22 @@ var Centrifuge = (function (_super) {
             this._subs = {};
         }
     };
-    Centrifuge.prototype._setStatus = function (newStatus) {
-        if (this._status !== newStatus) {
-            this._debug('Status:', this._status, '->', newStatus);
-            this._status = newStatus;
+    Centrifuge.prototype._setStatus = function (status) {
+        if (this._status !== status) {
+            this._debug('Status:', this._status, '->', status);
+            this._status = status;
         }
     };
     Centrifuge.prototype._disconnect = function (reason, shouldReconnect) {
+        if (shouldReconnect === void 0) { shouldReconnect = false; }
         if (this.isDisconnected()) {
             return;
         }
         this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
-        var reconnect = shouldReconnect || false;
-        if (reconnect === false) {
+        if (shouldReconnect === false) {
             this._reconnect = false;
         }
-        this._clearConnectedState(reconnect);
+        this._clearConnectedState(shouldReconnect);
         if (!this.isDisconnected()) {
             this._setStatus('disconnected');
             if (this._refreshTimeout) {
@@ -656,7 +653,7 @@ var Centrifuge = (function (_super) {
             if (this._reconnecting === false) {
                 this.trigger('disconnect', [{
                         reason: reason,
-                        reconnect: reconnect,
+                        reconnect: shouldReconnect,
                     }]);
             }
         }
@@ -1313,12 +1310,12 @@ var Subscription = (function (_super) {
         this.trigger('subscribe', [successContext]);
         this._resolve(successContext);
     };
-    Subscription.prototype.setSubscribeError = function (err) {
+    Subscription.prototype.setSubscribeError = function (error) {
         if (this._status === Subscription.STATE_ERROR) {
             return;
         }
         this._status = Subscription.STATE_ERROR;
-        this._error = err;
+        this._error = error;
         var errContext = this._getSubscribeError();
         this.trigger('error', [errContext]);
         this._reject(errContext);

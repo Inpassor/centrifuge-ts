@@ -14,6 +14,5 @@ export * from './ICentrifugeSubscribeResponse';
 export * from './ICentrifugeUnsubscribeResponse';
 export * from './ICentrifugeJoinResponse';
 export * from './ICentrifugeLeaveResponse';
-export * from './ISubscriptionError';
 export * from './ISubscriptionSuccess';
 export * from './ISubscriptionMessage';
