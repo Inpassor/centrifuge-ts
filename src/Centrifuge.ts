@@ -850,6 +850,7 @@ export class Centrifuge extends Observable {
 
         this._restartPing();
         this.trigger('connect', [{
+            version: response.version,
             client: response.client,
             transport: this._transportName,
             latency: this._latency
