@@ -669,12 +669,9 @@ export class Centrifuge extends Observable {
         if (!messages.length) {
             return;
         }
-        let encodedMessages = [];
-        for (const i in messages) {
-            encodedMessages.push(JSON.stringify(messages[i]))
-        }
-        this._transport.send(encodedMessages.join("\n"));
-        this._debug('Send', messages.length === 1 ? messages[0] : messages);
+        const _messages = messages.length === 1 ? messages[0] : messages;
+        this._transport.send(JSON.stringify(_messages));
+        this._debug('Send', _messages);
     }
 
     private _getNextMessageId(): number {
@@ -1127,14 +1124,9 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onmessage = (event: any) => {
-            const replies = event.data.split("\n");
-            for (const i in replies) {
-                if (replies.hasOwnProperty(i) && replies[i]) {
-                    const data = JSON.parse(replies[i]);
-                    this._debug('Received', data);
-                    this._receive(data);
-                }
-            }
+            const data = JSON.parse(event.data);
+            this._debug('Received', data);
+            this._receive(data);
             this._restartPing();
         };
     }
