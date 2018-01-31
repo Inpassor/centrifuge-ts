@@ -1072,7 +1072,7 @@ export class Centrifuge extends Observable {
 
             if (this._isSockJS) {
                 this._transportName = this._transport.transport;
-                this._transport.onheartbeat = function () {
+                this._transport.onheartbeat = () => {
                     this._restartPing();
                 };
             } else {

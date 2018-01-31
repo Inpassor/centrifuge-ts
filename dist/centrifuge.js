@@ -1018,7 +1018,7 @@ var Centrifuge = (function (_super) {
             if (_this._isSockJS) {
                 _this._transportName = _this._transport.transport;
                 _this._transport.onheartbeat = function () {
-                    this._restartPing();
+                    _this._restartPing();
                 };
             }
             else {
