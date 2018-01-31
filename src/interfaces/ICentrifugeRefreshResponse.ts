@@ -1,4 +1,7 @@
-import {ICentrifugeConnectResponse} from './ICentrifugeConnectResponse';
-
-export interface ICentrifugeRefreshResponse extends ICentrifugeConnectResponse {
+export interface ICentrifugeRefreshResponse {
+    version?: string;
+    expires: boolean;
+    expired: boolean;
+    client: string;
+    ttl: number;
 }

@@ -38,29 +38,29 @@ interface ActiveXObject {
 export class Centrifuge extends Observable {
 
     public static jsonpCallbacks: any = {};
-    public static nextJSONPCallbackID: number = 1;
+    public static nextJSONPCallbackID = 1;
 
     private _config: ICentrifugeConfig = {};
-    private _status: string = 'disconnected';
-    private _isSockJS: boolean = false;
+    private _status = 'disconnected';
+    private _isSockJS = false;
     private _transport: any = null;
     private _transportName: string = null;
-    private _transportClosed: boolean = true;
-    private _reconnect: boolean = true;
-    private _reconnecting: boolean = false;
-    private _numRefreshFailed: number = 0;
+    private _transportClosed = true;
+    private _reconnect = true;
+    private _reconnecting = false;
+    private _numRefreshFailed = 0;
     private _refreshTimeout: any = null;
     private _pongTimeout: any = null;
     private _pingInterval: any = null;
-    private _messageId: number = 0;
+    private _messageId = 0;
     private _messages: ICentrifugeMessage[] = [];
-    private _isBatching: boolean = false;
-    private _isAuthBatching: boolean = false;
+    private _isBatching = false;
+    private _isAuthBatching = false;
     private _authChannels: any = {};
     private _clientID: string = null;
     private _callbacks: any = {};
     private _subs: any = {};
-    private _retries: number = 0;
+    private _retries = 0;
     private _latency: number = null;
     private _latencyStart: Date = null;
     private _lastMessageID: any = {};
@@ -142,7 +142,7 @@ export class Centrifuge extends Observable {
         this._isAuthBatching = false;
         const authChannels = this._authChannels;
         this._authChannels = {};
-        let channels = [];
+        const channels = [];
 
         for (channel in authChannels) {
             if (authChannels.hasOwnProperty(channel)) {
@@ -157,8 +157,8 @@ export class Centrifuge extends Observable {
             return;
         }
 
-        const cb = (error: boolean, data: any) => {
-            if (error === true) {
+        const cb = (err: boolean, _data: any) => {
+            if (err === true) {
                 this._debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
@@ -185,7 +185,7 @@ export class Centrifuge extends Observable {
             for (i in channels) {
                 if (channels.hasOwnProperty(i)) {
                     channel = channels[i];
-                    const channelResponse = data[channel];
+                    const channelResponse = _data[channel];
                     if (!channelResponse) {
                         // subscription:error
                         this._subscribeError(<ICentrifugeError>{
@@ -244,21 +244,33 @@ export class Centrifuge extends Observable {
         } else {
             const transport = this._config.authTransport.toLowerCase();
             if (transport === 'ajax') {
-                this._ajax(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
+                this._ajax(
+                    this._config.authEndpoint,
+                    this._config.authParams,
+                    this._config.authHeaders,
+                    data,
+                    cb
+                );
             } else if (transport === 'jsonp') {
-                this._jsonp(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
+                this._jsonp(
+                    this._config.authEndpoint,
+                    this._config.authParams,
+                    this._config.authHeaders,
+                    data,
+                    cb
+                );
             } else {
-                throw 'Unknown private channel auth transport ' + transport;
+                throw new Error('Unknown private channel auth transport ' + transport);
             }
         }
     }
 
     public subscribe(channel: string, events?: any): Subscription {
         if (!isString(channel)) {
-            throw 'Illegal argument type: channel must be a string';
+            throw new Error('Illegal argument type: channel must be a string');
         }
         if (!this._config.resubscribe && !this.isConnected()) {
-            throw 'Can not only subscribe in connected state when resubscribe option is off';
+            throw new Error('Can not only subscribe in connected state when resubscribe option is off');
         }
 
         const currentSub = this._getSub(channel);
@@ -326,11 +338,14 @@ export class Centrifuge extends Observable {
 
     public unsubscribeSub(sub: Subscription): void {
         if (this.isConnected()) {
+            const channel = sub.channel;
+            // remove unsubscribed channel in _subs
+            delete this._subs[channel];
             // No need to unsubscribe in disconnected state - i.e. client already unsubscribed.
             this.addMessage(<ICentrifugeUnsubscribeMessage>{
                 method: 'unsubscribe',
                 params: {
-                    channel: sub.channel
+                    channel
                 }
             }).then((response: ICentrifugeUnsubscribeResponse) => {
                 this._unsubscribeResponse(response);
@@ -440,7 +455,7 @@ export class Centrifuge extends Observable {
         // add request headers
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/json');
-        for (let headerName in headers) {
+        for (const headerName in headers) {
             if (headers.hasOwnProperty(headerName)) {
                 xhr.setRequestHeader(headerName, headers[headerName]);
             }
@@ -449,16 +464,16 @@ export class Centrifuge extends Observable {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    let data,
+                    let callbackData,
                         parsed = false;
                     try {
-                        data = JSON.parse(xhr.responseText);
+                        callbackData = JSON.parse(xhr.responseText);
                         parsed = true;
                     } catch (e) {
                         callback(true, 'JSON returned was invalid, yet status code was 200. Data was: ' + xhr.responseText);
                     }
                     if (parsed) { // prevents double execution.
-                        callback(false, data);
+                        callback(false, callbackData);
                     }
                 } else {
                     Centrifuge.log('Could not get auth info from application', xhr.status);
@@ -501,13 +516,13 @@ export class Centrifuge extends Observable {
         }, config);
 
         if (!config.url) {
-            throw 'Missing required configuration parameter \'url\' specifying server URL';
+            throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = stripSlash(config.url);
 
         if (!config.user) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'user\' specifying user\'s unique ID in your application';
+                throw new Error('Missing required configuration parameter \'user\' specifying user\'s unique ID in your application');
             } else {
                 this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
             }
@@ -519,7 +534,7 @@ export class Centrifuge extends Observable {
 
         if (!config.timestamp) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'timestamp\'';
+                throw new Error('Missing required configuration parameter \'timestamp\'');
             } else {
                 this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
             }
@@ -531,7 +546,7 @@ export class Centrifuge extends Observable {
 
         if (!config.token) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'token\' specifying the sign of authorization request';
+                throw new Error('Missing required configuration parameter \'token\' specifying the sign of authorization request');
             } else {
                 this._debug('Configuration parameter \'token\' not found but this is OK for insecure mode');
             }
@@ -595,7 +610,7 @@ export class Centrifuge extends Observable {
         this._clientID = null;
 
         // fire errbacks of registered calls.
-        for (let uid in this._callbacks) {
+        for (const uid in this._callbacks) {
             if (this._callbacks.hasOwnProperty(uid)) {
                 const callbacks = this._callbacks[uid];
                 const errback = callbacks.errback;
@@ -608,7 +623,7 @@ export class Centrifuge extends Observable {
         this._callbacks = {};
 
         // fire unsubscribe events
-        for (let channel in this._subs) {
+        for (const channel in this._subs) {
             if (this._subs.hasOwnProperty(channel)) {
                 const sub = this._getSub(channel);
                 if (reconnect) {
@@ -748,8 +763,8 @@ export class Centrifuge extends Observable {
             clearTimeout(this._refreshTimeout);
         }
 
-        const cb = (error: boolean, data: ICentrifugeCredentials) => {
-            if (error === true) {
+        const cb = (err: boolean, data: ICentrifugeCredentials) => {
+            if (err === true) {
                 // We don't perform any connection status related actions here as we are
                 // relying on Centrifugo that must close connection eventually.
                 this._debug('Error getting connection credentials from refresh endpoint', data);
@@ -795,11 +810,23 @@ export class Centrifuge extends Observable {
         } else {
             const transport = this._config.refreshTransport.toLowerCase();
             if (transport === 'ajax') {
-                this._ajax(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
+                this._ajax(
+                    this._config.refreshEndpoint,
+                    this._config.refreshParams,
+                    this._config.refreshHeaders,
+                    this._config.refreshData,
+                    cb
+                );
             } else if (transport === 'jsonp') {
-                this._jsonp(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
+                this._jsonp(
+                    this._config.refreshEndpoint,
+                    this._config.refreshParams,
+                    this._config.refreshHeaders,
+                    this._config.refreshData,
+                    cb
+                );
             } else {
-                throw 'Unknown refresh transport ' + transport;
+                throw new Error('Unknown refresh transport ' + transport);
             }
         }
     }
@@ -836,7 +863,7 @@ export class Centrifuge extends Observable {
         if (this._config.resubscribe) {
             this.startBatching();
             this.startAuthBatching();
-            for (let channel in this._subs) {
+            for (const channel in this._subs) {
                 if (this._subs.hasOwnProperty(channel)) {
                     const sub = this._getSub(channel);
                     if (sub.shouldResubscribe()) {
@@ -867,7 +894,7 @@ export class Centrifuge extends Observable {
         if (messages && messages.length > 0) {
             // handle missed messages
             messages = messages.reverse();
-            for (let i in messages) {
+            for (const i in messages) {
                 if (messages.hasOwnProperty(i)) {
                     this._messageResponse(<ICentrifugeMessage>{
                         body: messages[i]
@@ -1003,7 +1030,7 @@ export class Centrifuge extends Observable {
     private _receive(data: any): void {
         if (Object.prototype.toString.call(data) === Object.prototype.toString.call([])) {
             // array of responses received
-            for (let i in data) {
+            for (const i in data) {
                 if (data.hasOwnProperty(i)) {
                     this._dispatchMessage(data[i]);
                 }
@@ -1037,7 +1064,7 @@ export class Centrifuge extends Observable {
             this._isSockJS = true;
         } else {
             if (!isFunction(WebSocket)) {
-                throw 'No Websocket support and no SockJS configured, can not connect';
+                throw new Error('No Websocket support and no SockJS configured, can not connect');
             }
             this._transport = new WebSocket(this._getWebsocketEndpoint());
         }

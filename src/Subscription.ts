@@ -12,22 +12,22 @@ import {
 
 export class Subscription extends Observable {
 
-    public static STATE_NEW: number = 0;
-    public static STATE_SUBSCRIBING: number = 1;
-    public static STATE_SUCCESS: number = 2;
-    public static STATE_ERROR: number = 3;
-    public static STATE_UNSUBSCRIBED: number = 4;
+    public static STATE_NEW = 0;
+    public static STATE_SUBSCRIBING = 1;
+    public static STATE_SUCCESS = 2;
+    public static STATE_ERROR = 3;
+    public static STATE_UNSUBSCRIBED = 4;
 
     public channel: string = null;
 
     private _status: number = Subscription.STATE_NEW;
     private _error: ICentrifugeError = null;
     private _centrifuge: Centrifuge = null;
-    private _isResubscribe: boolean = false;
-    private _recovered: boolean = false;
-    private _ready: boolean = false;
+    private _isResubscribe = false;
+    private _recovered = false;
+    private _ready = false;
     private _promise: Promise<any> = null;
-    private _noResubscribe: boolean = false;
+    private _noResubscribe = false;
     private _resolve: Function;
     private _reject: Function;
 

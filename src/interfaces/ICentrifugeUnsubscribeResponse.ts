@@ -1,4 +1,3 @@
-import {ICentrifugeJoinResponse} from './ICentrifugeJoinResponse';
-
-export interface ICentrifugeUnsubscribeResponse extends ICentrifugeJoinResponse {
+export interface ICentrifugeUnsubscribeResponse {
+    channel: string;
 }

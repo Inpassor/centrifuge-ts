@@ -19,7 +19,7 @@ export class Observable {
         if (events === '*') {
             this.__callbacks = {};
         } else if (fn) {
-            let arr = this.__callbacks[events];
+            const arr = this.__callbacks[events];
             for (let i = 0, cb; (cb = arr && arr[i]); ++i) {
                 if (cb === fn) {
                     arr.splice(i, 1);
@@ -35,7 +35,7 @@ export class Observable {
     }
 
     public trigger(name: string, args: any[]): this {
-        let fns = this.__callbacks[name] || [];
+        const fns = this.__callbacks[name] || [];
         for (let i = 0, fn; (fn = fns[i]); ++i) {
             if (!fn['busy']) {
                 fn['busy'] = true;
