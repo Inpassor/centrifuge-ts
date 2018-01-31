@@ -1,7 +1,7 @@
 import {
     isFunction,
 } from './Functions';
-import {Observable} from './Observable';
+import {Observable} from 'js-observable';
 import {Centrifuge} from './Centrifuge';
 import {
     ICentrifugeMessage,

@@ -10,7 +10,7 @@ import {
     errorExists,
     objectToQuery,
 } from './Functions';
-import {Observable} from './Observable';
+import {Observable} from 'js-observable';
 import {Subscription} from './Subscription';
 import {
     ISockJSOptions,
