@@ -194,8 +194,8 @@ var Centrifuge = (function (_super) {
         if (channels.length === 0) {
             return;
         }
-        var cb = function (error, data) {
-            if (error === true) {
+        var cb = function (err, _data) {
+            if (err === true) {
                 _this._debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
@@ -219,7 +219,7 @@ var Centrifuge = (function (_super) {
             for (i in channels) {
                 if (channels.hasOwnProperty(i)) {
                     channel = channels[i];
-                    var channelResponse = data[channel];
+                    var channelResponse = _data[channel];
                     if (!channelResponse) {
                         _this._subscribeError({
                             error: 'channel not found in authorization response',
@@ -281,16 +281,16 @@ var Centrifuge = (function (_super) {
                 this._jsonp(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
             }
             else {
-                throw 'Unknown private channel auth transport ' + transport;
+                throw new Error('Unknown private channel auth transport ' + transport);
             }
         }
     };
     Centrifuge.prototype.subscribe = function (channel, events) {
         if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(channel)) {
-            throw 'Illegal argument type: channel must be a string';
+            throw new Error('Illegal argument type: channel must be a string');
         }
         if (!this._config.resubscribe && !this.isConnected()) {
-            throw 'Can not only subscribe in connected state when resubscribe option is off';
+            throw new Error('Can not only subscribe in connected state when resubscribe option is off');
         }
         var currentSub = this._getSub(channel);
         if (currentSub !== null) {
@@ -462,16 +462,16 @@ var Centrifuge = (function (_super) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    var data_1, parsed = false;
+                    var callbackData = void 0, parsed = false;
                     try {
-                        data_1 = JSON.parse(xhr.responseText);
+                        callbackData = JSON.parse(xhr.responseText);
                         parsed = true;
                     }
                     catch (e) {
                         callback(true, 'JSON returned was invalid, yet status code was 200. Data was: ' + xhr.responseText);
                     }
                     if (parsed) {
-                        callback(false, data_1);
+                        callback(false, callbackData);
                     }
                 }
                 else {
@@ -512,12 +512,12 @@ var Centrifuge = (function (_super) {
             authTransport: 'ajax',
         }, config);
         if (!config.url) {
-            throw 'Missing required configuration parameter \'url\' specifying server URL';
+            throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* stripSlash */])(config.url);
         if (!config.user) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'user\' specifying user\'s unique ID in your application';
+                throw new Error('Missing required configuration parameter \'user\' specifying user\'s unique ID in your application');
             }
             else {
                 this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
@@ -530,7 +530,7 @@ var Centrifuge = (function (_super) {
         }
         if (!config.timestamp) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'timestamp\'';
+                throw new Error('Missing required configuration parameter \'timestamp\'');
             }
             else {
                 this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
@@ -543,7 +543,7 @@ var Centrifuge = (function (_super) {
         }
         if (!config.token) {
             if (!config.insecure) {
-                throw 'Missing required configuration parameter \'token\' specifying the sign of authorization request';
+                throw new Error('Missing required configuration parameter \'token\' specifying the sign of authorization request');
             }
             else {
                 this._debug('Configuration parameter \'token\' not found but this is OK for insecure mode');
@@ -665,12 +665,9 @@ var Centrifuge = (function (_super) {
         if (!messages.length) {
             return;
         }
-        var encodedMessages = [];
-        for (var i in messages) {
-            encodedMessages.push(JSON.stringify(messages[i]));
-        }
-        this._transport.send(encodedMessages.join("\n"));
-        this._debug('Send', messages.length === 1 ? messages[0] : messages);
+        var _messages = messages.length === 1 ? messages[0] : messages;
+        this._transport.send(JSON.stringify(_messages));
+        this._debug('Send', _messages);
     };
     Centrifuge.prototype._getNextMessageId = function () {
         return ++this._messageId;
@@ -736,8 +733,8 @@ var Centrifuge = (function (_super) {
         if (this._refreshTimeout !== null) {
             clearTimeout(this._refreshTimeout);
         }
-        var cb = function (error, data) {
-            if (error === true) {
+        var cb = function (err, data) {
+            if (err === true) {
                 _this._debug('Error getting connection credentials from refresh endpoint', data);
                 _this._numRefreshFailed++;
                 if (_this._refreshTimeout) {
@@ -789,7 +786,7 @@ var Centrifuge = (function (_super) {
                 this._jsonp(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
             }
             else {
-                throw 'Unknown refresh transport ' + transport;
+                throw new Error('Unknown refresh transport ' + transport);
             }
         }
     };
@@ -836,6 +833,7 @@ var Centrifuge = (function (_super) {
         }
         this._restartPing();
         this.trigger('connect', [{
+                version: response.version,
                 client: response.client,
                 transport: this._transportName,
                 latency: this._latency
@@ -1010,7 +1008,7 @@ var Centrifuge = (function (_super) {
         }
         else {
             if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(WebSocket)) {
-                throw 'No Websocket support and no SockJS configured, can not connect';
+                throw new Error('No Websocket support and no SockJS configured, can not connect');
             }
             this._transport = new WebSocket(this._getWebsocketEndpoint());
         }
@@ -1084,14 +1082,9 @@ var Centrifuge = (function (_super) {
             }
         };
         this._transport.onmessage = function (event) {
-            var replies = event.data.split("\n");
-            for (var i in replies) {
-                if (replies.hasOwnProperty(i) && replies[i]) {
-                    var data = JSON.parse(replies[i]);
-                    _this._debug('Received', data);
-                    _this._receive(data);
-                }
-            }
+            var data = JSON.parse(event.data);
+            _this._debug('Received', data);
+            _this._receive(data);
             _this._restartPing();
         };
     };

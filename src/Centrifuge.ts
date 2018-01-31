@@ -338,14 +338,11 @@ export class Centrifuge extends Observable {
 
     public unsubscribeSub(sub: Subscription): void {
         if (this.isConnected()) {
-            const channel = sub.channel;
-            // remove unsubscribed channel in _subs
-            delete this._subs[channel];
             // No need to unsubscribe in disconnected state - i.e. client already unsubscribed.
             this.addMessage(<ICentrifugeUnsubscribeMessage>{
                 method: 'unsubscribe',
                 params: {
-                    channel
+                    channel: sub.channel
                 }
             }).then((response: ICentrifugeUnsubscribeResponse) => {
                 this._unsubscribeResponse(response);
