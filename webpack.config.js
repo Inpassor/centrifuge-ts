@@ -1,17 +1,13 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const entry = [
-    './src/Centrifuge.ts',
-];
+const entry = './src/Centrifuge.ts';
 
 module.exports = {
     entry: {
-        'polyfills': [
-            'promise-polyfill',
-            'whatwg-fetch',
-        ],
-        'centrifuge': entry,
+        promise: 'promise-polyfill',
+        fetch: 'whatwg-fetch',
+        centrifuge: entry,
         'centrifuge.min': entry
     },
     module: {
@@ -34,7 +30,8 @@ module.exports = {
     plugins: [
         new UglifyJsPlugin({
             include: [
-                /polyfills\.js$/,
+                /promise\.js$/,
+                /fetch\.js$/,
                 /\.min\.js$/,
             ],
             extractComments: false,
@@ -44,8 +41,7 @@ module.exports = {
                 output: {
                     comments: false
                 },
-                mangle: {
-                },
+                mangle: {},
                 compress: {
                     warnings: false,
                     conditionals: true,
