@@ -4,12 +4,11 @@
     "description": "Centrifuge javascript client",
     "main": "dist/centrifuge.js",
     "dependencies": {
-        "js-observable": "^1.0.0",
-        "promise-polyfill": "^7.0.2",
-        "whatwg-fetch": "^2.0.3"
+        "js-observable": "^1.0.0"
     },
     "devDependencies": {
         "@types/node": "^9.4.0",
+        "protobufjs": "^6.8.4",
         "ts-loader": "^3.4.0",
         "tslint": "^5.9.1",
         "typescript": "^2.7.1",

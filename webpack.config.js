@@ -5,9 +5,7 @@ const entry = './src/Centrifuge.ts';
 
 module.exports = {
     entry: {
-        promise: 'promise-polyfill',
-        fetch: 'whatwg-fetch',
-        centrifuge: entry,
+        'centrifuge': entry,
         'centrifuge.min': entry
     },
     module: {
@@ -30,8 +28,6 @@ module.exports = {
     plugins: [
         new UglifyJsPlugin({
             include: [
-                /promise\.js$/,
-                /fetch\.js$/,
                 /\.min\.js$/,
             ],
             extractComments: false,
