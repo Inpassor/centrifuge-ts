@@ -1,13 +1,16 @@
 const path = require('path');
-const webpack = require('webpack');
-const polyfillInjector = require('webpack-polyfill-injector');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const entry = `webpack-polyfill-injector?${JSON.stringify({
-    modules: ['./src/Centrifuge.ts']
-})}!`;
+const entry = [
+    './src/Centrifuge.ts',
+];
 
 module.exports = {
     entry: {
+        'polyfills': [
+            'promise-polyfill',
+            'whatwg-fetch',
+        ],
         'centrifuge': entry,
         'centrifuge.min': entry
     },
@@ -29,34 +32,32 @@ module.exports = {
         libraryTarget: 'umd'
     },
     plugins: [
-        new polyfillInjector({
-            polyfills: [
-                'Promise',
-                'fetch'
-            ]
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            include: /\.min\.js$/,
-            minimize: true,
-            beautify: false,
-            output: {
-                comments: false
-            },
-            mangle: {
-                screw_ie8: true
-            },
-            compress: {
-                screw_ie8: true,
-                warnings: false,
-                conditionals: true,
-                unused: true,
-                comparisons: true,
-                sequences: true,
-                dead_code: true,
-                evaluate: true,
-                if_return: true,
-                join_vars: true,
-                negate_iife: false
+        new UglifyJsPlugin({
+            include: [
+                /\.min\.js$/,
+                /polyfills\.js$/,
+            ],
+            extractComments: false,
+            uglifyOptions: {
+                minimize: true,
+                beautify: false,
+                output: {
+                    comments: false
+                },
+                mangle: {
+                },
+                compress: {
+                    warnings: false,
+                    conditionals: true,
+                    unused: true,
+                    comparisons: true,
+                    sequences: true,
+                    dead_code: true,
+                    evaluate: true,
+                    if_return: true,
+                    join_vars: true,
+                    negate_iife: false
+                }
             }
         })
     ]

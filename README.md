@@ -3,26 +3,9 @@
 
 ## Contribute
 
-If you want to contribute, follow these steps:
-
-- (Only on Windows) Install all the required tools and configurations using
-Microsoft's `windows-build-tools`. Run this command from an elevated PowerShell
-or CMD.exe as Administrator:
-    ~~~
-    npm install --global --production windows-build-tools
-    ~~~
-    Note that it may take a while.
-- Install the package `node-gyp` globally:
-    ~~~
-    npm install --global node-gyp
-    ~~~
-- Install the project dependencies:
-    ~~~
-    npm install
-    ~~~
-- Run `npm run build` command from the root repository folder - this results in
-creating unminified (`centrifuge.js`) and minified (`centrifuge.min.js`) bundles
-in the `dist` directory.
+If you want to contribute, install the project dependencies (run `npm i`)
+and run `npm run build` - this results in creating unminified (`centrifuge.js`)
+and minified (`centrifuge.min.js`) bundles in the `dist` directory.
 
 
 ## Development
