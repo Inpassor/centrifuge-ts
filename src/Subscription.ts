@@ -162,11 +162,11 @@ export class Subscription extends Observable {
     private _initializePromise(): void {
         this._ready = false;
         this._promise = new Promise((resolve: Function, reject: Function) => {
-            this._resolve = (value: any) => {
+            this._resolve = (value: ISubscriptionSuccess) => {
                 this._ready = true;
                 resolve(value);
             };
-            this._reject = (err: any) => {
+            this._reject = (err: ICentrifugeError) => {
                 this._ready = true;
                 reject(err);
             };
@@ -213,7 +213,7 @@ export class Subscription extends Observable {
                 }, (error: ICentrifugeError) => {
                     reject(error);
                 });
-            }, (err: any) => {
+            }, (err: ICentrifugeError) => {
                 reject(err);
             });
         });
