@@ -274,16 +274,7 @@ var Centrifuge = (function (_super) {
             }, cb);
         }
         else {
-            var transport = this._config.authTransport.toLowerCase();
-            if (transport === 'ajax') {
-                this._ajax(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
-            }
-            else if (transport === 'jsonp') {
-                this._jsonp(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
-            }
-            else {
-                throw new Error('Unknown private channel auth transport ' + transport);
-            }
+            this._request(this._config.authEndpoint, this._config.authParams, this._config.authHeaders, data, cb);
         }
     };
     Centrifuge.prototype.subscribe = function (channel, events) {
@@ -405,7 +396,14 @@ var Centrifuge = (function (_super) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */])('info', args);
+        __WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */].apply(void 0, ['info'].concat(args));
+    };
+    Centrifuge.error = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        __WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */].apply(void 0, ['error'].concat(args));
     };
     Centrifuge.prototype._debug = function () {
         var args = [];
@@ -413,78 +411,39 @@ var Centrifuge = (function (_super) {
             args[_i] = arguments[_i];
         }
         if (this._config.debug === true) {
-            Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */])('debug', args);
+            __WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */].apply(void 0, ['debug'].concat(args));
         }
     };
-    Centrifuge.prototype._jsonp = function (url, params, headers, data, callback) {
-        if (Object.keys(headers).length > 0) {
-            Centrifuge.log('Only AJAX request allows to send custom headers, it is not possible with JSONP.');
-        }
-        this._debug('Sending JSONP request to', url);
-        var callbackName = 'centrifuge_jsonp_' + Centrifuge.nextJSONPCallbackID.toString();
-        Centrifuge.nextJSONPCallbackID++;
-        var script = document.createElement('script');
-        var timeoutTrigger = setTimeout(function () {
-            Centrifuge.jsonpCallbacks[callbackName] = function () {
-            };
-            callback(true, 'timeout');
-        }, 3000);
-        Centrifuge.jsonpCallbacks[callbackName] = function (callbackData) {
-            clearTimeout(timeoutTrigger);
-            callback(false, callbackData);
-            delete Centrifuge.jsonpCallbacks[callbackName];
-        };
-        var callback_name = 'Centrifuge._jsonpCallbacks[\'' + callbackName + '\']';
-        script.src = this._config.authEndpoint +
-            '?callback=' + encodeURIComponent(callback_name) +
-            '&data=' + encodeURIComponent(JSON.stringify(data)) +
-            '&' + Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
-        var head = document.getElementsByTagName('head')[0] || document.documentElement;
-        head.insertBefore(script, head.firstChild);
-    };
-    Centrifuge.prototype._ajax = function (url, params, headers, data, callback) {
-        this._debug('Sending AJAX request to', url);
-        var xhr = (XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
+    Centrifuge.prototype._request = function (url, params, headers, data, callback) {
+        this._debug('Sending POST request to', url);
         var query = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
         if (query.length > 0) {
             query = '?' + query;
         }
-        xhr.open('POST', url + query, true);
-        if ('withCredentials' in xhr) {
-            xhr.withCredentials = true;
-        }
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.setRequestHeader('Content-Type', 'application/json');
+        var _headers = new Headers();
+        _headers.append('X-Requested-With', 'XMLHttpRequest');
+        _headers.append('Content-Type', 'application/json');
         for (var headerName in headers) {
             if (headers.hasOwnProperty(headerName)) {
-                xhr.setRequestHeader(headerName, headers[headerName]);
+                _headers.append(headerName, headers[headerName]);
             }
         }
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    var callbackData = void 0, parsed = false;
-                    try {
-                        callbackData = JSON.parse(xhr.responseText);
-                        parsed = true;
-                    }
-                    catch (e) {
-                        callback(true, 'JSON returned was invalid, yet status code was 200. Data was: ' + xhr.responseText);
-                    }
-                    if (parsed) {
-                        callback(false, callbackData);
-                    }
-                }
-                else {
-                    Centrifuge.log('Could not get auth info from application', xhr.status);
-                    callback(true, xhr.status);
-                }
+        fetch(url + query, {
+            method: 'POST',
+            headers: _headers,
+            body: data,
+            credentials: 'include',
+            mode: 'cors',
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
             }
-        };
-        setTimeout(function () {
-            xhr.send(JSON.stringify(data));
-        }, 20);
-        return xhr;
+            Centrifuge.error('Network response was not ok', response.status);
+        }).then(function (callbackData) {
+            callback(false, callbackData);
+        }).catch(function (error) {
+            Centrifuge.error('Network response error', error);
+        });
     };
     Centrifuge.prototype._configure = function (config) {
         this._debug('Configuring Centrifuge with', config);
@@ -504,13 +463,11 @@ var Centrifuge = (function (_super) {
             refreshHeaders: {},
             refreshParams: {},
             refreshData: {},
-            refreshTransport: 'ajax',
             refreshAttempts: 0,
             refreshInterval: 3000,
             authEndpoint: '/centrifuge/auth/',
             authHeaders: {},
             authParams: {},
-            authTransport: 'ajax',
         }, config);
         if (!config.url) {
             throw new Error('Missing required configuration parameter \'url\' specifying server URL');
@@ -779,16 +736,7 @@ var Centrifuge = (function (_super) {
             this._config.onRefresh({}, cb);
         }
         else {
-            var transport = this._config.refreshTransport.toLowerCase();
-            if (transport === 'ajax') {
-                this._ajax(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
-            }
-            else if (transport === 'jsonp') {
-                this._jsonp(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
-            }
-            else {
-                throw new Error('Unknown refresh transport ' + transport);
-            }
+            this._request(this._config.refreshEndpoint, this._config.refreshParams, this._config.refreshHeaders, this._config.refreshData, cb);
         }
     };
     Centrifuge.prototype._connectResponse = function (response) {
@@ -1089,8 +1037,6 @@ var Centrifuge = (function (_super) {
             _this._restartPing();
         };
     };
-    Centrifuge.jsonpCallbacks = {};
-    Centrifuge.nextJSONPCallbackID = 1;
     return Centrifuge;
 }(__WEBPACK_IMPORTED_MODULE_1_js_observable__["Observable"]));
 
@@ -1121,9 +1067,6 @@ var log = function (level) {
         args[_i - 1] = arguments[_i];
     }
     if (console) {
-        if (args.length === 1) {
-            args = args[0];
-        }
         var logger = console[level];
         if (isFunction(logger)) {
             logger.apply(logger, args);

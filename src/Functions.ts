@@ -6,11 +6,8 @@ export const isString = (value: any): boolean => {
     return typeof value === 'string';
 };
 
-export const log = (level: string, ...args: any[]) => {
+export const log = (level: string, ...args: any[]): void => {
     if (console) {
-        if (args.length === 1) {
-            args = args[0];
-        }
         const logger = console[level];
         if (isFunction(logger)) {
             logger.apply(logger, args);

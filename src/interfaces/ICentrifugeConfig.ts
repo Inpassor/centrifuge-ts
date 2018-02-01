@@ -19,7 +19,7 @@ export interface ICentrifugeConfig {
     refreshHeaders?: Object;
     refreshParams?: Object;
     refreshData?: Object;
-    refreshTransport?: string;
+    refreshTransport?: string; // deprecated, unused
     refreshAttempts?: number;
     refreshInterval?: number;
     refreshFailed?: Function;
@@ -27,7 +27,7 @@ export interface ICentrifugeConfig {
     authEndpoint?: string;
     authHeaders?: Object;
     authParams?: Object;
-    authTransport?: string;
+    authTransport?: string; // deprecated, unused
     user?: string;
     timestamp?: string;
     token?: string;

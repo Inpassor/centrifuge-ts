@@ -1,5 +1,3 @@
-declare var ActiveXObject: ActiveXObject;
-
 import {
     isFunction,
     isString,
@@ -12,6 +10,8 @@ import {
 } from './Functions';
 import {Observable} from 'js-observable';
 import {Subscription} from './Subscription';
+import {proto} from './proto/client';
+
 import {
     ISockJSOptions,
     ICentrifugeConfig,
@@ -31,14 +31,7 @@ import {
     ICentrifugeLeaveResponse,
 } from './interfaces';
 
-interface ActiveXObject {
-    new(s: string): any;
-}
-
 export class Centrifuge extends Observable {
-
-    public static jsonpCallbacks: any = {};
-    public static nextJSONPCallbackID = 1;
 
     private _config: ICentrifugeConfig = {};
     private _status = 'disconnected';
@@ -242,26 +235,13 @@ export class Centrifuge extends Observable {
                 data,
             }, cb);
         } else {
-            const transport = this._config.authTransport.toLowerCase();
-            if (transport === 'ajax') {
-                this._ajax(
-                    this._config.authEndpoint,
-                    this._config.authParams,
-                    this._config.authHeaders,
-                    data,
-                    cb
-                );
-            } else if (transport === 'jsonp') {
-                this._jsonp(
-                    this._config.authEndpoint,
-                    this._config.authParams,
-                    this._config.authHeaders,
-                    data,
-                    cb
-                );
-            } else {
-                throw new Error('Unknown private channel auth transport ' + transport);
-            }
+            this._request(
+                this._config.authEndpoint,
+                this._config.authParams,
+                this._config.authHeaders,
+                data,
+                cb
+            );
         }
     }
 
@@ -392,97 +372,49 @@ export class Centrifuge extends Observable {
     }
 
     public static log(...args: any[]): void {
-        log('info', args);
+        log('info', ...args);
+    }
+
+    public static error(...args: any[]): void {
+        log('error', ...args);
     }
 
     private _debug(...args: any[]): void {
         if (this._config.debug === true) {
-            log('debug', args);
+            log('debug', ...args);
         }
     }
 
-    private _jsonp(url: string, params: any, headers: any, data: any, callback: Function) {
-        if (Object.keys(headers).length > 0) {
-            Centrifuge.log('Only AJAX request allows to send custom headers, it is not possible with JSONP.');
-        }
-        this._debug('Sending JSONP request to', url);
-
-        const callbackName = 'centrifuge_jsonp_' + Centrifuge.nextJSONPCallbackID.toString();
-        Centrifuge.nextJSONPCallbackID++;
-
-        const script = document.createElement('script');
-
-        const timeoutTrigger = setTimeout(() => {
-            Centrifuge.jsonpCallbacks[callbackName] = () => {
-            };
-            callback(true, 'timeout');
-        }, 3000);
-
-        Centrifuge.jsonpCallbacks[callbackName] = (callbackData: any) => {
-            clearTimeout(timeoutTrigger);
-            callback(false, callbackData);
-            delete Centrifuge.jsonpCallbacks[callbackName];
-        };
-
-        const callback_name = 'Centrifuge._jsonpCallbacks[\'' + callbackName + '\']';
-        script.src = this._config.authEndpoint +
-            '?callback=' + encodeURIComponent(callback_name) +
-            '&data=' + encodeURIComponent(JSON.stringify(data)) +
-            '&' + objectToQuery(params);
-
-        const head = document.getElementsByTagName('head')[0] || document.documentElement;
-        head.insertBefore(script, head.firstChild);
-    }
-
-    private _ajax(url: string, params: any, headers: any, data: any, callback: Function) {
-        this._debug('Sending AJAX request to', url);
-
-        const xhr = (XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'));
-
+    private _request(url: string, params: any, headers: any, data: any, callback: Function): void {
+        this._debug('Sending POST request to', url);
         let query = objectToQuery(params);
         if (query.length > 0) {
             query = '?' + query;
         }
-
-        xhr.open('POST', url + query, true);
-        if ('withCredentials' in xhr) {
-            xhr.withCredentials = true;
-        }
-
-        // add request headers
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.setRequestHeader('Content-Type', 'application/json');
+        const _headers = new Headers();
+        _headers.append('X-Requested-With', 'XMLHttpRequest');
+        _headers.append('Content-Type', 'application/json');
         for (const headerName in headers) {
             if (headers.hasOwnProperty(headerName)) {
-                xhr.setRequestHeader(headerName, headers[headerName]);
+                _headers.append(headerName, headers[headerName]);
             }
         }
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    let callbackData,
-                        parsed = false;
-                    try {
-                        callbackData = JSON.parse(xhr.responseText);
-                        parsed = true;
-                    } catch (e) {
-                        callback(true, 'JSON returned was invalid, yet status code was 200. Data was: ' + xhr.responseText);
-                    }
-                    if (parsed) { // prevents double execution.
-                        callback(false, callbackData);
-                    }
-                } else {
-                    Centrifuge.log('Could not get auth info from application', xhr.status);
-                    callback(true, xhr.status);
-                }
+        fetch(url + query, {
+            method: 'POST',
+            headers: _headers,
+            body: data,
+            credentials: 'include',
+            mode: 'cors',
+        }).then((response: Response) => {
+            if (response.ok) {
+                return response.json();
             }
-        };
-
-        setTimeout(() => {
-            xhr.send(JSON.stringify(data));
-        }, 20);
-        return xhr;
+            Centrifuge.error('Network response was not ok', response.status);
+        }).then((callbackData: any) => {
+            callback(false, callbackData);
+        }).catch((error: any) => {
+            Centrifuge.error('Network response error', error);
+        });
     }
 
     private _configure(config: ICentrifugeConfig): void {
@@ -503,13 +435,11 @@ export class Centrifuge extends Observable {
             refreshHeaders: {},
             refreshParams: {},
             refreshData: {},
-            refreshTransport: 'ajax',
             refreshAttempts: 0,
             refreshInterval: 3000,
             authEndpoint: '/centrifuge/auth/',
             authHeaders: {},
             authParams: {},
-            authTransport: 'ajax',
         }, config);
 
         if (!config.url) {
@@ -805,26 +735,13 @@ export class Centrifuge extends Observable {
         if (this._config.onRefresh !== null) {
             this._config.onRefresh({}, cb);
         } else {
-            const transport = this._config.refreshTransport.toLowerCase();
-            if (transport === 'ajax') {
-                this._ajax(
-                    this._config.refreshEndpoint,
-                    this._config.refreshParams,
-                    this._config.refreshHeaders,
-                    this._config.refreshData,
-                    cb
-                );
-            } else if (transport === 'jsonp') {
-                this._jsonp(
-                    this._config.refreshEndpoint,
-                    this._config.refreshParams,
-                    this._config.refreshHeaders,
-                    this._config.refreshData,
-                    cb
-                );
-            } else {
-                throw new Error('Unknown refresh transport ' + transport);
-            }
+            this._request(
+                this._config.refreshEndpoint,
+                this._config.refreshParams,
+                this._config.refreshHeaders,
+                this._config.refreshData,
+                cb
+            );
         }
     }
 
