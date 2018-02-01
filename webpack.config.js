@@ -34,8 +34,8 @@ module.exports = {
     plugins: [
         new UglifyJsPlugin({
             include: [
-                /\.min\.js$/,
                 /polyfills\.js$/,
+                /\.min\.js$/,
             ],
             extractComments: false,
             uglifyOptions: {
