@@ -1,10 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
+const polyfillInjector = require('webpack-polyfill-injector');
+
+const entry = `webpack-polyfill-injector?${JSON.stringify({
+    modules: ['./src/Centrifuge.ts']
+})}!`;
 
 module.exports = {
     entry: {
-        'centrifuge': './src/Centrifuge.ts',
-        'centrifuge.min': './src/Centrifuge.ts'
+        'centrifuge': entry,
+        'centrifuge.min': entry
     },
     module: {
         rules: [
@@ -24,6 +29,12 @@ module.exports = {
         libraryTarget: 'umd'
     },
     plugins: [
+        new polyfillInjector({
+            polyfills: [
+                'Promise',
+                'fetch'
+            ]
+        }),
         new webpack.optimize.UglifyJsPlugin({
             include: /\.min\.js$/,
             minimize: true,
