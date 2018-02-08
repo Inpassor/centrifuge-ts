@@ -63,8 +63,16 @@ export class Centrifuge extends Observable {
         this._configure(config);
     }
 
+    public get isConnected(): boolean {
+        return this._status === 'connected';
+    }
+
+    public get isDisconnected(): boolean {
+        return this._status === 'disconnected';
+    }
+
     public connect(): void {
-        if (this.isConnected()) {
+        if (this.isConnected) {
             this._debug('Connect called when already connected');
             return;
         }
@@ -81,14 +89,6 @@ export class Centrifuge extends Observable {
 
     public disconnect(): void {
         this._disconnect('client');
-    }
-
-    public isConnected(): boolean {
-        return this._status === 'connected';
-    }
-
-    public isDisconnected(): boolean {
-        return this._status === 'disconnected';
     }
 
     public ping(): void {
@@ -180,7 +180,6 @@ export class Centrifuge extends Observable {
                     channel = channels[i];
                     const channelResponse = _data[channel];
                     if (!channelResponse) {
-                        // subscription:error
                         this._subscribeError(<ICentrifugeError>{
                             error: 'channel not found in authorization response',
                             advice: 'fix',
@@ -249,7 +248,7 @@ export class Centrifuge extends Observable {
         if (!isString(channel)) {
             throw new Error('Illegal argument type: channel must be a string');
         }
-        if (!this._config.resubscribe && !this.isConnected()) {
+        if (!this._config.resubscribe && !this.isConnected) {
             throw new Error('Can not only subscribe in connected state when resubscribe option is off');
         }
 
@@ -276,7 +275,7 @@ export class Centrifuge extends Observable {
             this._subs[channel] = sub;
         }
 
-        if (!this.isConnected()) {
+        if (!this.isConnected) {
             // subscribe will be called later
             sub.setNew();
             return;
@@ -317,7 +316,7 @@ export class Centrifuge extends Observable {
     }
 
     public unsubscribeSub(sub: Subscription): void {
-        if (this.isConnected()) {
+        if (this.isConnected) {
             // No need to unsubscribe in disconnected state - i.e. client already unsubscribed.
             this.addMessage(<ICentrifugeUnsubscribeMessage>{
                 method: 'unsubscribe',
@@ -578,7 +577,7 @@ export class Centrifuge extends Observable {
     }
 
     private _disconnect(reason: string, shouldReconnect: boolean = false): void {
-        if (this.isDisconnected()) {
+        if (this.isDisconnected) {
             return;
         }
         this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
@@ -589,7 +588,7 @@ export class Centrifuge extends Observable {
 
         this._clearConnectedState(shouldReconnect);
 
-        if (!this.isDisconnected()) {
+        if (!this.isDisconnected) {
             this._setStatus('disconnected');
             if (this._refreshTimeout) {
                 clearTimeout(this._refreshTimeout);
@@ -633,11 +632,11 @@ export class Centrifuge extends Observable {
     }
 
     private _startPing(): void {
-        if (this._config.ping !== true || this._config.pingInterval <= 0 || !this.isConnected()) {
+        if (this._config.ping !== true || this._config.pingInterval <= 0 || !this.isConnected) {
             return;
         }
         this._pingInterval = setInterval(() => {
-            if (!this.isConnected()) {
+            if (!this.isConnected) {
                 this._stopPing();
                 return;
             }
@@ -670,7 +669,7 @@ export class Centrifuge extends Observable {
 
     private _refreshFailed(): void {
         this._numRefreshFailed = 0;
-        if (!this.isDisconnected()) {
+        if (!this.isDisconnected) {
             this._disconnect('refresh failed');
         }
         if (this._config.refreshFailed) {
@@ -719,7 +718,7 @@ export class Centrifuge extends Observable {
             } else {
                 data.info = '';
             }
-            if (this.isDisconnected()) {
+            if (this.isDisconnected) {
                 this._debug('Credentials refreshed, connect from scratch');
                 this.connect();
             } else {
@@ -748,7 +747,7 @@ export class Centrifuge extends Observable {
     }
 
     private _connectResponse(response: ICentrifugeConnectResponse): void {
-        if (this.isConnected()) {
+        if (this.isConnected) {
             return;
         }
         if (this._latencyStart !== null) {
