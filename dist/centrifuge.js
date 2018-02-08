@@ -486,30 +486,30 @@ var Centrifuge = (function (_super) {
                 Centrifuge.log('Configuration parameter \'user\' expected to be string');
             }
         }
-        if (!config.timestamp) {
+        if (!config.time) {
             if (!config.insecure) {
-                throw new Error('Missing required configuration parameter \'timestamp\'');
+                throw new Error('Missing required configuration parameter \'time\'');
             }
             else {
-                this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'time\' not found but this is OK for insecure mode');
             }
         }
         else {
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.timestamp)) {
-                Centrifuge.log('Configuration parameter \'timestamp\' expected to be string');
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.time)) {
+                Centrifuge.log('Configuration parameter \'time\' expected to be string');
             }
         }
-        if (!config.token) {
+        if (!config.sign) {
             if (!config.insecure) {
-                throw new Error('Missing required configuration parameter \'token\' specifying the sign of authorization request');
+                throw new Error('Missing required configuration parameter \'sign\' specifying the sign of authorization request');
             }
             else {
-                this._debug('Configuration parameter \'token\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
             }
         }
         else {
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.token)) {
-                Centrifuge.log('Configuration parameter \'token\' expected to be string');
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.sign)) {
+                Centrifuge.log('Configuration parameter \'sign\' expected to be string');
             }
         }
         if (config.info && !Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.info)) {
@@ -623,9 +623,12 @@ var Centrifuge = (function (_super) {
         if (!messages.length) {
             return;
         }
-        var _messages = messages.length === 1 ? messages[0] : messages;
-        this._transport.send(JSON.stringify(_messages));
-        this._debug('Send', _messages);
+        var encodedMessages = [];
+        for (var i in messages) {
+            encodedMessages.push(JSON.stringify(messages[i]));
+        }
+        this._transport.send(encodedMessages.join("\n"));
+        this._debug('Send', messages);
     };
     Centrifuge.prototype._getNextMessageId = function () {
         return ++this._messageId;
@@ -709,8 +712,8 @@ var Centrifuge = (function (_super) {
             }
             _this._numRefreshFailed = 0;
             _this._config.user = data.user;
-            _this._config.timestamp = data.timestamp;
-            _this._config.token = data.token;
+            _this._config.time = data.time;
+            _this._config.sign = data.sign;
             if ('info' in data) {
                 _this._config.info = data.info;
             }
@@ -982,8 +985,8 @@ var Centrifuge = (function (_super) {
                 }
             };
             if (!_this._config.insecure) {
-                msg.params.timestamp = _this._config.timestamp;
-                msg.params.token = _this._config.token;
+                msg.params.time = _this._config.time;
+                msg.params.sign = _this._config.sign;
             }
             _this._latencyStart = new Date();
             _this.addMessage(msg).then(function (response) {
@@ -1031,9 +1034,15 @@ var Centrifuge = (function (_super) {
             }
         };
         this._transport.onmessage = function (event) {
-            var data = JSON.parse(event.data);
-            _this._debug('Received', data);
-            _this._receive(data);
+            var replies = event.data.split("\n");
+            for (var i in replies) {
+                if (!replies[i]) {
+                    continue;
+                }
+                var data = JSON.parse(replies[i]);
+                _this._debug('Received', data);
+                _this._receive(data);
+            }
             _this._restartPing();
         };
     };

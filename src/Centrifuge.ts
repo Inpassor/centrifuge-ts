@@ -459,27 +459,27 @@ export class Centrifuge extends Observable {
             }
         }
 
-        if (!config.timestamp) {
+        if (!config.time) {
             if (!config.insecure) {
-                throw new Error('Missing required configuration parameter \'timestamp\'');
+                throw new Error('Missing required configuration parameter \'time\'');
             } else {
-                this._debug('Configuration parameter \'timestamp\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'time\' not found but this is OK for insecure mode');
             }
         } else {
-            if (!isString(config.timestamp)) {
-                Centrifuge.log('Configuration parameter \'timestamp\' expected to be string');
+            if (!isString(config.time)) {
+                Centrifuge.log('Configuration parameter \'time\' expected to be string');
             }
         }
 
-        if (!config.token) {
+        if (!config.sign) {
             if (!config.insecure) {
-                throw new Error('Missing required configuration parameter \'token\' specifying the sign of authorization request');
+                throw new Error('Missing required configuration parameter \'sign\' specifying the sign of authorization request');
             } else {
-                this._debug('Configuration parameter \'token\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
             }
         } else {
-            if (!isString(config.token)) {
-                Centrifuge.log('Configuration parameter \'token\' expected to be string');
+            if (!isString(config.sign)) {
+                Centrifuge.log('Configuration parameter \'sign\' expected to be string');
             }
         }
 
@@ -611,9 +611,12 @@ export class Centrifuge extends Observable {
         if (!messages.length) {
             return;
         }
-        const _messages = messages.length === 1 ? messages[0] : messages;
-        this._transport.send(JSON.stringify(_messages));
-        this._debug('Send', _messages);
+        const encodedMessages = [];
+        for (const i in messages) {
+            encodedMessages.push(JSON.stringify(messages[i]))
+        }
+        this._transport.send(encodedMessages.join("\n"));
+        this._debug('Send', messages);
     }
 
     private _getNextMessageId(): number {
@@ -676,8 +679,7 @@ export class Centrifuge extends Observable {
     }
 
     private _refresh(): void {
-        // ask web app for connection parameters - user ID,
-        // timestamp, info and token
+        // ask web app for connection parameters - user ID, time, info and sign
         this._debug('Refresh credentials');
 
         if (this._config.refreshAttempts === 0) {
@@ -710,8 +712,8 @@ export class Centrifuge extends Observable {
             }
             this._numRefreshFailed = 0;
             this._config.user = data.user;
-            this._config.timestamp = data.timestamp;
-            this._config.token = data.token;
+            this._config.time = data.time;
+            this._config.sign = data.sign;
             if ('info' in data) {
                 this._config.info = data.info;
             } else {
@@ -1007,9 +1009,9 @@ export class Centrifuge extends Observable {
             };
 
             if (!this._config.insecure) {
-                // in insecure client mode we don't need timestamp and token.
-                msg.params.timestamp = this._config.timestamp;
-                msg.params.token = this._config.token;
+                // in insecure client mode we don't need time and sign.
+                msg.params.time = this._config.time;
+                msg.params.sign = this._config.sign;
             }
             this._latencyStart = new Date();
             this.addMessage(msg).then((response: ICentrifugeConnectResponse) => {
@@ -1066,9 +1068,15 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onmessage = (event: any) => {
-            const data = JSON.parse(event.data);
-            this._debug('Received', data);
-            this._receive(data);
+            const replies = event.data.split("\n");
+            for (const i in replies) {
+                if (!replies[i]) {
+                    continue;
+                }
+                const data = JSON.parse(replies[i]);
+                this._debug('Received', data);
+                this._receive(data);
+            }
             this._restartPing();
         };
     }

@@ -28,7 +28,7 @@ module.exports = {
     plugins: [
         new UglifyJsPlugin({
             include: [
-                /\.min\.js$/,
+                /\.min\.js$/
             ],
             extractComments: false,
             uglifyOptions: {
