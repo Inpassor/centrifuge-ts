@@ -12,22 +12,16 @@ import {
 
 export class Subscription extends Observable {
 
-    public static STATE_NEW = 0;
-    public static STATE_SUBSCRIBING = 1;
-    public static STATE_SUCCESS = 2;
-    public static STATE_ERROR = 3;
-    public static STATE_UNSUBSCRIBED = 4;
-
     public channel: string = null;
 
-    private _status: number = Subscription.STATE_NEW;
+    private _status = 'new';
     private _error: ICentrifugeError = null;
     private _centrifuge: Centrifuge = null;
     private _isResubscribe = false;
     private _recovered = false;
     private _ready = false;
-    private _promise: Promise<any> = null;
     private _noResubscribe = false;
+    private _promise: Promise<any> = null;
     private _resolve: Function;
     private _reject: Function;
 
@@ -37,6 +31,18 @@ export class Subscription extends Observable {
         this.channel = channel;
         this.setEvents(events);
         this._initializePromise();
+    }
+
+    public get isUnsubscribed(): boolean {
+        return this._status === 'unsubscribed';
+    }
+
+    public get isSuccess(): boolean {
+        return this._status === 'success';
+    }
+
+    public get isSubscribing(): boolean {
+        return this._status === 'subscribing';
     }
 
     public setEvents(events: any): void {
@@ -57,7 +63,7 @@ export class Subscription extends Observable {
     }
 
     public setNew(): void {
-        this._status = Subscription.STATE_NEW;
+        this._status = 'new';
     }
 
     public setSubscribing(): void {
@@ -66,14 +72,14 @@ export class Subscription extends Observable {
             this._initializePromise();
             this._isResubscribe = true;
         }
-        this._status = Subscription.STATE_SUBSCRIBING;
+        this._status = 'subscribing';
     }
 
     public setUnsubscribed(noResubscribe?: boolean): void {
-        if (this._status === Subscription.STATE_UNSUBSCRIBED) {
+        if (this._status === 'unsubscribed') {
             return;
         }
-        this._status = Subscription.STATE_UNSUBSCRIBED;
+        this._status = 'unsubscribed';
         if (noResubscribe === true) {
             this._noResubscribe = true;
         }
@@ -81,21 +87,21 @@ export class Subscription extends Observable {
     }
 
     public setSubscribeSuccess(recovered: boolean): void {
-        if (this._status === Subscription.STATE_SUCCESS) {
+        if (this.isSuccess) {
             return;
         }
         this._recovered = recovered;
-        this._status = Subscription.STATE_SUCCESS;
+        this._status = 'success';
         const successContext = this._getSubscribeSuccess();
         this.trigger('subscribe', [successContext]);
         this._resolve(successContext);
     }
 
     public setSubscribeError(error: ICentrifugeError): void {
-        if (this._status === Subscription.STATE_ERROR) {
+        if (this._status === 'error') {
             return;
         }
-        this._status = Subscription.STATE_ERROR;
+        this._status = 'error';
         this._error = error;
         const errContext = this._getSubscribeError();
         this.trigger('error', [errContext]);
@@ -108,25 +114,13 @@ export class Subscription extends Observable {
         }]);
     }
 
-    public isUnsubscribed(): boolean {
-        return this._status === Subscription.STATE_UNSUBSCRIBED;
-    }
-
-    public isSuccess(): boolean {
-        return this._status === Subscription.STATE_SUCCESS;
-    }
-
-    public isSubscribing(): boolean {
-        return this._status === Subscription.STATE_SUBSCRIBING;
-    }
-
     public shouldResubscribe(): boolean {
         return !this._noResubscribe;
     }
 
     public ready(callback: Function, errback: Function) {
         if (this._ready) {
-            if (this.isSuccess()) {
+            if (this.isSuccess) {
                 callback(this._getSubscribeSuccess());
             } else {
                 errback(this._getSubscribeError());
@@ -135,7 +129,7 @@ export class Subscription extends Observable {
     }
 
     public subscribe(): this {
-        if (this._status === Subscription.STATE_SUCCESS) {
+        if (this.isSuccess) {
             return;
         }
         this._centrifuge.subscribeSub(this);
@@ -190,12 +184,12 @@ export class Subscription extends Observable {
 
     private _request(method: string, data?: any): Promise<any> {
         return new Promise((resolve: Function, reject: Function) => {
-            if (this.isUnsubscribed()) {
+            if (this.isUnsubscribed) {
                 reject(Centrifuge.createErrorObject('subscription unsubscribed', 'fix'));
                 return;
             }
             this._promise.then(() => {
-                if (!this._centrifuge.isConnected()) {
+                if (!this._centrifuge.isConnected) {
                     reject(Centrifuge.createErrorObject('disconnected', 'retry'));
                     return;
                 }

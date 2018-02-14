@@ -79,11 +79,10 @@ export class Centrifuge extends Observable {
         if (this._status === 'connecting') {
             return;
         }
-
         this._debug('Start connecting');
+        this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
-        this._setStatus('connecting');
         this._setTransport();
     }
 
@@ -100,8 +99,7 @@ export class Centrifuge extends Observable {
     }
 
     public startBatching(): void {
-        // start collecting messages without sending them to Centrifuge until flush
-        // method called
+        // start collecting messages without sending them to Centrifuge until flush method called
         this._isBatching = true;
     }
 
@@ -115,9 +113,9 @@ export class Centrifuge extends Observable {
 
     public flush(): void {
         // send batched messages to Centrifuge
-        const messages = this._messages.slice(0);
-        this._messages = [];
+        const messages = [...this._messages];
         this._send(messages);
+        this._messages = [];
     }
 
     public startAuthBatching(): void {
@@ -133,7 +131,7 @@ export class Centrifuge extends Observable {
         // create request to authEndpoint with collected private channels
         // to ask if this client can subscribe on each channel
         this._isAuthBatching = false;
-        const authChannels = this._authChannels;
+        const authChannels = [...this._authChannels];
         this._authChannels = {};
         const channels = [];
 
@@ -194,7 +192,7 @@ export class Centrifuge extends Observable {
                             method: 'subscribe',
                             params: {
                                 channel: channel,
-                                client: this.getClientId(),
+                                client: this._clientID,
                                 info: channelResponse.info,
                                 sign: channelResponse.sign
                             }
@@ -225,7 +223,7 @@ export class Centrifuge extends Observable {
         };
 
         const data = {
-            client: this.getClientId(),
+            client: this._clientID,
             channels,
         };
 
@@ -256,7 +254,7 @@ export class Centrifuge extends Observable {
 
         if (currentSub !== null) {
             currentSub.setEvents(events);
-            if (currentSub.isUnsubscribed()) {
+            if (currentSub.isUnsubscribed) {
                 currentSub.subscribe();
             }
             return currentSub;
@@ -330,25 +328,8 @@ export class Centrifuge extends Observable {
         }
     }
 
-    public getClientId(): string {
-        return this._clientID;
-    }
-
-    public registerCall(uid: string, callback?: Function, errback?: Function) {
-        this._callbacks[uid] = {
-            callback: callback,
-            errback: errback
-        };
-        setTimeout(() => {
-            delete this._callbacks[uid];
-            if (isFunction(errback)) {
-                errback(Centrifuge.createErrorObject('timeout', 'retry'));
-            }
-        }, this._config.timeout);
-    }
-
     public addMessage(message: ICentrifugeMessage): Promise<any> {
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((callback: Function, errback: Function) => {
             const uid = this._getNextMessageId() + '';
             message.uid = uid;
             if (this._isBatching === true) {
@@ -356,7 +337,16 @@ export class Centrifuge extends Observable {
             } else {
                 this._send([message]);
             }
-            this.registerCall(uid, resolve, reject);
+            this._callbacks[uid] = {
+                callback,
+                errback,
+            };
+            setTimeout(() => {
+                delete this._callbacks[uid];
+                if (isFunction(errback)) {
+                    errback(Centrifuge.createErrorObject('timeout', 'retry'));
+                }
+            }, this._config.timeout);
         });
     }
 
@@ -382,38 +372,6 @@ export class Centrifuge extends Observable {
         if (this._config.debug === true) {
             log('debug', ...args);
         }
-    }
-
-    private _request(url: string, params: any, headers: any, data: any, callback: Function): void {
-        this._debug('Sending POST request to', url);
-        let query = objectToQuery(params);
-        if (query.length > 0) {
-            query = '?' + query;
-        }
-        const _headers = new Headers();
-        _headers.append('X-Requested-With', 'XMLHttpRequest');
-        _headers.append('Content-Type', 'application/json');
-        for (const headerName in headers) {
-            if (headers.hasOwnProperty(headerName)) {
-                _headers.append(headerName, headers[headerName]);
-            }
-        }
-        fetch(url + query, {
-            method: 'POST',
-            headers: _headers,
-            body: data,
-            credentials: 'include',
-            mode: 'cors',
-        }).then((response: Response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            Centrifuge.error('Network response was not ok', response.status);
-        }).then((callbackData: any) => {
-            callback(false, callbackData);
-        }).catch((error: any) => {
-            Centrifuge.error('Network response error', error);
-        });
     }
 
     private _configure(config: ICentrifugeConfig): void {
@@ -445,6 +403,28 @@ export class Centrifuge extends Observable {
             throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = stripSlash(config.url);
+
+        if (isFunction(config.sockJS)) {
+            this._isSockJS = true;
+            if (!config.transports || !config.transports.length) {
+                config.transports = [
+                    'websocket',
+                    'xdr-streaming',
+                    'xhr-streaming',
+                    'eventsource',
+                    'iframe-eventsource',
+                    'iframe-htmlfile',
+                    'xdr-polling',
+                    'xhr-polling',
+                    'iframe-xhr-polling',
+                    'jsonp-polling'
+                ];
+            }
+        } else {
+            if (!isFunction(WebSocket)) {
+                throw new Error('No Websocket support and no SockJS configured, can not connect');
+            }
+        }
 
         if (!config.user) {
             if (!config.insecure) {
@@ -487,6 +467,38 @@ export class Centrifuge extends Observable {
         }
 
         this._config = config;
+    }
+
+    private _request(url: string, params: any, headers: any, data: any, callback: Function): void {
+        this._debug('Sending POST request to', url);
+        let query = objectToQuery(params);
+        if (query.length > 0) {
+            query = '?' + query;
+        }
+        const _headers = new Headers();
+        _headers.append('X-Requested-With', 'XMLHttpRequest');
+        _headers.append('Content-Type', 'application/json');
+        for (const headerName in headers) {
+            if (headers.hasOwnProperty(headerName)) {
+                _headers.append(headerName, headers[headerName]);
+            }
+        }
+        fetch(url + query, {
+            method: 'POST',
+            headers: _headers,
+            body: data,
+            credentials: 'include',
+            mode: 'cors',
+        }).then((response: Response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            Centrifuge.error('Network response was not ok', response.status);
+        }).then((callbackData: any) => {
+            callback(false, callbackData);
+        }).catch((error: any) => {
+            Centrifuge.error('Network response error', error);
+        });
     }
 
     private _getSockjsEndpoint(): string {
@@ -540,10 +552,9 @@ export class Centrifuge extends Observable {
             if (this._callbacks.hasOwnProperty(uid)) {
                 const callbacks = this._callbacks[uid];
                 const errback = callbacks.errback;
-                if (!errback) {
-                    continue;
+                if (isFunction(errback)) {
+                    errback(Centrifuge.createErrorObject('disconnected', 'retry'));
                 }
-                errback(Centrifuge.createErrorObject('disconnected', 'retry'));
             }
         }
         this._callbacks = {};
@@ -553,7 +564,7 @@ export class Centrifuge extends Observable {
             if (this._subs.hasOwnProperty(channel)) {
                 const sub = this._getSub(channel);
                 if (reconnect) {
-                    if (sub.isSuccess()) {
+                    if (sub.isSuccess) {
                         sub.triggerUnsubscribe();
                     }
                     sub.setSubscribing();
@@ -612,7 +623,9 @@ export class Centrifuge extends Observable {
         }
         const encodedMessages = [];
         for (const i in messages) {
-            encodedMessages.push(JSON.stringify(messages[i]))
+            if (messages.hasOwnProperty(i)) {
+                encodedMessages.push(JSON.stringify(messages[i]));
+            }
         }
         this._transport.send(encodedMessages.join("\n"));
         this._debug('Send', messages);
@@ -802,7 +815,7 @@ export class Centrifuge extends Observable {
     private _subscribeResponse(response: ICentrifugeSubscribeResponse): void {
         const channel = response.channel;
         const sub = this._getSub(channel);
-        if (!sub || !sub.isSubscribing()) {
+        if (!sub || !sub.isSubscribing) {
             return;
         }
         let messages = response.messages;
@@ -832,7 +845,7 @@ export class Centrifuge extends Observable {
     private _subscribeError(error: ICentrifugeError): void {
         const channel = error.channel;
         const sub = this._getSub(channel);
-        if (!sub || !sub.isSubscribing()) {
+        if (!sub || !sub.isSubscribing) {
             return;
         }
         this.trigger('error', [{
@@ -906,16 +919,14 @@ export class Centrifuge extends Observable {
         delete this._callbacks[uid];
         if (!errorExists(message)) {
             const callback = callbacks.callback;
-            if (!callback) {
-                return;
+            if (isFunction(callback)) {
+                callback(message.body);
             }
-            callback(message.body);
         } else {
             const errback = callbacks.errback;
-            if (!errback) {
-                return;
+            if (isFunction(errback)) {
+                errback(Centrifuge.createErrorObject(message.error, message.advice));
             }
-            errback(Centrifuge.createErrorObject(message.error, message.advice));
             this.trigger('error', [{
                 message,
             }]);
@@ -957,30 +968,15 @@ export class Centrifuge extends Observable {
     }
 
     private _setTransport(): void {
-        if (isFunction(this._config.sockJS)) {
+        if (this._isSockJS) {
             const sockjsOptions: ISockJSOptions = {
-                transports: this._config.transports || [
-                    'websocket',
-                    'xdr-streaming',
-                    'xhr-streaming',
-                    'eventsource',
-                    'iframe-eventsource',
-                    'iframe-htmlfile',
-                    'xdr-polling',
-                    'xhr-polling',
-                    'iframe-xhr-polling',
-                    'jsonp-polling'
-                ]
+                transports: this._config.transports
             };
             if (this._config.server) {
                 sockjsOptions.server = this._config.server;
             }
             this._transport = new this._config.sockJS(this._getSockjsEndpoint(), null, sockjsOptions);
-            this._isSockJS = true;
         } else {
-            if (!isFunction(WebSocket)) {
-                throw new Error('No Websocket support and no SockJS configured, can not connect');
-            }
             this._transport = new WebSocket(this._getWebsocketEndpoint());
         }
 

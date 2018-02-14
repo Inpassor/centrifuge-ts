@@ -128,8 +128,22 @@ var Centrifuge = (function (_super) {
         _this._configure(config);
         return _this;
     }
+    Object.defineProperty(Centrifuge.prototype, "isConnected", {
+        get: function () {
+            return this._status === 'connected';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Centrifuge.prototype, "isDisconnected", {
+        get: function () {
+            return this._status === 'disconnected';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Centrifuge.prototype.connect = function () {
-        if (this.isConnected()) {
+        if (this.isConnected) {
             this._debug('Connect called when already connected');
             return;
         }
@@ -137,19 +151,13 @@ var Centrifuge = (function (_super) {
             return;
         }
         this._debug('Start connecting');
+        this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
-        this._setStatus('connecting');
         this._setTransport();
     };
     Centrifuge.prototype.disconnect = function () {
         this._disconnect('client');
-    };
-    Centrifuge.prototype.isConnected = function () {
-        return this._status === 'connected';
-    };
-    Centrifuge.prototype.isDisconnected = function () {
-        return this._status === 'disconnected';
     };
     Centrifuge.prototype.ping = function () {
         this.addMessage({
@@ -169,9 +177,9 @@ var Centrifuge = (function (_super) {
         }
     };
     Centrifuge.prototype.flush = function () {
-        var messages = this._messages.slice(0);
-        this._messages = [];
+        var messages = this._messages.slice();
         this._send(messages);
+        this._messages = [];
     };
     Centrifuge.prototype.startAuthBatching = function () {
         this._isAuthBatching = true;
@@ -181,7 +189,7 @@ var Centrifuge = (function (_super) {
         var i;
         var channel;
         this._isAuthBatching = false;
-        var authChannels = this._authChannels;
+        var authChannels = this._authChannels.slice();
         this._authChannels = {};
         var channels = [];
         for (channel in authChannels) {
@@ -236,7 +244,7 @@ var Centrifuge = (function (_super) {
                             method: 'subscribe',
                             params: {
                                 channel: channel,
-                                client: _this.getClientId(),
+                                client: _this._clientID,
                                 info: channelResponse.info,
                                 sign: channelResponse.sign
                             }
@@ -265,7 +273,7 @@ var Centrifuge = (function (_super) {
             }
         };
         var data = {
-            client: this.getClientId(),
+            client: this._clientID,
             channels: channels,
         };
         if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(this._config.onPrivateChannelAuth)) {
@@ -281,13 +289,13 @@ var Centrifuge = (function (_super) {
         if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(channel)) {
             throw new Error('Illegal argument type: channel must be a string');
         }
-        if (!this._config.resubscribe && !this.isConnected()) {
+        if (!this._config.resubscribe && !this.isConnected) {
             throw new Error('Can not only subscribe in connected state when resubscribe option is off');
         }
         var currentSub = this._getSub(channel);
         if (currentSub !== null) {
             currentSub.setEvents(events);
-            if (currentSub.isUnsubscribed()) {
+            if (currentSub.isUnsubscribed) {
                 currentSub.subscribe();
             }
             return currentSub;
@@ -305,7 +313,7 @@ var Centrifuge = (function (_super) {
         if (!(channel in this._subs)) {
             this._subs[channel] = sub;
         }
-        if (!this.isConnected()) {
+        if (!this.isConnected) {
             sub.setNew();
             return;
         }
@@ -340,7 +348,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype.unsubscribeSub = function (sub) {
         var _this = this;
-        if (this.isConnected()) {
+        if (this.isConnected) {
             this.addMessage({
                 method: 'unsubscribe',
                 params: {
@@ -352,25 +360,9 @@ var Centrifuge = (function (_super) {
             });
         }
     };
-    Centrifuge.prototype.getClientId = function () {
-        return this._clientID;
-    };
-    Centrifuge.prototype.registerCall = function (uid, callback, errback) {
-        var _this = this;
-        this._callbacks[uid] = {
-            callback: callback,
-            errback: errback
-        };
-        setTimeout(function () {
-            delete _this._callbacks[uid];
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
-                errback(Centrifuge.createErrorObject('timeout', 'retry'));
-            }
-        }, this._config.timeout);
-    };
     Centrifuge.prototype.addMessage = function (message) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (callback, errback) {
             var uid = _this._getNextMessageId() + '';
             message.uid = uid;
             if (_this._isBatching === true) {
@@ -379,7 +371,16 @@ var Centrifuge = (function (_super) {
             else {
                 _this._send([message]);
             }
-            _this.registerCall(uid, resolve, reject);
+            _this._callbacks[uid] = {
+                callback: callback,
+                errback: errback,
+            };
+            setTimeout(function () {
+                delete _this._callbacks[uid];
+                if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
+                    errback(Centrifuge.createErrorObject('timeout', 'retry'));
+                }
+            }, _this._config.timeout);
         });
     };
     Centrifuge.createErrorObject = function (error, advice) {
@@ -414,37 +415,6 @@ var Centrifuge = (function (_super) {
             __WEBPACK_IMPORTED_MODULE_0__Functions__["e" /* log */].apply(void 0, ['debug'].concat(args));
         }
     };
-    Centrifuge.prototype._request = function (url, params, headers, data, callback) {
-        this._debug('Sending POST request to', url);
-        var query = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
-        if (query.length > 0) {
-            query = '?' + query;
-        }
-        var _headers = new Headers();
-        _headers.append('X-Requested-With', 'XMLHttpRequest');
-        _headers.append('Content-Type', 'application/json');
-        for (var headerName in headers) {
-            if (headers.hasOwnProperty(headerName)) {
-                _headers.append(headerName, headers[headerName]);
-            }
-        }
-        fetch(url + query, {
-            method: 'POST',
-            headers: _headers,
-            body: data,
-            credentials: 'include',
-            mode: 'cors',
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            }
-            Centrifuge.error('Network response was not ok', response.status);
-        }).then(function (callbackData) {
-            callback(false, callbackData);
-        }).catch(function (error) {
-            Centrifuge.error('Network response error', error);
-        });
-    };
     Centrifuge.prototype._configure = function (config) {
         this._debug('Configuring Centrifuge with', config);
         config = Object.assign({
@@ -473,6 +443,28 @@ var Centrifuge = (function (_super) {
             throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["h" /* stripSlash */])(config.url);
+        if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(config.sockJS)) {
+            this._isSockJS = true;
+            if (!config.transports || !config.transports.length) {
+                config.transports = [
+                    'websocket',
+                    'xdr-streaming',
+                    'xhr-streaming',
+                    'eventsource',
+                    'iframe-eventsource',
+                    'iframe-htmlfile',
+                    'xdr-polling',
+                    'xhr-polling',
+                    'iframe-xhr-polling',
+                    'jsonp-polling'
+                ];
+            }
+        }
+        else {
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(WebSocket)) {
+                throw new Error('No Websocket support and no SockJS configured, can not connect');
+            }
+        }
         if (!config.user) {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'user\' specifying user\'s unique ID in your application');
@@ -516,6 +508,37 @@ var Centrifuge = (function (_super) {
             Centrifuge.log('Configuration parameter \'info\' expected to be string');
         }
         this._config = config;
+    };
+    Centrifuge.prototype._request = function (url, params, headers, data, callback) {
+        this._debug('Sending POST request to', url);
+        var query = Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["f" /* objectToQuery */])(params);
+        if (query.length > 0) {
+            query = '?' + query;
+        }
+        var _headers = new Headers();
+        _headers.append('X-Requested-With', 'XMLHttpRequest');
+        _headers.append('Content-Type', 'application/json');
+        for (var headerName in headers) {
+            if (headers.hasOwnProperty(headerName)) {
+                _headers.append(headerName, headers[headerName]);
+            }
+        }
+        fetch(url + query, {
+            method: 'POST',
+            headers: _headers,
+            body: data,
+            credentials: 'include',
+            mode: 'cors',
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            }
+            Centrifuge.error('Network response was not ok', response.status);
+        }).then(function (callbackData) {
+            callback(false, callbackData);
+        }).catch(function (error) {
+            Centrifuge.error('Network response error', error);
+        });
     };
     Centrifuge.prototype._getSockjsEndpoint = function () {
         var url = this._config.url;
@@ -562,10 +585,9 @@ var Centrifuge = (function (_super) {
             if (this._callbacks.hasOwnProperty(uid)) {
                 var callbacks = this._callbacks[uid];
                 var errback = callbacks.errback;
-                if (!errback) {
-                    continue;
+                if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
+                    errback(Centrifuge.createErrorObject('disconnected', 'retry'));
                 }
-                errback(Centrifuge.createErrorObject('disconnected', 'retry'));
             }
         }
         this._callbacks = {};
@@ -573,7 +595,7 @@ var Centrifuge = (function (_super) {
             if (this._subs.hasOwnProperty(channel)) {
                 var sub = this._getSub(channel);
                 if (reconnect) {
-                    if (sub.isSuccess()) {
+                    if (sub.isSuccess) {
                         sub.triggerUnsubscribe();
                     }
                     sub.setSubscribing();
@@ -595,7 +617,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._disconnect = function (reason, shouldReconnect) {
         if (shouldReconnect === void 0) { shouldReconnect = false; }
-        if (this.isDisconnected()) {
+        if (this.isDisconnected) {
             return;
         }
         this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
@@ -603,7 +625,7 @@ var Centrifuge = (function (_super) {
             this._reconnect = false;
         }
         this._clearConnectedState(shouldReconnect);
-        if (!this.isDisconnected()) {
+        if (!this.isDisconnected) {
             this._setStatus('disconnected');
             if (this._refreshTimeout) {
                 clearTimeout(this._refreshTimeout);
@@ -625,7 +647,9 @@ var Centrifuge = (function (_super) {
         }
         var encodedMessages = [];
         for (var i in messages) {
-            encodedMessages.push(JSON.stringify(messages[i]));
+            if (messages.hasOwnProperty(i)) {
+                encodedMessages.push(JSON.stringify(messages[i]));
+            }
         }
         this._transport.send(encodedMessages.join("\n"));
         this._debug('Send', messages);
@@ -643,11 +667,11 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._startPing = function () {
         var _this = this;
-        if (this._config.ping !== true || this._config.pingInterval <= 0 || !this.isConnected()) {
+        if (this._config.ping !== true || this._config.pingInterval <= 0 || !this.isConnected) {
             return;
         }
         this._pingInterval = setInterval(function () {
-            if (!_this.isConnected()) {
+            if (!_this.isConnected) {
                 _this._stopPing();
                 return;
             }
@@ -676,7 +700,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._refreshFailed = function () {
         this._numRefreshFailed = 0;
-        if (!this.isDisconnected()) {
+        if (!this.isDisconnected) {
             this._disconnect('refresh failed');
         }
         if (this._config.refreshFailed) {
@@ -720,7 +744,7 @@ var Centrifuge = (function (_super) {
             else {
                 data.info = '';
             }
-            if (_this.isDisconnected()) {
+            if (_this.isDisconnected) {
                 _this._debug('Credentials refreshed, connect from scratch');
                 _this.connect();
             }
@@ -744,7 +768,7 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._connectResponse = function (response) {
         var _this = this;
-        if (this.isConnected()) {
+        if (this.isConnected) {
             return;
         }
         if (this._latencyStart !== null) {
@@ -794,7 +818,7 @@ var Centrifuge = (function (_super) {
     Centrifuge.prototype._subscribeResponse = function (response) {
         var channel = response.channel;
         var sub = this._getSub(channel);
-        if (!sub || !sub.isSubscribing()) {
+        if (!sub || !sub.isSubscribing) {
             return;
         }
         var messages = response.messages;
@@ -822,7 +846,7 @@ var Centrifuge = (function (_super) {
     Centrifuge.prototype._subscribeError = function (error) {
         var channel = error.channel;
         var sub = this._getSub(channel);
-        if (!sub || !sub.isSubscribing()) {
+        if (!sub || !sub.isSubscribing) {
             return;
         }
         this.trigger('error', [{
@@ -888,17 +912,15 @@ var Centrifuge = (function (_super) {
         delete this._callbacks[uid];
         if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["b" /* errorExists */])(message)) {
             var callback = callbacks.callback;
-            if (!callback) {
-                return;
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(callback)) {
+                callback(message.body);
             }
-            callback(message.body);
         }
         else {
             var errback = callbacks.errback;
-            if (!errback) {
-                return;
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
+                errback(Centrifuge.createErrorObject(message.error, message.advice));
             }
-            errback(Centrifuge.createErrorObject(message.error, message.advice));
             this.trigger('error', [{
                     message: message,
                 }]);
@@ -937,31 +959,16 @@ var Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._setTransport = function () {
         var _this = this;
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(this._config.sockJS)) {
+        if (this._isSockJS) {
             var sockjsOptions = {
-                transports: this._config.transports || [
-                    'websocket',
-                    'xdr-streaming',
-                    'xhr-streaming',
-                    'eventsource',
-                    'iframe-eventsource',
-                    'iframe-htmlfile',
-                    'xdr-polling',
-                    'xhr-polling',
-                    'iframe-xhr-polling',
-                    'jsonp-polling'
-                ]
+                transports: this._config.transports
             };
             if (this._config.server) {
                 sockjsOptions.server = this._config.server;
             }
             this._transport = new this._config.sockJS(this._getSockjsEndpoint(), null, sockjsOptions);
-            this._isSockJS = true;
         }
         else {
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(WebSocket)) {
-                throw new Error('No Websocket support and no SockJS configured, can not connect');
-            }
             this._transport = new WebSocket(this._getWebsocketEndpoint());
         }
         this._transport.onopen = function () {
@@ -1280,20 +1287,41 @@ var Subscription = (function (_super) {
     function Subscription(centrifuge, channel, events) {
         var _this = _super.call(this) || this;
         _this.channel = null;
-        _this._status = Subscription.STATE_NEW;
+        _this._status = 'new';
         _this._error = null;
         _this._centrifuge = null;
         _this._isResubscribe = false;
         _this._recovered = false;
         _this._ready = false;
-        _this._promise = null;
         _this._noResubscribe = false;
+        _this._promise = null;
         _this._centrifuge = centrifuge;
         _this.channel = channel;
         _this.setEvents(events);
         _this._initializePromise();
         return _this;
     }
+    Object.defineProperty(Subscription.prototype, "isUnsubscribed", {
+        get: function () {
+            return this._status === 'unsubscribed';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Subscription.prototype, "isSuccess", {
+        get: function () {
+            return this._status === 'success';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Subscription.prototype, "isSubscribing", {
+        get: function () {
+            return this._status === 'subscribing';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Subscription.prototype.setEvents = function (events) {
         if (!events) {
             return;
@@ -1312,40 +1340,40 @@ var Subscription = (function (_super) {
         }
     };
     Subscription.prototype.setNew = function () {
-        this._status = Subscription.STATE_NEW;
+        this._status = 'new';
     };
     Subscription.prototype.setSubscribing = function () {
         if (this._ready === true) {
             this._initializePromise();
             this._isResubscribe = true;
         }
-        this._status = Subscription.STATE_SUBSCRIBING;
+        this._status = 'subscribing';
     };
     Subscription.prototype.setUnsubscribed = function (noResubscribe) {
-        if (this._status === Subscription.STATE_UNSUBSCRIBED) {
+        if (this._status === 'unsubscribed') {
             return;
         }
-        this._status = Subscription.STATE_UNSUBSCRIBED;
+        this._status = 'unsubscribed';
         if (noResubscribe === true) {
             this._noResubscribe = true;
         }
         this.triggerUnsubscribe();
     };
     Subscription.prototype.setSubscribeSuccess = function (recovered) {
-        if (this._status === Subscription.STATE_SUCCESS) {
+        if (this.isSuccess) {
             return;
         }
         this._recovered = recovered;
-        this._status = Subscription.STATE_SUCCESS;
+        this._status = 'success';
         var successContext = this._getSubscribeSuccess();
         this.trigger('subscribe', [successContext]);
         this._resolve(successContext);
     };
     Subscription.prototype.setSubscribeError = function (error) {
-        if (this._status === Subscription.STATE_ERROR) {
+        if (this._status === 'error') {
             return;
         }
-        this._status = Subscription.STATE_ERROR;
+        this._status = 'error';
         this._error = error;
         var errContext = this._getSubscribeError();
         this.trigger('error', [errContext]);
@@ -1356,21 +1384,12 @@ var Subscription = (function (_super) {
                 channel: this.channel
             }]);
     };
-    Subscription.prototype.isUnsubscribed = function () {
-        return this._status === Subscription.STATE_UNSUBSCRIBED;
-    };
-    Subscription.prototype.isSuccess = function () {
-        return this._status === Subscription.STATE_SUCCESS;
-    };
-    Subscription.prototype.isSubscribing = function () {
-        return this._status === Subscription.STATE_SUBSCRIBING;
-    };
     Subscription.prototype.shouldResubscribe = function () {
         return !this._noResubscribe;
     };
     Subscription.prototype.ready = function (callback, errback) {
         if (this._ready) {
-            if (this.isSuccess()) {
+            if (this.isSuccess) {
                 callback(this._getSubscribeSuccess());
             }
             else {
@@ -1379,7 +1398,7 @@ var Subscription = (function (_super) {
         }
     };
     Subscription.prototype.subscribe = function () {
-        if (this._status === Subscription.STATE_SUCCESS) {
+        if (this.isSuccess) {
             return;
         }
         this._centrifuge.subscribeSub(this);
@@ -1428,12 +1447,12 @@ var Subscription = (function (_super) {
     Subscription.prototype._request = function (method, data) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            if (_this.isUnsubscribed()) {
+            if (_this.isUnsubscribed) {
                 reject(__WEBPACK_IMPORTED_MODULE_2__Centrifuge__["Centrifuge"].createErrorObject('subscription unsubscribed', 'fix'));
                 return;
             }
             _this._promise.then(function () {
-                if (!_this._centrifuge.isConnected()) {
+                if (!_this._centrifuge.isConnected) {
                     reject(__WEBPACK_IMPORTED_MODULE_2__Centrifuge__["Centrifuge"].createErrorObject('disconnected', 'retry'));
                     return;
                 }
@@ -1456,11 +1475,6 @@ var Subscription = (function (_super) {
             });
         });
     };
-    Subscription.STATE_NEW = 0;
-    Subscription.STATE_SUBSCRIBING = 1;
-    Subscription.STATE_SUCCESS = 2;
-    Subscription.STATE_ERROR = 3;
-    Subscription.STATE_UNSUBSCRIBED = 4;
     return Subscription;
 }(__WEBPACK_IMPORTED_MODULE_1_js_observable__["Observable"]));
 
