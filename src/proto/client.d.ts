@@ -7,14 +7,14 @@ export namespace proto {
     interface IError {
 
         /** Error Code */
-        Code?: number;
+        Code?: (number|null);
 
         /** Error Message */
-        Message?: string;
+        Message?: (string|null);
     }
 
     /** Represents an Error. */
-    class Error {
+    class Error implements IError {
 
         /**
          * Constructs a new Error.
@@ -99,21 +99,36 @@ export namespace proto {
         public toJSON(): { [k: string]: any };
     }
 
+    /** MethodType enum. */
+    enum MethodType {
+        CONNECT = 0,
+        REFRESH = 1,
+        SUBSCRIBE = 2,
+        UNSUBSCRIBE = 3,
+        PUBLISH = 4,
+        PRESENCE = 5,
+        PRESENCE_STATS = 6,
+        HISTORY = 7,
+        PING = 8,
+        RPC = 9,
+        MESSAGE = 10
+    }
+
     /** Properties of a Command. */
     interface ICommand {
 
         /** Command ID */
-        ID?: (number|Long);
+        ID?: (number|Long|null);
 
         /** Command Method */
-        Method?: string;
+        Method?: (proto.MethodType|null);
 
         /** Command Params */
-        Params?: Uint8Array;
+        Params?: (Uint8Array|null);
     }
 
     /** Represents a Command. */
-    class Command {
+    class Command implements ICommand {
 
         /**
          * Constructs a new Command.
@@ -125,7 +140,7 @@ export namespace proto {
         public ID: (number|Long);
 
         /** Command Method. */
-        public Method: string;
+        public Method: proto.MethodType;
 
         /** Command Params. */
         public Params: Uint8Array;
@@ -205,17 +220,17 @@ export namespace proto {
     interface IReply {
 
         /** Reply ID */
-        ID?: (number|Long);
+        ID?: (number|Long|null);
 
         /** Reply Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** Reply Result */
-        Result?: Uint8Array;
+        Result?: (Uint8Array|null);
     }
 
     /** Represents a Reply. */
-    class Reply {
+    class Reply implements IReply {
 
         /**
          * Constructs a new Reply.
@@ -315,17 +330,17 @@ export namespace proto {
     interface IMessage {
 
         /** Message Type */
-        Type?: proto.MessageType;
+        Type?: (proto.MessageType|null);
 
         /** Message Channel */
-        Channel?: string;
+        Channel?: (string|null);
 
         /** Message Data */
-        Data?: Uint8Array;
+        Data?: (Uint8Array|null);
     }
 
     /** Represents a Message. */
-    class Message {
+    class Message implements IMessage {
 
         /**
          * Constructs a new Message.
@@ -417,20 +432,20 @@ export namespace proto {
     interface IClientInfo {
 
         /** ClientInfo User */
-        User?: string;
+        User?: (string|null);
 
         /** ClientInfo Client */
-        Client?: string;
+        Client?: (string|null);
 
         /** ClientInfo ConnInfo */
-        ConnInfo?: Uint8Array;
+        ConnInfo?: (Uint8Array|null);
 
         /** ClientInfo ChanInfo */
-        ChanInfo?: Uint8Array;
+        ChanInfo?: (Uint8Array|null);
     }
 
     /** Represents a ClientInfo. */
-    class ClientInfo {
+    class ClientInfo implements IClientInfo {
 
         /**
          * Constructs a new ClientInfo.
@@ -525,17 +540,17 @@ export namespace proto {
     interface IPublication {
 
         /** Publication UID */
-        UID?: string;
+        UID?: (string|null);
 
         /** Publication Data */
-        Data?: Uint8Array;
+        Data?: (Uint8Array|null);
 
         /** Publication Info */
-        Info?: proto.IClientInfo;
+        Info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Publication. */
-    class Publication {
+    class Publication implements IPublication {
 
         /**
          * Constructs a new Publication.
@@ -627,11 +642,11 @@ export namespace proto {
     interface IJoin {
 
         /** Join Info */
-        Info?: proto.IClientInfo;
+        Info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Join. */
-    class Join {
+    class Join implements IJoin {
 
         /**
          * Constructs a new Join.
@@ -717,11 +732,11 @@ export namespace proto {
     interface ILeave {
 
         /** Leave Info */
-        Info?: proto.IClientInfo;
+        Info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Leave. */
-    class Leave {
+    class Leave implements ILeave {
 
         /**
          * Constructs a new Leave.
@@ -808,7 +823,7 @@ export namespace proto {
     }
 
     /** Represents an Unsub. */
-    class Unsub {
+    class Unsub implements IUnsub {
 
         /**
          * Constructs a new Unsub.
@@ -891,23 +906,23 @@ export namespace proto {
     interface IConnectRequest {
 
         /** ConnectRequest User */
-        User?: string;
+        User?: (string|null);
 
         /** ConnectRequest Exp */
-        Exp?: string;
+        Exp?: (string|null);
 
         /** ConnectRequest Info */
-        Info?: string;
+        Info?: (string|null);
 
         /** ConnectRequest Opts */
-        Opts?: string;
+        Opts?: (string|null);
 
         /** ConnectRequest Sign */
-        Sign?: string;
+        Sign?: (string|null);
     }
 
     /** Represents a ConnectRequest. */
-    class ConnectRequest {
+    class ConnectRequest implements IConnectRequest {
 
         /**
          * Constructs a new ConnectRequest.
@@ -1005,14 +1020,14 @@ export namespace proto {
     interface IConnectResponse {
 
         /** ConnectResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** ConnectResponse Result */
-        Result?: proto.IConnectResult;
+        Result?: (proto.IConnectResult|null);
     }
 
     /** Represents a ConnectResponse. */
-    class ConnectResponse {
+    class ConnectResponse implements IConnectResponse {
 
         /**
          * Constructs a new ConnectResponse.
@@ -1101,23 +1116,23 @@ export namespace proto {
     interface IConnectResult {
 
         /** ConnectResult Client */
-        Client?: string;
+        Client?: (string|null);
 
         /** ConnectResult Version */
-        Version?: string;
+        Version?: (string|null);
 
         /** ConnectResult Expires */
-        Expires?: boolean;
+        Expires?: (boolean|null);
 
         /** ConnectResult Expired */
-        Expired?: boolean;
+        Expired?: (boolean|null);
 
         /** ConnectResult TTL */
-        TTL?: number;
+        TTL?: (number|null);
     }
 
     /** Represents a ConnectResult. */
-    class ConnectResult {
+    class ConnectResult implements IConnectResult {
 
         /**
          * Constructs a new ConnectResult.
@@ -1215,23 +1230,23 @@ export namespace proto {
     interface IRefreshRequest {
 
         /** RefreshRequest User */
-        User?: string;
+        User?: (string|null);
 
         /** RefreshRequest Exp */
-        Exp?: string;
+        Exp?: (string|null);
 
         /** RefreshRequest Info */
-        Info?: string;
+        Info?: (string|null);
 
         /** RefreshRequest Opts */
-        Opts?: string;
+        Opts?: (string|null);
 
         /** RefreshRequest Sign */
-        Sign?: string;
+        Sign?: (string|null);
     }
 
     /** Represents a RefreshRequest. */
-    class RefreshRequest {
+    class RefreshRequest implements IRefreshRequest {
 
         /**
          * Constructs a new RefreshRequest.
@@ -1329,14 +1344,14 @@ export namespace proto {
     interface IRefreshResponse {
 
         /** RefreshResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** RefreshResponse Result */
-        Result?: proto.IRefreshResult;
+        Result?: (proto.IRefreshResult|null);
     }
 
     /** Represents a RefreshResponse. */
-    class RefreshResponse {
+    class RefreshResponse implements IRefreshResponse {
 
         /**
          * Constructs a new RefreshResponse.
@@ -1425,23 +1440,23 @@ export namespace proto {
     interface IRefreshResult {
 
         /** RefreshResult Client */
-        Client?: string;
+        Client?: (string|null);
 
         /** RefreshResult Version */
-        Version?: string;
+        Version?: (string|null);
 
         /** RefreshResult Expires */
-        Expires?: boolean;
+        Expires?: (boolean|null);
 
         /** RefreshResult Expired */
-        Expired?: boolean;
+        Expired?: (boolean|null);
 
         /** RefreshResult TTL */
-        TTL?: number;
+        TTL?: (number|null);
     }
 
     /** Represents a RefreshResult. */
-    class RefreshResult {
+    class RefreshResult implements IRefreshResult {
 
         /**
          * Constructs a new RefreshResult.
@@ -1539,26 +1554,26 @@ export namespace proto {
     interface ISubscribeRequest {
 
         /** SubscribeRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
 
         /** SubscribeRequest Client */
-        Client?: string;
+        Client?: (string|null);
 
         /** SubscribeRequest Info */
-        Info?: string;
+        Info?: (string|null);
 
         /** SubscribeRequest Sign */
-        Sign?: string;
+        Sign?: (string|null);
 
         /** SubscribeRequest Recover */
-        Recover?: boolean;
+        Recover?: (boolean|null);
 
         /** SubscribeRequest Last */
-        Last?: string;
+        Last?: (string|null);
     }
 
     /** Represents a SubscribeRequest. */
-    class SubscribeRequest {
+    class SubscribeRequest implements ISubscribeRequest {
 
         /**
          * Constructs a new SubscribeRequest.
@@ -1659,14 +1674,14 @@ export namespace proto {
     interface ISubscribeResponse {
 
         /** SubscribeResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** SubscribeResponse Result */
-        Result?: proto.ISubscribeResult;
+        Result?: (proto.ISubscribeResult|null);
     }
 
     /** Represents a SubscribeResponse. */
-    class SubscribeResponse {
+    class SubscribeResponse implements ISubscribeResponse {
 
         /**
          * Constructs a new SubscribeResponse.
@@ -1755,17 +1770,17 @@ export namespace proto {
     interface ISubscribeResult {
 
         /** SubscribeResult Last */
-        Last?: string;
+        Last?: (string|null);
 
         /** SubscribeResult Recovered */
-        Recovered?: boolean;
+        Recovered?: (boolean|null);
 
         /** SubscribeResult Publications */
-        Publications?: proto.IPublication[];
+        Publications?: (proto.IPublication[]|null);
     }
 
     /** Represents a SubscribeResult. */
-    class SubscribeResult {
+    class SubscribeResult implements ISubscribeResult {
 
         /**
          * Constructs a new SubscribeResult.
@@ -1857,11 +1872,11 @@ export namespace proto {
     interface IUnsubscribeRequest {
 
         /** UnsubscribeRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
     }
 
     /** Represents an UnsubscribeRequest. */
-    class UnsubscribeRequest {
+    class UnsubscribeRequest implements IUnsubscribeRequest {
 
         /**
          * Constructs a new UnsubscribeRequest.
@@ -1947,14 +1962,14 @@ export namespace proto {
     interface IUnsubscribeResponse {
 
         /** UnsubscribeResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** UnsubscribeResponse Result */
-        Result?: proto.IUnsubscribeResult;
+        Result?: (proto.IUnsubscribeResult|null);
     }
 
     /** Represents an UnsubscribeResponse. */
-    class UnsubscribeResponse {
+    class UnsubscribeResponse implements IUnsubscribeResponse {
 
         /**
          * Constructs a new UnsubscribeResponse.
@@ -2044,7 +2059,7 @@ export namespace proto {
     }
 
     /** Represents an UnsubscribeResult. */
-    class UnsubscribeResult {
+    class UnsubscribeResult implements IUnsubscribeResult {
 
         /**
          * Constructs a new UnsubscribeResult.
@@ -2127,14 +2142,14 @@ export namespace proto {
     interface IPublishRequest {
 
         /** PublishRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
 
         /** PublishRequest Data */
-        Data?: Uint8Array;
+        Data?: (Uint8Array|null);
     }
 
     /** Represents a PublishRequest. */
-    class PublishRequest {
+    class PublishRequest implements IPublishRequest {
 
         /**
          * Constructs a new PublishRequest.
@@ -2223,14 +2238,14 @@ export namespace proto {
     interface IPublishResponse {
 
         /** PublishResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** PublishResponse Result */
-        Result?: proto.IPublishResult;
+        Result?: (proto.IPublishResult|null);
     }
 
     /** Represents a PublishResponse. */
-    class PublishResponse {
+    class PublishResponse implements IPublishResponse {
 
         /**
          * Constructs a new PublishResponse.
@@ -2320,7 +2335,7 @@ export namespace proto {
     }
 
     /** Represents a PublishResult. */
-    class PublishResult {
+    class PublishResult implements IPublishResult {
 
         /**
          * Constructs a new PublishResult.
@@ -2403,11 +2418,11 @@ export namespace proto {
     interface IPresenceRequest {
 
         /** PresenceRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
     }
 
     /** Represents a PresenceRequest. */
-    class PresenceRequest {
+    class PresenceRequest implements IPresenceRequest {
 
         /**
          * Constructs a new PresenceRequest.
@@ -2493,14 +2508,14 @@ export namespace proto {
     interface IPresenceResponse {
 
         /** PresenceResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** PresenceResponse Result */
-        Result?: proto.IPresenceResult;
+        Result?: (proto.IPresenceResult|null);
     }
 
     /** Represents a PresenceResponse. */
-    class PresenceResponse {
+    class PresenceResponse implements IPresenceResponse {
 
         /**
          * Constructs a new PresenceResponse.
@@ -2589,11 +2604,11 @@ export namespace proto {
     interface IPresenceResult {
 
         /** PresenceResult Presence */
-        Presence?: { [k: string]: proto.IClientInfo };
+        Presence?: ({ [k: string]: proto.IClientInfo }|null);
     }
 
     /** Represents a PresenceResult. */
-    class PresenceResult {
+    class PresenceResult implements IPresenceResult {
 
         /**
          * Constructs a new PresenceResult.
@@ -2679,11 +2694,11 @@ export namespace proto {
     interface IPresenceStatsRequest {
 
         /** PresenceStatsRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
     }
 
     /** Represents a PresenceStatsRequest. */
-    class PresenceStatsRequest {
+    class PresenceStatsRequest implements IPresenceStatsRequest {
 
         /**
          * Constructs a new PresenceStatsRequest.
@@ -2769,14 +2784,14 @@ export namespace proto {
     interface IPresenceStatsResponse {
 
         /** PresenceStatsResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** PresenceStatsResponse Result */
-        Result?: proto.IPresenceStatsResult;
+        Result?: (proto.IPresenceStatsResult|null);
     }
 
     /** Represents a PresenceStatsResponse. */
-    class PresenceStatsResponse {
+    class PresenceStatsResponse implements IPresenceStatsResponse {
 
         /**
          * Constructs a new PresenceStatsResponse.
@@ -2865,14 +2880,14 @@ export namespace proto {
     interface IPresenceStatsResult {
 
         /** PresenceStatsResult NumClients */
-        NumClients?: (number|Long);
+        NumClients?: (number|Long|null);
 
         /** PresenceStatsResult NumUsers */
-        NumUsers?: (number|Long);
+        NumUsers?: (number|Long|null);
     }
 
     /** Represents a PresenceStatsResult. */
-    class PresenceStatsResult {
+    class PresenceStatsResult implements IPresenceStatsResult {
 
         /**
          * Constructs a new PresenceStatsResult.
@@ -2961,11 +2976,11 @@ export namespace proto {
     interface IHistoryRequest {
 
         /** HistoryRequest Channel */
-        Channel?: string;
+        Channel?: (string|null);
     }
 
     /** Represents a HistoryRequest. */
-    class HistoryRequest {
+    class HistoryRequest implements IHistoryRequest {
 
         /**
          * Constructs a new HistoryRequest.
@@ -3051,14 +3066,14 @@ export namespace proto {
     interface IHistoryResponse {
 
         /** HistoryResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** HistoryResponse Result */
-        Result?: proto.IHistoryResult;
+        Result?: (proto.IHistoryResult|null);
     }
 
     /** Represents a HistoryResponse. */
-    class HistoryResponse {
+    class HistoryResponse implements IHistoryResponse {
 
         /**
          * Constructs a new HistoryResponse.
@@ -3147,11 +3162,11 @@ export namespace proto {
     interface IHistoryResult {
 
         /** HistoryResult Publications */
-        Publications?: proto.IPublication[];
+        Publications?: (proto.IPublication[]|null);
     }
 
     /** Represents a HistoryResult. */
-    class HistoryResult {
+    class HistoryResult implements IHistoryResult {
 
         /**
          * Constructs a new HistoryResult.
@@ -3237,11 +3252,11 @@ export namespace proto {
     interface IPingRequest {
 
         /** PingRequest Data */
-        Data?: string;
+        Data?: (string|null);
     }
 
     /** Represents a PingRequest. */
-    class PingRequest {
+    class PingRequest implements IPingRequest {
 
         /**
          * Constructs a new PingRequest.
@@ -3327,14 +3342,14 @@ export namespace proto {
     interface IPingResponse {
 
         /** PingResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** PingResponse Result */
-        Result?: proto.IPingResult;
+        Result?: (proto.IPingResult|null);
     }
 
     /** Represents a PingResponse. */
-    class PingResponse {
+    class PingResponse implements IPingResponse {
 
         /**
          * Constructs a new PingResponse.
@@ -3423,11 +3438,11 @@ export namespace proto {
     interface IPingResult {
 
         /** PingResult Data */
-        Data?: string;
+        Data?: (string|null);
     }
 
     /** Represents a PingResult. */
-    class PingResult {
+    class PingResult implements IPingResult {
 
         /**
          * Constructs a new PingResult.
@@ -3509,99 +3524,15 @@ export namespace proto {
         public toJSON(): { [k: string]: any };
     }
 
-    /** Properties of a ConsumeRequest. */
-    interface IConsumeRequest {
-    }
-
-    /** Represents a ConsumeRequest. */
-    class ConsumeRequest {
-
-        /**
-         * Constructs a new ConsumeRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: proto.IConsumeRequest);
-
-        /**
-         * Creates a new ConsumeRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ConsumeRequest instance
-         */
-        public static create(properties?: proto.IConsumeRequest): proto.ConsumeRequest;
-
-        /**
-         * Encodes the specified ConsumeRequest message. Does not implicitly {@link proto.ConsumeRequest.verify|verify} messages.
-         * @param message ConsumeRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: proto.IConsumeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ConsumeRequest message, length delimited. Does not implicitly {@link proto.ConsumeRequest.verify|verify} messages.
-         * @param message ConsumeRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: proto.IConsumeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a ConsumeRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ConsumeRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.ConsumeRequest;
-
-        /**
-         * Decodes a ConsumeRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ConsumeRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.ConsumeRequest;
-
-        /**
-         * Verifies a ConsumeRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a ConsumeRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ConsumeRequest
-         */
-        public static fromObject(object: { [k: string]: any }): proto.ConsumeRequest;
-
-        /**
-         * Creates a plain object from a ConsumeRequest message. Also converts values to other types if specified.
-         * @param message ConsumeRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: proto.ConsumeRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ConsumeRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
     /** Properties of a RPCRequest. */
     interface IRPCRequest {
 
         /** RPCRequest Data */
-        Data?: Uint8Array;
+        Data?: (Uint8Array|null);
     }
 
     /** Represents a RPCRequest. */
-    class RPCRequest {
+    class RPCRequest implements IRPCRequest {
 
         /**
          * Constructs a new RPCRequest.
@@ -3687,14 +3618,14 @@ export namespace proto {
     interface IRPCResponse {
 
         /** RPCResponse Error */
-        Error?: proto.IError;
+        Error?: (proto.IError|null);
 
         /** RPCResponse Result */
-        Result?: Uint8Array;
+        Result?: (Uint8Array|null);
     }
 
     /** Represents a RPCResponse. */
-    class RPCResponse {
+    class RPCResponse implements IRPCResponse {
 
         /**
          * Constructs a new RPCResponse.
@@ -3774,6 +3705,96 @@ export namespace proto {
 
         /**
          * Converts this RPCResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a MessageRequest. */
+    interface IMessageRequest {
+
+        /** MessageRequest Data */
+        Data?: (Uint8Array|null);
+    }
+
+    /** Represents a MessageRequest. */
+    class MessageRequest implements IMessageRequest {
+
+        /**
+         * Constructs a new MessageRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: proto.IMessageRequest);
+
+        /** MessageRequest Data. */
+        public Data: Uint8Array;
+
+        /**
+         * Creates a new MessageRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns MessageRequest instance
+         */
+        public static create(properties?: proto.IMessageRequest): proto.MessageRequest;
+
+        /**
+         * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+         * @param message MessageRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+         * @param message MessageRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a MessageRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns MessageRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.MessageRequest;
+
+        /**
+         * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns MessageRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.MessageRequest;
+
+        /**
+         * Verifies a MessageRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns MessageRequest
+         */
+        public static fromObject(object: { [k: string]: any }): proto.MessageRequest;
+
+        /**
+         * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
+         * @param message MessageRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: proto.MessageRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this MessageRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };

@@ -7,9 +7,23 @@ message Error {
     string Message = 2;
 }
 
+enum MethodType {
+    CONNECT = 0;
+    REFRESH = 1;
+    SUBSCRIBE = 2;
+    UNSUBSCRIBE = 3;
+    PUBLISH = 4;
+    PRESENCE = 5;
+    PRESENCE_STATS = 6;
+    HISTORY = 7;
+    PING = 8;
+    RPC = 9;
+    MESSAGE = 10;
+}
+
 message Command {
     uint64 ID = 1;
-    string Method = 2;
+    MethodType Method = 2;
     bytes Params = 3;
 }
 
@@ -53,8 +67,7 @@ message Leave {
     ClientInfo Info = 1;
 }
 
-message Unsub {
-}
+message Unsub {}
 
 message ConnectRequest {
     string User = 1;
@@ -127,8 +140,7 @@ message UnsubscribeResponse {
     UnsubscribeResult Result = 2;
 }
 
-message UnsubscribeResult {
-}
+message UnsubscribeResult {}
 
 message PublishRequest {
     string Channel = 1;
@@ -140,8 +152,7 @@ message PublishResponse {
     PublishResult Result = 2;
 }
 
-message PublishResult {
-}
+message PublishResult {}
 
 message PresenceRequest {
     string Channel = 1;
@@ -196,19 +207,19 @@ message PingResult {
     string Data = 1;
 }
 
-message ConsumeRequest {
-}
-
-message RPCRequest {
+message RPCRequest{
     bytes Data = 1;
 }
 
-message RPCResponse {
+message RPCResponse{
     Error Error = 1;
     bytes Result = 2;
 }
 
+message MessageRequest{
+    bytes Data = 1;
+}
+
 service Centrifugo {
-    rpc Communicate (stream Command) returns (stream Reply) {
-    }
+    rpc Communicate(stream Command) returns (stream Reply) {}
 }

@@ -16,6 +16,7 @@
         "webpack": "^3.11.0"
     },
     "scripts": {
+        "proto": "pbjs ./src/proto/client.proto -t static-module -o ./src/proto/client.js && pbts -o ./src/proto/client.d.ts ./src/proto/client.js",
         "build": "node_modules/.bin/webpack",
         "watch": "node_modules/.bin/webpack --watch"
     },

@@ -31,14 +31,15 @@
              * Properties of an Error.
              * @memberof proto
              * @interface IError
-             * @property {number} [Code] Error Code
-             * @property {string} [Message] Error Message
+             * @property {number|null} [Code] Error Code
+             * @property {string|null} [Message] Error Message
              */
     
             /**
              * Constructs a new Error.
              * @memberof proto
              * @classdesc Represents an Error.
+             * @implements IError
              * @constructor
              * @param {proto.IError=} [properties] Properties to set
              */
@@ -51,7 +52,7 @@
     
             /**
              * Error Code.
-             * @member {number}Code
+             * @member {number} Code
              * @memberof proto.Error
              * @instance
              */
@@ -59,7 +60,7 @@
     
             /**
              * Error Message.
-             * @member {string}Message
+             * @member {string} Message
              * @memberof proto.Error
              * @instance
              */
@@ -234,21 +235,54 @@
             return Error;
         })();
     
+        /**
+         * MethodType enum.
+         * @name proto.MethodType
+         * @enum {string}
+         * @property {number} CONNECT=0 CONNECT value
+         * @property {number} REFRESH=1 REFRESH value
+         * @property {number} SUBSCRIBE=2 SUBSCRIBE value
+         * @property {number} UNSUBSCRIBE=3 UNSUBSCRIBE value
+         * @property {number} PUBLISH=4 PUBLISH value
+         * @property {number} PRESENCE=5 PRESENCE value
+         * @property {number} PRESENCE_STATS=6 PRESENCE_STATS value
+         * @property {number} HISTORY=7 HISTORY value
+         * @property {number} PING=8 PING value
+         * @property {number} RPC=9 RPC value
+         * @property {number} MESSAGE=10 MESSAGE value
+         */
+        proto.MethodType = (function() {
+            var valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "CONNECT"] = 0;
+            values[valuesById[1] = "REFRESH"] = 1;
+            values[valuesById[2] = "SUBSCRIBE"] = 2;
+            values[valuesById[3] = "UNSUBSCRIBE"] = 3;
+            values[valuesById[4] = "PUBLISH"] = 4;
+            values[valuesById[5] = "PRESENCE"] = 5;
+            values[valuesById[6] = "PRESENCE_STATS"] = 6;
+            values[valuesById[7] = "HISTORY"] = 7;
+            values[valuesById[8] = "PING"] = 8;
+            values[valuesById[9] = "RPC"] = 9;
+            values[valuesById[10] = "MESSAGE"] = 10;
+            return values;
+        })();
+    
         proto.Command = (function() {
     
             /**
              * Properties of a Command.
              * @memberof proto
              * @interface ICommand
-             * @property {number|Long} [ID] Command ID
-             * @property {string} [Method] Command Method
-             * @property {Uint8Array} [Params] Command Params
+             * @property {number|Long|null} [ID] Command ID
+             * @property {proto.MethodType|null} [Method] Command Method
+             * @property {Uint8Array|null} [Params] Command Params
              */
     
             /**
              * Constructs a new Command.
              * @memberof proto
              * @classdesc Represents a Command.
+             * @implements ICommand
              * @constructor
              * @param {proto.ICommand=} [properties] Properties to set
              */
@@ -261,7 +295,7 @@
     
             /**
              * Command ID.
-             * @member {number|Long}ID
+             * @member {number|Long} ID
              * @memberof proto.Command
              * @instance
              */
@@ -269,15 +303,15 @@
     
             /**
              * Command Method.
-             * @member {string}Method
+             * @member {proto.MethodType} Method
              * @memberof proto.Command
              * @instance
              */
-            Command.prototype.Method = "";
+            Command.prototype.Method = 0;
     
             /**
              * Command Params.
-             * @member {Uint8Array}Params
+             * @member {Uint8Array} Params
              * @memberof proto.Command
              * @instance
              */
@@ -310,7 +344,7 @@
                 if (message.ID != null && message.hasOwnProperty("ID"))
                     writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.ID);
                 if (message.Method != null && message.hasOwnProperty("Method"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Method);
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Method);
                 if (message.Params != null && message.hasOwnProperty("Params"))
                     writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.Params);
                 return writer;
@@ -351,7 +385,7 @@
                         message.ID = reader.uint64();
                         break;
                     case 2:
-                        message.Method = reader.string();
+                        message.Method = reader.int32();
                         break;
                     case 3:
                         message.Params = reader.bytes();
@@ -395,8 +429,22 @@
                     if (!$util.isInteger(message.ID) && !(message.ID && $util.isInteger(message.ID.low) && $util.isInteger(message.ID.high)))
                         return "ID: integer|Long expected";
                 if (message.Method != null && message.hasOwnProperty("Method"))
-                    if (!$util.isString(message.Method))
-                        return "Method: string expected";
+                    switch (message.Method) {
+                    default:
+                        return "Method: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                        break;
+                    }
                 if (message.Params != null && message.hasOwnProperty("Params"))
                     if (!(message.Params && typeof message.Params.length === "number" || $util.isString(message.Params)))
                         return "Params: buffer expected";
@@ -424,8 +472,52 @@
                         message.ID = object.ID;
                     else if (typeof object.ID === "object")
                         message.ID = new $util.LongBits(object.ID.low >>> 0, object.ID.high >>> 0).toNumber(true);
-                if (object.Method != null)
-                    message.Method = String(object.Method);
+                switch (object.Method) {
+                case "CONNECT":
+                case 0:
+                    message.Method = 0;
+                    break;
+                case "REFRESH":
+                case 1:
+                    message.Method = 1;
+                    break;
+                case "SUBSCRIBE":
+                case 2:
+                    message.Method = 2;
+                    break;
+                case "UNSUBSCRIBE":
+                case 3:
+                    message.Method = 3;
+                    break;
+                case "PUBLISH":
+                case 4:
+                    message.Method = 4;
+                    break;
+                case "PRESENCE":
+                case 5:
+                    message.Method = 5;
+                    break;
+                case "PRESENCE_STATS":
+                case 6:
+                    message.Method = 6;
+                    break;
+                case "HISTORY":
+                case 7:
+                    message.Method = 7;
+                    break;
+                case "PING":
+                case 8:
+                    message.Method = 8;
+                    break;
+                case "RPC":
+                case 9:
+                    message.Method = 9;
+                    break;
+                case "MESSAGE":
+                case 10:
+                    message.Method = 10;
+                    break;
+                }
                 if (object.Params != null)
                     if (typeof object.Params === "string")
                         $util.base64.decode(object.Params, message.Params = $util.newBuffer($util.base64.length(object.Params)), 0);
@@ -453,7 +545,7 @@
                         object.ID = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                     } else
                         object.ID = options.longs === String ? "0" : 0;
-                    object.Method = "";
+                    object.Method = options.enums === String ? "CONNECT" : 0;
                     object.Params = options.bytes === String ? "" : [];
                 }
                 if (message.ID != null && message.hasOwnProperty("ID"))
@@ -462,7 +554,7 @@
                     else
                         object.ID = options.longs === String ? $util.Long.prototype.toString.call(message.ID) : options.longs === Number ? new $util.LongBits(message.ID.low >>> 0, message.ID.high >>> 0).toNumber(true) : message.ID;
                 if (message.Method != null && message.hasOwnProperty("Method"))
-                    object.Method = message.Method;
+                    object.Method = options.enums === String ? $root.proto.MethodType[message.Method] : message.Method;
                 if (message.Params != null && message.hasOwnProperty("Params"))
                     object.Params = options.bytes === String ? $util.base64.encode(message.Params, 0, message.Params.length) : options.bytes === Array ? Array.prototype.slice.call(message.Params) : message.Params;
                 return object;
@@ -488,15 +580,16 @@
              * Properties of a Reply.
              * @memberof proto
              * @interface IReply
-             * @property {number|Long} [ID] Reply ID
-             * @property {proto.IError} [Error] Reply Error
-             * @property {Uint8Array} [Result] Reply Result
+             * @property {number|Long|null} [ID] Reply ID
+             * @property {proto.IError|null} [Error] Reply Error
+             * @property {Uint8Array|null} [Result] Reply Result
              */
     
             /**
              * Constructs a new Reply.
              * @memberof proto
              * @classdesc Represents a Reply.
+             * @implements IReply
              * @constructor
              * @param {proto.IReply=} [properties] Properties to set
              */
@@ -509,7 +602,7 @@
     
             /**
              * Reply ID.
-             * @member {number|Long}ID
+             * @member {number|Long} ID
              * @memberof proto.Reply
              * @instance
              */
@@ -517,7 +610,7 @@
     
             /**
              * Reply Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.Reply
              * @instance
              */
@@ -525,7 +618,7 @@
     
             /**
              * Reply Result.
-             * @member {Uint8Array}Result
+             * @member {Uint8Array} Result
              * @memberof proto.Reply
              * @instance
              */
@@ -737,6 +830,7 @@
     
         /**
          * MessageType enum.
+         * @name proto.MessageType
          * @enum {string}
          * @property {number} PUBLICATION=0 PUBLICATION value
          * @property {number} JOIN=1 JOIN value
@@ -758,15 +852,16 @@
              * Properties of a Message.
              * @memberof proto
              * @interface IMessage
-             * @property {proto.MessageType} [Type] Message Type
-             * @property {string} [Channel] Message Channel
-             * @property {Uint8Array} [Data] Message Data
+             * @property {proto.MessageType|null} [Type] Message Type
+             * @property {string|null} [Channel] Message Channel
+             * @property {Uint8Array|null} [Data] Message Data
              */
     
             /**
              * Constructs a new Message.
              * @memberof proto
              * @classdesc Represents a Message.
+             * @implements IMessage
              * @constructor
              * @param {proto.IMessage=} [properties] Properties to set
              */
@@ -779,7 +874,7 @@
     
             /**
              * Message Type.
-             * @member {proto.MessageType}Type
+             * @member {proto.MessageType} Type
              * @memberof proto.Message
              * @instance
              */
@@ -787,7 +882,7 @@
     
             /**
              * Message Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.Message
              * @instance
              */
@@ -795,7 +890,7 @@
     
             /**
              * Message Data.
-             * @member {Uint8Array}Data
+             * @member {Uint8Array} Data
              * @memberof proto.Message
              * @instance
              */
@@ -1015,16 +1110,17 @@
              * Properties of a ClientInfo.
              * @memberof proto
              * @interface IClientInfo
-             * @property {string} [User] ClientInfo User
-             * @property {string} [Client] ClientInfo Client
-             * @property {Uint8Array} [ConnInfo] ClientInfo ConnInfo
-             * @property {Uint8Array} [ChanInfo] ClientInfo ChanInfo
+             * @property {string|null} [User] ClientInfo User
+             * @property {string|null} [Client] ClientInfo Client
+             * @property {Uint8Array|null} [ConnInfo] ClientInfo ConnInfo
+             * @property {Uint8Array|null} [ChanInfo] ClientInfo ChanInfo
              */
     
             /**
              * Constructs a new ClientInfo.
              * @memberof proto
              * @classdesc Represents a ClientInfo.
+             * @implements IClientInfo
              * @constructor
              * @param {proto.IClientInfo=} [properties] Properties to set
              */
@@ -1037,7 +1133,7 @@
     
             /**
              * ClientInfo User.
-             * @member {string}User
+             * @member {string} User
              * @memberof proto.ClientInfo
              * @instance
              */
@@ -1045,7 +1141,7 @@
     
             /**
              * ClientInfo Client.
-             * @member {string}Client
+             * @member {string} Client
              * @memberof proto.ClientInfo
              * @instance
              */
@@ -1053,7 +1149,7 @@
     
             /**
              * ClientInfo ConnInfo.
-             * @member {Uint8Array}ConnInfo
+             * @member {Uint8Array} ConnInfo
              * @memberof proto.ClientInfo
              * @instance
              */
@@ -1061,7 +1157,7 @@
     
             /**
              * ClientInfo ChanInfo.
-             * @member {Uint8Array}ChanInfo
+             * @member {Uint8Array} ChanInfo
              * @memberof proto.ClientInfo
              * @instance
              */
@@ -1274,15 +1370,16 @@
              * Properties of a Publication.
              * @memberof proto
              * @interface IPublication
-             * @property {string} [UID] Publication UID
-             * @property {Uint8Array} [Data] Publication Data
-             * @property {proto.IClientInfo} [Info] Publication Info
+             * @property {string|null} [UID] Publication UID
+             * @property {Uint8Array|null} [Data] Publication Data
+             * @property {proto.IClientInfo|null} [Info] Publication Info
              */
     
             /**
              * Constructs a new Publication.
              * @memberof proto
              * @classdesc Represents a Publication.
+             * @implements IPublication
              * @constructor
              * @param {proto.IPublication=} [properties] Properties to set
              */
@@ -1295,7 +1392,7 @@
     
             /**
              * Publication UID.
-             * @member {string}UID
+             * @member {string} UID
              * @memberof proto.Publication
              * @instance
              */
@@ -1303,7 +1400,7 @@
     
             /**
              * Publication Data.
-             * @member {Uint8Array}Data
+             * @member {Uint8Array} Data
              * @memberof proto.Publication
              * @instance
              */
@@ -1311,7 +1408,7 @@
     
             /**
              * Publication Info.
-             * @member {(proto.IClientInfo|null|undefined)}Info
+             * @member {proto.IClientInfo|null|undefined} Info
              * @memberof proto.Publication
              * @instance
              */
@@ -1513,13 +1610,14 @@
              * Properties of a Join.
              * @memberof proto
              * @interface IJoin
-             * @property {proto.IClientInfo} [Info] Join Info
+             * @property {proto.IClientInfo|null} [Info] Join Info
              */
     
             /**
              * Constructs a new Join.
              * @memberof proto
              * @classdesc Represents a Join.
+             * @implements IJoin
              * @constructor
              * @param {proto.IJoin=} [properties] Properties to set
              */
@@ -1532,7 +1630,7 @@
     
             /**
              * Join Info.
-             * @member {(proto.IClientInfo|null|undefined)}Info
+             * @member {proto.IClientInfo|null|undefined} Info
              * @memberof proto.Join
              * @instance
              */
@@ -1704,13 +1802,14 @@
              * Properties of a Leave.
              * @memberof proto
              * @interface ILeave
-             * @property {proto.IClientInfo} [Info] Leave Info
+             * @property {proto.IClientInfo|null} [Info] Leave Info
              */
     
             /**
              * Constructs a new Leave.
              * @memberof proto
              * @classdesc Represents a Leave.
+             * @implements ILeave
              * @constructor
              * @param {proto.ILeave=} [properties] Properties to set
              */
@@ -1723,7 +1822,7 @@
     
             /**
              * Leave Info.
-             * @member {(proto.IClientInfo|null|undefined)}Info
+             * @member {proto.IClientInfo|null|undefined} Info
              * @memberof proto.Leave
              * @instance
              */
@@ -1901,6 +2000,7 @@
              * Constructs a new Unsub.
              * @memberof proto
              * @classdesc Represents an Unsub.
+             * @implements IUnsub
              * @constructor
              * @param {proto.IUnsub=} [properties] Properties to set
              */
@@ -2054,17 +2154,18 @@
              * Properties of a ConnectRequest.
              * @memberof proto
              * @interface IConnectRequest
-             * @property {string} [User] ConnectRequest User
-             * @property {string} [Exp] ConnectRequest Exp
-             * @property {string} [Info] ConnectRequest Info
-             * @property {string} [Opts] ConnectRequest Opts
-             * @property {string} [Sign] ConnectRequest Sign
+             * @property {string|null} [User] ConnectRequest User
+             * @property {string|null} [Exp] ConnectRequest Exp
+             * @property {string|null} [Info] ConnectRequest Info
+             * @property {string|null} [Opts] ConnectRequest Opts
+             * @property {string|null} [Sign] ConnectRequest Sign
              */
     
             /**
              * Constructs a new ConnectRequest.
              * @memberof proto
              * @classdesc Represents a ConnectRequest.
+             * @implements IConnectRequest
              * @constructor
              * @param {proto.IConnectRequest=} [properties] Properties to set
              */
@@ -2077,7 +2178,7 @@
     
             /**
              * ConnectRequest User.
-             * @member {string}User
+             * @member {string} User
              * @memberof proto.ConnectRequest
              * @instance
              */
@@ -2085,7 +2186,7 @@
     
             /**
              * ConnectRequest Exp.
-             * @member {string}Exp
+             * @member {string} Exp
              * @memberof proto.ConnectRequest
              * @instance
              */
@@ -2093,7 +2194,7 @@
     
             /**
              * ConnectRequest Info.
-             * @member {string}Info
+             * @member {string} Info
              * @memberof proto.ConnectRequest
              * @instance
              */
@@ -2101,7 +2202,7 @@
     
             /**
              * ConnectRequest Opts.
-             * @member {string}Opts
+             * @member {string} Opts
              * @memberof proto.ConnectRequest
              * @instance
              */
@@ -2109,7 +2210,7 @@
     
             /**
              * ConnectRequest Sign.
-             * @member {string}Sign
+             * @member {string} Sign
              * @memberof proto.ConnectRequest
              * @instance
              */
@@ -2329,14 +2430,15 @@
              * Properties of a ConnectResponse.
              * @memberof proto
              * @interface IConnectResponse
-             * @property {proto.IError} [Error] ConnectResponse Error
-             * @property {proto.IConnectResult} [Result] ConnectResponse Result
+             * @property {proto.IError|null} [Error] ConnectResponse Error
+             * @property {proto.IConnectResult|null} [Result] ConnectResponse Result
              */
     
             /**
              * Constructs a new ConnectResponse.
              * @memberof proto
              * @classdesc Represents a ConnectResponse.
+             * @implements IConnectResponse
              * @constructor
              * @param {proto.IConnectResponse=} [properties] Properties to set
              */
@@ -2349,7 +2451,7 @@
     
             /**
              * ConnectResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.ConnectResponse
              * @instance
              */
@@ -2357,7 +2459,7 @@
     
             /**
              * ConnectResponse Result.
-             * @member {(proto.IConnectResult|null|undefined)}Result
+             * @member {proto.IConnectResult|null|undefined} Result
              * @memberof proto.ConnectResponse
              * @instance
              */
@@ -2472,7 +2574,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.ConnectResult.verify(message.Result);
+                    var error = $root.proto.ConnectResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -2548,17 +2650,18 @@
              * Properties of a ConnectResult.
              * @memberof proto
              * @interface IConnectResult
-             * @property {string} [Client] ConnectResult Client
-             * @property {string} [Version] ConnectResult Version
-             * @property {boolean} [Expires] ConnectResult Expires
-             * @property {boolean} [Expired] ConnectResult Expired
-             * @property {number} [TTL] ConnectResult TTL
+             * @property {string|null} [Client] ConnectResult Client
+             * @property {string|null} [Version] ConnectResult Version
+             * @property {boolean|null} [Expires] ConnectResult Expires
+             * @property {boolean|null} [Expired] ConnectResult Expired
+             * @property {number|null} [TTL] ConnectResult TTL
              */
     
             /**
              * Constructs a new ConnectResult.
              * @memberof proto
              * @classdesc Represents a ConnectResult.
+             * @implements IConnectResult
              * @constructor
              * @param {proto.IConnectResult=} [properties] Properties to set
              */
@@ -2571,7 +2674,7 @@
     
             /**
              * ConnectResult Client.
-             * @member {string}Client
+             * @member {string} Client
              * @memberof proto.ConnectResult
              * @instance
              */
@@ -2579,7 +2682,7 @@
     
             /**
              * ConnectResult Version.
-             * @member {string}Version
+             * @member {string} Version
              * @memberof proto.ConnectResult
              * @instance
              */
@@ -2587,7 +2690,7 @@
     
             /**
              * ConnectResult Expires.
-             * @member {boolean}Expires
+             * @member {boolean} Expires
              * @memberof proto.ConnectResult
              * @instance
              */
@@ -2595,7 +2698,7 @@
     
             /**
              * ConnectResult Expired.
-             * @member {boolean}Expired
+             * @member {boolean} Expired
              * @memberof proto.ConnectResult
              * @instance
              */
@@ -2603,7 +2706,7 @@
     
             /**
              * ConnectResult TTL.
-             * @member {number}TTL
+             * @member {number} TTL
              * @memberof proto.ConnectResult
              * @instance
              */
@@ -2823,17 +2926,18 @@
              * Properties of a RefreshRequest.
              * @memberof proto
              * @interface IRefreshRequest
-             * @property {string} [User] RefreshRequest User
-             * @property {string} [Exp] RefreshRequest Exp
-             * @property {string} [Info] RefreshRequest Info
-             * @property {string} [Opts] RefreshRequest Opts
-             * @property {string} [Sign] RefreshRequest Sign
+             * @property {string|null} [User] RefreshRequest User
+             * @property {string|null} [Exp] RefreshRequest Exp
+             * @property {string|null} [Info] RefreshRequest Info
+             * @property {string|null} [Opts] RefreshRequest Opts
+             * @property {string|null} [Sign] RefreshRequest Sign
              */
     
             /**
              * Constructs a new RefreshRequest.
              * @memberof proto
              * @classdesc Represents a RefreshRequest.
+             * @implements IRefreshRequest
              * @constructor
              * @param {proto.IRefreshRequest=} [properties] Properties to set
              */
@@ -2846,7 +2950,7 @@
     
             /**
              * RefreshRequest User.
-             * @member {string}User
+             * @member {string} User
              * @memberof proto.RefreshRequest
              * @instance
              */
@@ -2854,7 +2958,7 @@
     
             /**
              * RefreshRequest Exp.
-             * @member {string}Exp
+             * @member {string} Exp
              * @memberof proto.RefreshRequest
              * @instance
              */
@@ -2862,7 +2966,7 @@
     
             /**
              * RefreshRequest Info.
-             * @member {string}Info
+             * @member {string} Info
              * @memberof proto.RefreshRequest
              * @instance
              */
@@ -2870,7 +2974,7 @@
     
             /**
              * RefreshRequest Opts.
-             * @member {string}Opts
+             * @member {string} Opts
              * @memberof proto.RefreshRequest
              * @instance
              */
@@ -2878,7 +2982,7 @@
     
             /**
              * RefreshRequest Sign.
-             * @member {string}Sign
+             * @member {string} Sign
              * @memberof proto.RefreshRequest
              * @instance
              */
@@ -3098,14 +3202,15 @@
              * Properties of a RefreshResponse.
              * @memberof proto
              * @interface IRefreshResponse
-             * @property {proto.IError} [Error] RefreshResponse Error
-             * @property {proto.IRefreshResult} [Result] RefreshResponse Result
+             * @property {proto.IError|null} [Error] RefreshResponse Error
+             * @property {proto.IRefreshResult|null} [Result] RefreshResponse Result
              */
     
             /**
              * Constructs a new RefreshResponse.
              * @memberof proto
              * @classdesc Represents a RefreshResponse.
+             * @implements IRefreshResponse
              * @constructor
              * @param {proto.IRefreshResponse=} [properties] Properties to set
              */
@@ -3118,7 +3223,7 @@
     
             /**
              * RefreshResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.RefreshResponse
              * @instance
              */
@@ -3126,7 +3231,7 @@
     
             /**
              * RefreshResponse Result.
-             * @member {(proto.IRefreshResult|null|undefined)}Result
+             * @member {proto.IRefreshResult|null|undefined} Result
              * @memberof proto.RefreshResponse
              * @instance
              */
@@ -3241,7 +3346,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.RefreshResult.verify(message.Result);
+                    var error = $root.proto.RefreshResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -3317,17 +3422,18 @@
              * Properties of a RefreshResult.
              * @memberof proto
              * @interface IRefreshResult
-             * @property {string} [Client] RefreshResult Client
-             * @property {string} [Version] RefreshResult Version
-             * @property {boolean} [Expires] RefreshResult Expires
-             * @property {boolean} [Expired] RefreshResult Expired
-             * @property {number} [TTL] RefreshResult TTL
+             * @property {string|null} [Client] RefreshResult Client
+             * @property {string|null} [Version] RefreshResult Version
+             * @property {boolean|null} [Expires] RefreshResult Expires
+             * @property {boolean|null} [Expired] RefreshResult Expired
+             * @property {number|null} [TTL] RefreshResult TTL
              */
     
             /**
              * Constructs a new RefreshResult.
              * @memberof proto
              * @classdesc Represents a RefreshResult.
+             * @implements IRefreshResult
              * @constructor
              * @param {proto.IRefreshResult=} [properties] Properties to set
              */
@@ -3340,7 +3446,7 @@
     
             /**
              * RefreshResult Client.
-             * @member {string}Client
+             * @member {string} Client
              * @memberof proto.RefreshResult
              * @instance
              */
@@ -3348,7 +3454,7 @@
     
             /**
              * RefreshResult Version.
-             * @member {string}Version
+             * @member {string} Version
              * @memberof proto.RefreshResult
              * @instance
              */
@@ -3356,7 +3462,7 @@
     
             /**
              * RefreshResult Expires.
-             * @member {boolean}Expires
+             * @member {boolean} Expires
              * @memberof proto.RefreshResult
              * @instance
              */
@@ -3364,7 +3470,7 @@
     
             /**
              * RefreshResult Expired.
-             * @member {boolean}Expired
+             * @member {boolean} Expired
              * @memberof proto.RefreshResult
              * @instance
              */
@@ -3372,7 +3478,7 @@
     
             /**
              * RefreshResult TTL.
-             * @member {number}TTL
+             * @member {number} TTL
              * @memberof proto.RefreshResult
              * @instance
              */
@@ -3592,18 +3698,19 @@
              * Properties of a SubscribeRequest.
              * @memberof proto
              * @interface ISubscribeRequest
-             * @property {string} [Channel] SubscribeRequest Channel
-             * @property {string} [Client] SubscribeRequest Client
-             * @property {string} [Info] SubscribeRequest Info
-             * @property {string} [Sign] SubscribeRequest Sign
-             * @property {boolean} [Recover] SubscribeRequest Recover
-             * @property {string} [Last] SubscribeRequest Last
+             * @property {string|null} [Channel] SubscribeRequest Channel
+             * @property {string|null} [Client] SubscribeRequest Client
+             * @property {string|null} [Info] SubscribeRequest Info
+             * @property {string|null} [Sign] SubscribeRequest Sign
+             * @property {boolean|null} [Recover] SubscribeRequest Recover
+             * @property {string|null} [Last] SubscribeRequest Last
              */
     
             /**
              * Constructs a new SubscribeRequest.
              * @memberof proto
              * @classdesc Represents a SubscribeRequest.
+             * @implements ISubscribeRequest
              * @constructor
              * @param {proto.ISubscribeRequest=} [properties] Properties to set
              */
@@ -3616,7 +3723,7 @@
     
             /**
              * SubscribeRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3624,7 +3731,7 @@
     
             /**
              * SubscribeRequest Client.
-             * @member {string}Client
+             * @member {string} Client
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3632,7 +3739,7 @@
     
             /**
              * SubscribeRequest Info.
-             * @member {string}Info
+             * @member {string} Info
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3640,7 +3747,7 @@
     
             /**
              * SubscribeRequest Sign.
-             * @member {string}Sign
+             * @member {string} Sign
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3648,7 +3755,7 @@
     
             /**
              * SubscribeRequest Recover.
-             * @member {boolean}Recover
+             * @member {boolean} Recover
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3656,7 +3763,7 @@
     
             /**
              * SubscribeRequest Last.
-             * @member {string}Last
+             * @member {string} Last
              * @memberof proto.SubscribeRequest
              * @instance
              */
@@ -3889,14 +3996,15 @@
              * Properties of a SubscribeResponse.
              * @memberof proto
              * @interface ISubscribeResponse
-             * @property {proto.IError} [Error] SubscribeResponse Error
-             * @property {proto.ISubscribeResult} [Result] SubscribeResponse Result
+             * @property {proto.IError|null} [Error] SubscribeResponse Error
+             * @property {proto.ISubscribeResult|null} [Result] SubscribeResponse Result
              */
     
             /**
              * Constructs a new SubscribeResponse.
              * @memberof proto
              * @classdesc Represents a SubscribeResponse.
+             * @implements ISubscribeResponse
              * @constructor
              * @param {proto.ISubscribeResponse=} [properties] Properties to set
              */
@@ -3909,7 +4017,7 @@
     
             /**
              * SubscribeResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.SubscribeResponse
              * @instance
              */
@@ -3917,7 +4025,7 @@
     
             /**
              * SubscribeResponse Result.
-             * @member {(proto.ISubscribeResult|null|undefined)}Result
+             * @member {proto.ISubscribeResult|null|undefined} Result
              * @memberof proto.SubscribeResponse
              * @instance
              */
@@ -4032,7 +4140,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.SubscribeResult.verify(message.Result);
+                    var error = $root.proto.SubscribeResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -4108,15 +4216,16 @@
              * Properties of a SubscribeResult.
              * @memberof proto
              * @interface ISubscribeResult
-             * @property {string} [Last] SubscribeResult Last
-             * @property {boolean} [Recovered] SubscribeResult Recovered
-             * @property {Array.<proto.IPublication>} [Publications] SubscribeResult Publications
+             * @property {string|null} [Last] SubscribeResult Last
+             * @property {boolean|null} [Recovered] SubscribeResult Recovered
+             * @property {Array.<proto.IPublication>|null} [Publications] SubscribeResult Publications
              */
     
             /**
              * Constructs a new SubscribeResult.
              * @memberof proto
              * @classdesc Represents a SubscribeResult.
+             * @implements ISubscribeResult
              * @constructor
              * @param {proto.ISubscribeResult=} [properties] Properties to set
              */
@@ -4130,7 +4239,7 @@
     
             /**
              * SubscribeResult Last.
-             * @member {string}Last
+             * @member {string} Last
              * @memberof proto.SubscribeResult
              * @instance
              */
@@ -4138,7 +4247,7 @@
     
             /**
              * SubscribeResult Recovered.
-             * @member {boolean}Recovered
+             * @member {boolean} Recovered
              * @memberof proto.SubscribeResult
              * @instance
              */
@@ -4146,7 +4255,7 @@
     
             /**
              * SubscribeResult Publications.
-             * @member {Array.<proto.IPublication>}Publications
+             * @member {Array.<proto.IPublication>} Publications
              * @memberof proto.SubscribeResult
              * @instance
              */
@@ -4361,13 +4470,14 @@
              * Properties of an UnsubscribeRequest.
              * @memberof proto
              * @interface IUnsubscribeRequest
-             * @property {string} [Channel] UnsubscribeRequest Channel
+             * @property {string|null} [Channel] UnsubscribeRequest Channel
              */
     
             /**
              * Constructs a new UnsubscribeRequest.
              * @memberof proto
              * @classdesc Represents an UnsubscribeRequest.
+             * @implements IUnsubscribeRequest
              * @constructor
              * @param {proto.IUnsubscribeRequest=} [properties] Properties to set
              */
@@ -4380,7 +4490,7 @@
     
             /**
              * UnsubscribeRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.UnsubscribeRequest
              * @instance
              */
@@ -4547,14 +4657,15 @@
              * Properties of an UnsubscribeResponse.
              * @memberof proto
              * @interface IUnsubscribeResponse
-             * @property {proto.IError} [Error] UnsubscribeResponse Error
-             * @property {proto.IUnsubscribeResult} [Result] UnsubscribeResponse Result
+             * @property {proto.IError|null} [Error] UnsubscribeResponse Error
+             * @property {proto.IUnsubscribeResult|null} [Result] UnsubscribeResponse Result
              */
     
             /**
              * Constructs a new UnsubscribeResponse.
              * @memberof proto
              * @classdesc Represents an UnsubscribeResponse.
+             * @implements IUnsubscribeResponse
              * @constructor
              * @param {proto.IUnsubscribeResponse=} [properties] Properties to set
              */
@@ -4567,7 +4678,7 @@
     
             /**
              * UnsubscribeResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.UnsubscribeResponse
              * @instance
              */
@@ -4575,7 +4686,7 @@
     
             /**
              * UnsubscribeResponse Result.
-             * @member {(proto.IUnsubscribeResult|null|undefined)}Result
+             * @member {proto.IUnsubscribeResult|null|undefined} Result
              * @memberof proto.UnsubscribeResponse
              * @instance
              */
@@ -4690,7 +4801,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.UnsubscribeResult.verify(message.Result);
+                    var error = $root.proto.UnsubscribeResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -4772,6 +4883,7 @@
              * Constructs a new UnsubscribeResult.
              * @memberof proto
              * @classdesc Represents an UnsubscribeResult.
+             * @implements IUnsubscribeResult
              * @constructor
              * @param {proto.IUnsubscribeResult=} [properties] Properties to set
              */
@@ -4925,14 +5037,15 @@
              * Properties of a PublishRequest.
              * @memberof proto
              * @interface IPublishRequest
-             * @property {string} [Channel] PublishRequest Channel
-             * @property {Uint8Array} [Data] PublishRequest Data
+             * @property {string|null} [Channel] PublishRequest Channel
+             * @property {Uint8Array|null} [Data] PublishRequest Data
              */
     
             /**
              * Constructs a new PublishRequest.
              * @memberof proto
              * @classdesc Represents a PublishRequest.
+             * @implements IPublishRequest
              * @constructor
              * @param {proto.IPublishRequest=} [properties] Properties to set
              */
@@ -4945,7 +5058,7 @@
     
             /**
              * PublishRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.PublishRequest
              * @instance
              */
@@ -4953,7 +5066,7 @@
     
             /**
              * PublishRequest Data.
-             * @member {Uint8Array}Data
+             * @member {Uint8Array} Data
              * @memberof proto.PublishRequest
              * @instance
              */
@@ -5137,14 +5250,15 @@
              * Properties of a PublishResponse.
              * @memberof proto
              * @interface IPublishResponse
-             * @property {proto.IError} [Error] PublishResponse Error
-             * @property {proto.IPublishResult} [Result] PublishResponse Result
+             * @property {proto.IError|null} [Error] PublishResponse Error
+             * @property {proto.IPublishResult|null} [Result] PublishResponse Result
              */
     
             /**
              * Constructs a new PublishResponse.
              * @memberof proto
              * @classdesc Represents a PublishResponse.
+             * @implements IPublishResponse
              * @constructor
              * @param {proto.IPublishResponse=} [properties] Properties to set
              */
@@ -5157,7 +5271,7 @@
     
             /**
              * PublishResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.PublishResponse
              * @instance
              */
@@ -5165,7 +5279,7 @@
     
             /**
              * PublishResponse Result.
-             * @member {(proto.IPublishResult|null|undefined)}Result
+             * @member {proto.IPublishResult|null|undefined} Result
              * @memberof proto.PublishResponse
              * @instance
              */
@@ -5280,7 +5394,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.PublishResult.verify(message.Result);
+                    var error = $root.proto.PublishResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -5362,6 +5476,7 @@
              * Constructs a new PublishResult.
              * @memberof proto
              * @classdesc Represents a PublishResult.
+             * @implements IPublishResult
              * @constructor
              * @param {proto.IPublishResult=} [properties] Properties to set
              */
@@ -5515,13 +5630,14 @@
              * Properties of a PresenceRequest.
              * @memberof proto
              * @interface IPresenceRequest
-             * @property {string} [Channel] PresenceRequest Channel
+             * @property {string|null} [Channel] PresenceRequest Channel
              */
     
             /**
              * Constructs a new PresenceRequest.
              * @memberof proto
              * @classdesc Represents a PresenceRequest.
+             * @implements IPresenceRequest
              * @constructor
              * @param {proto.IPresenceRequest=} [properties] Properties to set
              */
@@ -5534,7 +5650,7 @@
     
             /**
              * PresenceRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.PresenceRequest
              * @instance
              */
@@ -5701,14 +5817,15 @@
              * Properties of a PresenceResponse.
              * @memberof proto
              * @interface IPresenceResponse
-             * @property {proto.IError} [Error] PresenceResponse Error
-             * @property {proto.IPresenceResult} [Result] PresenceResponse Result
+             * @property {proto.IError|null} [Error] PresenceResponse Error
+             * @property {proto.IPresenceResult|null} [Result] PresenceResponse Result
              */
     
             /**
              * Constructs a new PresenceResponse.
              * @memberof proto
              * @classdesc Represents a PresenceResponse.
+             * @implements IPresenceResponse
              * @constructor
              * @param {proto.IPresenceResponse=} [properties] Properties to set
              */
@@ -5721,7 +5838,7 @@
     
             /**
              * PresenceResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.PresenceResponse
              * @instance
              */
@@ -5729,7 +5846,7 @@
     
             /**
              * PresenceResponse Result.
-             * @member {(proto.IPresenceResult|null|undefined)}Result
+             * @member {proto.IPresenceResult|null|undefined} Result
              * @memberof proto.PresenceResponse
              * @instance
              */
@@ -5844,7 +5961,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.PresenceResult.verify(message.Result);
+                    var error = $root.proto.PresenceResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -5920,13 +6037,14 @@
              * Properties of a PresenceResult.
              * @memberof proto
              * @interface IPresenceResult
-             * @property {Object.<string,proto.IClientInfo>} [Presence] PresenceResult Presence
+             * @property {Object.<string,proto.IClientInfo>|null} [Presence] PresenceResult Presence
              */
     
             /**
              * Constructs a new PresenceResult.
              * @memberof proto
              * @classdesc Represents a PresenceResult.
+             * @implements IPresenceResult
              * @constructor
              * @param {proto.IPresenceResult=} [properties] Properties to set
              */
@@ -5940,7 +6058,7 @@
     
             /**
              * PresenceResult Presence.
-             * @member {Object.<string,proto.IClientInfo>}Presence
+             * @member {Object.<string,proto.IClientInfo>} Presence
              * @memberof proto.PresenceResult
              * @instance
              */
@@ -6134,13 +6252,14 @@
              * Properties of a PresenceStatsRequest.
              * @memberof proto
              * @interface IPresenceStatsRequest
-             * @property {string} [Channel] PresenceStatsRequest Channel
+             * @property {string|null} [Channel] PresenceStatsRequest Channel
              */
     
             /**
              * Constructs a new PresenceStatsRequest.
              * @memberof proto
              * @classdesc Represents a PresenceStatsRequest.
+             * @implements IPresenceStatsRequest
              * @constructor
              * @param {proto.IPresenceStatsRequest=} [properties] Properties to set
              */
@@ -6153,7 +6272,7 @@
     
             /**
              * PresenceStatsRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.PresenceStatsRequest
              * @instance
              */
@@ -6320,14 +6439,15 @@
              * Properties of a PresenceStatsResponse.
              * @memberof proto
              * @interface IPresenceStatsResponse
-             * @property {proto.IError} [Error] PresenceStatsResponse Error
-             * @property {proto.IPresenceStatsResult} [Result] PresenceStatsResponse Result
+             * @property {proto.IError|null} [Error] PresenceStatsResponse Error
+             * @property {proto.IPresenceStatsResult|null} [Result] PresenceStatsResponse Result
              */
     
             /**
              * Constructs a new PresenceStatsResponse.
              * @memberof proto
              * @classdesc Represents a PresenceStatsResponse.
+             * @implements IPresenceStatsResponse
              * @constructor
              * @param {proto.IPresenceStatsResponse=} [properties] Properties to set
              */
@@ -6340,7 +6460,7 @@
     
             /**
              * PresenceStatsResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.PresenceStatsResponse
              * @instance
              */
@@ -6348,7 +6468,7 @@
     
             /**
              * PresenceStatsResponse Result.
-             * @member {(proto.IPresenceStatsResult|null|undefined)}Result
+             * @member {proto.IPresenceStatsResult|null|undefined} Result
              * @memberof proto.PresenceStatsResponse
              * @instance
              */
@@ -6463,7 +6583,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.PresenceStatsResult.verify(message.Result);
+                    var error = $root.proto.PresenceStatsResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -6539,14 +6659,15 @@
              * Properties of a PresenceStatsResult.
              * @memberof proto
              * @interface IPresenceStatsResult
-             * @property {number|Long} [NumClients] PresenceStatsResult NumClients
-             * @property {number|Long} [NumUsers] PresenceStatsResult NumUsers
+             * @property {number|Long|null} [NumClients] PresenceStatsResult NumClients
+             * @property {number|Long|null} [NumUsers] PresenceStatsResult NumUsers
              */
     
             /**
              * Constructs a new PresenceStatsResult.
              * @memberof proto
              * @classdesc Represents a PresenceStatsResult.
+             * @implements IPresenceStatsResult
              * @constructor
              * @param {proto.IPresenceStatsResult=} [properties] Properties to set
              */
@@ -6559,7 +6680,7 @@
     
             /**
              * PresenceStatsResult NumClients.
-             * @member {number|Long}NumClients
+             * @member {number|Long} NumClients
              * @memberof proto.PresenceStatsResult
              * @instance
              */
@@ -6567,7 +6688,7 @@
     
             /**
              * PresenceStatsResult NumUsers.
-             * @member {number|Long}NumUsers
+             * @member {number|Long} NumUsers
              * @memberof proto.PresenceStatsResult
              * @instance
              */
@@ -6776,13 +6897,14 @@
              * Properties of a HistoryRequest.
              * @memberof proto
              * @interface IHistoryRequest
-             * @property {string} [Channel] HistoryRequest Channel
+             * @property {string|null} [Channel] HistoryRequest Channel
              */
     
             /**
              * Constructs a new HistoryRequest.
              * @memberof proto
              * @classdesc Represents a HistoryRequest.
+             * @implements IHistoryRequest
              * @constructor
              * @param {proto.IHistoryRequest=} [properties] Properties to set
              */
@@ -6795,7 +6917,7 @@
     
             /**
              * HistoryRequest Channel.
-             * @member {string}Channel
+             * @member {string} Channel
              * @memberof proto.HistoryRequest
              * @instance
              */
@@ -6962,14 +7084,15 @@
              * Properties of a HistoryResponse.
              * @memberof proto
              * @interface IHistoryResponse
-             * @property {proto.IError} [Error] HistoryResponse Error
-             * @property {proto.IHistoryResult} [Result] HistoryResponse Result
+             * @property {proto.IError|null} [Error] HistoryResponse Error
+             * @property {proto.IHistoryResult|null} [Result] HistoryResponse Result
              */
     
             /**
              * Constructs a new HistoryResponse.
              * @memberof proto
              * @classdesc Represents a HistoryResponse.
+             * @implements IHistoryResponse
              * @constructor
              * @param {proto.IHistoryResponse=} [properties] Properties to set
              */
@@ -6982,7 +7105,7 @@
     
             /**
              * HistoryResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.HistoryResponse
              * @instance
              */
@@ -6990,7 +7113,7 @@
     
             /**
              * HistoryResponse Result.
-             * @member {(proto.IHistoryResult|null|undefined)}Result
+             * @member {proto.IHistoryResult|null|undefined} Result
              * @memberof proto.HistoryResponse
              * @instance
              */
@@ -7105,7 +7228,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.HistoryResult.verify(message.Result);
+                    var error = $root.proto.HistoryResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -7181,13 +7304,14 @@
              * Properties of a HistoryResult.
              * @memberof proto
              * @interface IHistoryResult
-             * @property {Array.<proto.IPublication>} [Publications] HistoryResult Publications
+             * @property {Array.<proto.IPublication>|null} [Publications] HistoryResult Publications
              */
     
             /**
              * Constructs a new HistoryResult.
              * @memberof proto
              * @classdesc Represents a HistoryResult.
+             * @implements IHistoryResult
              * @constructor
              * @param {proto.IHistoryResult=} [properties] Properties to set
              */
@@ -7201,7 +7325,7 @@
     
             /**
              * HistoryResult Publications.
-             * @member {Array.<proto.IPublication>}Publications
+             * @member {Array.<proto.IPublication>} Publications
              * @memberof proto.HistoryResult
              * @instance
              */
@@ -7388,13 +7512,14 @@
              * Properties of a PingRequest.
              * @memberof proto
              * @interface IPingRequest
-             * @property {string} [Data] PingRequest Data
+             * @property {string|null} [Data] PingRequest Data
              */
     
             /**
              * Constructs a new PingRequest.
              * @memberof proto
              * @classdesc Represents a PingRequest.
+             * @implements IPingRequest
              * @constructor
              * @param {proto.IPingRequest=} [properties] Properties to set
              */
@@ -7407,7 +7532,7 @@
     
             /**
              * PingRequest Data.
-             * @member {string}Data
+             * @member {string} Data
              * @memberof proto.PingRequest
              * @instance
              */
@@ -7574,14 +7699,15 @@
              * Properties of a PingResponse.
              * @memberof proto
              * @interface IPingResponse
-             * @property {proto.IError} [Error] PingResponse Error
-             * @property {proto.IPingResult} [Result] PingResponse Result
+             * @property {proto.IError|null} [Error] PingResponse Error
+             * @property {proto.IPingResult|null} [Result] PingResponse Result
              */
     
             /**
              * Constructs a new PingResponse.
              * @memberof proto
              * @classdesc Represents a PingResponse.
+             * @implements IPingResponse
              * @constructor
              * @param {proto.IPingResponse=} [properties] Properties to set
              */
@@ -7594,7 +7720,7 @@
     
             /**
              * PingResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.PingResponse
              * @instance
              */
@@ -7602,7 +7728,7 @@
     
             /**
              * PingResponse Result.
-             * @member {(proto.IPingResult|null|undefined)}Result
+             * @member {proto.IPingResult|null|undefined} Result
              * @memberof proto.PingResponse
              * @instance
              */
@@ -7717,7 +7843,7 @@
                         return "Error." + error;
                 }
                 if (message.Result != null && message.hasOwnProperty("Result")) {
-                    error = $root.proto.PingResult.verify(message.Result);
+                    var error = $root.proto.PingResult.verify(message.Result);
                     if (error)
                         return "Result." + error;
                 }
@@ -7793,13 +7919,14 @@
              * Properties of a PingResult.
              * @memberof proto
              * @interface IPingResult
-             * @property {string} [Data] PingResult Data
+             * @property {string|null} [Data] PingResult Data
              */
     
             /**
              * Constructs a new PingResult.
              * @memberof proto
              * @classdesc Represents a PingResult.
+             * @implements IPingResult
              * @constructor
              * @param {proto.IPingResult=} [properties] Properties to set
              */
@@ -7812,7 +7939,7 @@
     
             /**
              * PingResult Data.
-             * @member {string}Data
+             * @member {string} Data
              * @memberof proto.PingResult
              * @instance
              */
@@ -7973,178 +8100,20 @@
             return PingResult;
         })();
     
-        proto.ConsumeRequest = (function() {
-    
-            /**
-             * Properties of a ConsumeRequest.
-             * @memberof proto
-             * @interface IConsumeRequest
-             */
-    
-            /**
-             * Constructs a new ConsumeRequest.
-             * @memberof proto
-             * @classdesc Represents a ConsumeRequest.
-             * @constructor
-             * @param {proto.IConsumeRequest=} [properties] Properties to set
-             */
-            function ConsumeRequest(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-    
-            /**
-             * Creates a new ConsumeRequest instance using the specified properties.
-             * @function create
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {proto.IConsumeRequest=} [properties] Properties to set
-             * @returns {proto.ConsumeRequest} ConsumeRequest instance
-             */
-            ConsumeRequest.create = function create(properties) {
-                return new ConsumeRequest(properties);
-            };
-    
-            /**
-             * Encodes the specified ConsumeRequest message. Does not implicitly {@link proto.ConsumeRequest.verify|verify} messages.
-             * @function encode
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {proto.IConsumeRequest} message ConsumeRequest message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ConsumeRequest.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                return writer;
-            };
-    
-            /**
-             * Encodes the specified ConsumeRequest message, length delimited. Does not implicitly {@link proto.ConsumeRequest.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {proto.IConsumeRequest} message ConsumeRequest message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ConsumeRequest.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-    
-            /**
-             * Decodes a ConsumeRequest message from the specified reader or buffer.
-             * @function decode
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {proto.ConsumeRequest} ConsumeRequest
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ConsumeRequest.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.proto.ConsumeRequest();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-    
-            /**
-             * Decodes a ConsumeRequest message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {proto.ConsumeRequest} ConsumeRequest
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ConsumeRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-    
-            /**
-             * Verifies a ConsumeRequest message.
-             * @function verify
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            ConsumeRequest.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                return null;
-            };
-    
-            /**
-             * Creates a ConsumeRequest message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {proto.ConsumeRequest} ConsumeRequest
-             */
-            ConsumeRequest.fromObject = function fromObject(object) {
-                if (object instanceof $root.proto.ConsumeRequest)
-                    return object;
-                return new $root.proto.ConsumeRequest();
-            };
-    
-            /**
-             * Creates a plain object from a ConsumeRequest message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof proto.ConsumeRequest
-             * @static
-             * @param {proto.ConsumeRequest} message ConsumeRequest
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            ConsumeRequest.toObject = function toObject() {
-                return {};
-            };
-    
-            /**
-             * Converts this ConsumeRequest to JSON.
-             * @function toJSON
-             * @memberof proto.ConsumeRequest
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            ConsumeRequest.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-    
-            return ConsumeRequest;
-        })();
-    
         proto.RPCRequest = (function() {
     
             /**
              * Properties of a RPCRequest.
              * @memberof proto
              * @interface IRPCRequest
-             * @property {Uint8Array} [Data] RPCRequest Data
+             * @property {Uint8Array|null} [Data] RPCRequest Data
              */
     
             /**
              * Constructs a new RPCRequest.
              * @memberof proto
              * @classdesc Represents a RPCRequest.
+             * @implements IRPCRequest
              * @constructor
              * @param {proto.IRPCRequest=} [properties] Properties to set
              */
@@ -8157,7 +8126,7 @@
     
             /**
              * RPCRequest Data.
-             * @member {Uint8Array}Data
+             * @member {Uint8Array} Data
              * @memberof proto.RPCRequest
              * @instance
              */
@@ -8327,14 +8296,15 @@
              * Properties of a RPCResponse.
              * @memberof proto
              * @interface IRPCResponse
-             * @property {proto.IError} [Error] RPCResponse Error
-             * @property {Uint8Array} [Result] RPCResponse Result
+             * @property {proto.IError|null} [Error] RPCResponse Error
+             * @property {Uint8Array|null} [Result] RPCResponse Result
              */
     
             /**
              * Constructs a new RPCResponse.
              * @memberof proto
              * @classdesc Represents a RPCResponse.
+             * @implements IRPCResponse
              * @constructor
              * @param {proto.IRPCResponse=} [properties] Properties to set
              */
@@ -8347,7 +8317,7 @@
     
             /**
              * RPCResponse Error.
-             * @member {(proto.IError|null|undefined)}Error
+             * @member {proto.IError|null|undefined} Error
              * @memberof proto.RPCResponse
              * @instance
              */
@@ -8355,7 +8325,7 @@
     
             /**
              * RPCResponse Result.
-             * @member {Uint8Array}Result
+             * @member {Uint8Array} Result
              * @memberof proto.RPCResponse
              * @instance
              */
@@ -8538,6 +8508,196 @@
             return RPCResponse;
         })();
     
+        proto.MessageRequest = (function() {
+    
+            /**
+             * Properties of a MessageRequest.
+             * @memberof proto
+             * @interface IMessageRequest
+             * @property {Uint8Array|null} [Data] MessageRequest Data
+             */
+    
+            /**
+             * Constructs a new MessageRequest.
+             * @memberof proto
+             * @classdesc Represents a MessageRequest.
+             * @implements IMessageRequest
+             * @constructor
+             * @param {proto.IMessageRequest=} [properties] Properties to set
+             */
+            function MessageRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+    
+            /**
+             * MessageRequest Data.
+             * @member {Uint8Array} Data
+             * @memberof proto.MessageRequest
+             * @instance
+             */
+            MessageRequest.prototype.Data = $util.newBuffer([]);
+    
+            /**
+             * Creates a new MessageRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest=} [properties] Properties to set
+             * @returns {proto.MessageRequest} MessageRequest instance
+             */
+            MessageRequest.create = function create(properties) {
+                return new MessageRequest(properties);
+            };
+    
+            /**
+             * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MessageRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.Data != null && message.hasOwnProperty("Data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Data);
+                return writer;
+            };
+    
+            /**
+             * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MessageRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+    
+            /**
+             * Decodes a MessageRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.MessageRequest} MessageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MessageRequest.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.proto.MessageRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.Data = reader.bytes();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+    
+            /**
+             * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.MessageRequest} MessageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MessageRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+    
+            /**
+             * Verifies a MessageRequest message.
+             * @function verify
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MessageRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.Data != null && message.hasOwnProperty("Data"))
+                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
+                        return "Data: buffer expected";
+                return null;
+            };
+    
+            /**
+             * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.MessageRequest} MessageRequest
+             */
+            MessageRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.proto.MessageRequest)
+                    return object;
+                var message = new $root.proto.MessageRequest();
+                if (object.Data != null)
+                    if (typeof object.Data === "string")
+                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
+                    else if (object.Data.length)
+                        message.Data = object.Data;
+                return message;
+            };
+    
+            /**
+             * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.MessageRequest} message MessageRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MessageRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.Data = options.bytes === String ? "" : [];
+                if (message.Data != null && message.hasOwnProperty("Data"))
+                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
+                return object;
+            };
+    
+            /**
+             * Converts this MessageRequest to JSON.
+             * @function toJSON
+             * @memberof proto.MessageRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MessageRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+    
+            return MessageRequest;
+        })();
+    
         proto.Centrifugo = (function() {
     
             /**
@@ -8581,7 +8741,7 @@
     
             /**
              * Calls Communicate.
-             * @function .communicate
+             * @function communicate
              * @memberof proto.Centrifugo
              * @instance
              * @param {proto.ICommand} request Command message or plain object
