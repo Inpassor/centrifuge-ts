@@ -273,7 +273,7 @@
              * Properties of a Command.
              * @memberof proto
              * @interface ICommand
-             * @property {number|Long|null} [ID] Command ID
+             * @property {number|null} [ID] Command ID
              * @property {proto.MethodType|null} [Method] Command Method
              * @property {Uint8Array|null} [Params] Command Params
              */
@@ -295,11 +295,11 @@
     
             /**
              * Command ID.
-             * @member {number|Long} ID
+             * @member {number} ID
              * @memberof proto.Command
              * @instance
              */
-            Command.prototype.ID = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+            Command.prototype.ID = 0;
     
             /**
              * Command Method.
@@ -342,7 +342,7 @@
                 if (!writer)
                     writer = $Writer.create();
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.ID);
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.ID);
                 if (message.Method != null && message.hasOwnProperty("Method"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Method);
                 if (message.Params != null && message.hasOwnProperty("Params"))
@@ -382,7 +382,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.ID = reader.uint64();
+                        message.ID = reader.uint32();
                         break;
                     case 2:
                         message.Method = reader.int32();
@@ -426,8 +426,8 @@
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (!$util.isInteger(message.ID) && !(message.ID && $util.isInteger(message.ID.low) && $util.isInteger(message.ID.high)))
-                        return "ID: integer|Long expected";
+                    if (!$util.isInteger(message.ID))
+                        return "ID: integer expected";
                 if (message.Method != null && message.hasOwnProperty("Method"))
                     switch (message.Method) {
                     default:
@@ -464,14 +464,7 @@
                     return object;
                 var message = new $root.proto.Command();
                 if (object.ID != null)
-                    if ($util.Long)
-                        (message.ID = $util.Long.fromValue(object.ID)).unsigned = true;
-                    else if (typeof object.ID === "string")
-                        message.ID = parseInt(object.ID, 10);
-                    else if (typeof object.ID === "number")
-                        message.ID = object.ID;
-                    else if (typeof object.ID === "object")
-                        message.ID = new $util.LongBits(object.ID.low >>> 0, object.ID.high >>> 0).toNumber(true);
+                    message.ID = object.ID >>> 0;
                 switch (object.Method) {
                 case "CONNECT":
                 case 0:
@@ -540,19 +533,12 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    if ($util.Long) {
-                        var long = new $util.Long(0, 0, true);
-                        object.ID = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.ID = options.longs === String ? "0" : 0;
+                    object.ID = 0;
                     object.Method = options.enums === String ? "CONNECT" : 0;
                     object.Params = options.bytes === String ? "" : [];
                 }
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (typeof message.ID === "number")
-                        object.ID = options.longs === String ? String(message.ID) : message.ID;
-                    else
-                        object.ID = options.longs === String ? $util.Long.prototype.toString.call(message.ID) : options.longs === Number ? new $util.LongBits(message.ID.low >>> 0, message.ID.high >>> 0).toNumber(true) : message.ID;
+                    object.ID = message.ID;
                 if (message.Method != null && message.hasOwnProperty("Method"))
                     object.Method = options.enums === String ? $root.proto.MethodType[message.Method] : message.Method;
                 if (message.Params != null && message.hasOwnProperty("Params"))
@@ -580,7 +566,7 @@
              * Properties of a Reply.
              * @memberof proto
              * @interface IReply
-             * @property {number|Long|null} [ID] Reply ID
+             * @property {number|null} [ID] Reply ID
              * @property {proto.IError|null} [Error] Reply Error
              * @property {Uint8Array|null} [Result] Reply Result
              */
@@ -602,11 +588,11 @@
     
             /**
              * Reply ID.
-             * @member {number|Long} ID
+             * @member {number} ID
              * @memberof proto.Reply
              * @instance
              */
-            Reply.prototype.ID = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+            Reply.prototype.ID = 0;
     
             /**
              * Reply Error.
@@ -649,7 +635,7 @@
                 if (!writer)
                     writer = $Writer.create();
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.ID);
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.ID);
                 if (message.Error != null && message.hasOwnProperty("Error"))
                     $root.proto.Error.encode(message.Error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 if (message.Result != null && message.hasOwnProperty("Result"))
@@ -689,7 +675,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.ID = reader.uint64();
+                        message.ID = reader.uint32();
                         break;
                     case 2:
                         message.Error = $root.proto.Error.decode(reader, reader.uint32());
@@ -733,8 +719,8 @@
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (!$util.isInteger(message.ID) && !(message.ID && $util.isInteger(message.ID.low) && $util.isInteger(message.ID.high)))
-                        return "ID: integer|Long expected";
+                    if (!$util.isInteger(message.ID))
+                        return "ID: integer expected";
                 if (message.Error != null && message.hasOwnProperty("Error")) {
                     var error = $root.proto.Error.verify(message.Error);
                     if (error)
@@ -759,14 +745,7 @@
                     return object;
                 var message = new $root.proto.Reply();
                 if (object.ID != null)
-                    if ($util.Long)
-                        (message.ID = $util.Long.fromValue(object.ID)).unsigned = true;
-                    else if (typeof object.ID === "string")
-                        message.ID = parseInt(object.ID, 10);
-                    else if (typeof object.ID === "number")
-                        message.ID = object.ID;
-                    else if (typeof object.ID === "object")
-                        message.ID = new $util.LongBits(object.ID.low >>> 0, object.ID.high >>> 0).toNumber(true);
+                    message.ID = object.ID >>> 0;
                 if (object.Error != null) {
                     if (typeof object.Error !== "object")
                         throw TypeError(".proto.Reply.Error: object expected");
@@ -794,19 +773,12 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    if ($util.Long) {
-                        var long = new $util.Long(0, 0, true);
-                        object.ID = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.ID = options.longs === String ? "0" : 0;
+                    object.ID = 0;
                     object.Error = null;
                     object.Result = options.bytes === String ? "" : [];
                 }
                 if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (typeof message.ID === "number")
-                        object.ID = options.longs === String ? String(message.ID) : message.ID;
-                    else
-                        object.ID = options.longs === String ? $util.Long.prototype.toString.call(message.ID) : options.longs === Number ? new $util.LongBits(message.ID.low >>> 0, message.ID.high >>> 0).toNumber(true) : message.ID;
+                    object.ID = message.ID;
                 if (message.Error != null && message.hasOwnProperty("Error"))
                     object.Error = $root.proto.Error.toObject(message.Error, options);
                 if (message.Result != null && message.hasOwnProperty("Result"))
@@ -6659,8 +6631,8 @@
              * Properties of a PresenceStatsResult.
              * @memberof proto
              * @interface IPresenceStatsResult
-             * @property {number|Long|null} [NumClients] PresenceStatsResult NumClients
-             * @property {number|Long|null} [NumUsers] PresenceStatsResult NumUsers
+             * @property {number|null} [NumClients] PresenceStatsResult NumClients
+             * @property {number|null} [NumUsers] PresenceStatsResult NumUsers
              */
     
             /**
@@ -6680,19 +6652,19 @@
     
             /**
              * PresenceStatsResult NumClients.
-             * @member {number|Long} NumClients
+             * @member {number} NumClients
              * @memberof proto.PresenceStatsResult
              * @instance
              */
-            PresenceStatsResult.prototype.NumClients = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+            PresenceStatsResult.prototype.NumClients = 0;
     
             /**
              * PresenceStatsResult NumUsers.
-             * @member {number|Long} NumUsers
+             * @member {number} NumUsers
              * @memberof proto.PresenceStatsResult
              * @instance
              */
-            PresenceStatsResult.prototype.NumUsers = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+            PresenceStatsResult.prototype.NumUsers = 0;
     
             /**
              * Creates a new PresenceStatsResult instance using the specified properties.
@@ -6719,9 +6691,9 @@
                 if (!writer)
                     writer = $Writer.create();
                 if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.NumClients);
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.NumClients);
                 if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).uint64(message.NumUsers);
+                    writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.NumUsers);
                 return writer;
             };
     
@@ -6757,10 +6729,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.NumClients = reader.uint64();
+                        message.NumClients = reader.uint32();
                         break;
                     case 2:
-                        message.NumUsers = reader.uint64();
+                        message.NumUsers = reader.uint32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6798,11 +6770,11 @@
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    if (!$util.isInteger(message.NumClients) && !(message.NumClients && $util.isInteger(message.NumClients.low) && $util.isInteger(message.NumClients.high)))
-                        return "NumClients: integer|Long expected";
+                    if (!$util.isInteger(message.NumClients))
+                        return "NumClients: integer expected";
                 if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    if (!$util.isInteger(message.NumUsers) && !(message.NumUsers && $util.isInteger(message.NumUsers.low) && $util.isInteger(message.NumUsers.high)))
-                        return "NumUsers: integer|Long expected";
+                    if (!$util.isInteger(message.NumUsers))
+                        return "NumUsers: integer expected";
                 return null;
             };
     
@@ -6819,23 +6791,9 @@
                     return object;
                 var message = new $root.proto.PresenceStatsResult();
                 if (object.NumClients != null)
-                    if ($util.Long)
-                        (message.NumClients = $util.Long.fromValue(object.NumClients)).unsigned = true;
-                    else if (typeof object.NumClients === "string")
-                        message.NumClients = parseInt(object.NumClients, 10);
-                    else if (typeof object.NumClients === "number")
-                        message.NumClients = object.NumClients;
-                    else if (typeof object.NumClients === "object")
-                        message.NumClients = new $util.LongBits(object.NumClients.low >>> 0, object.NumClients.high >>> 0).toNumber(true);
+                    message.NumClients = object.NumClients >>> 0;
                 if (object.NumUsers != null)
-                    if ($util.Long)
-                        (message.NumUsers = $util.Long.fromValue(object.NumUsers)).unsigned = true;
-                    else if (typeof object.NumUsers === "string")
-                        message.NumUsers = parseInt(object.NumUsers, 10);
-                    else if (typeof object.NumUsers === "number")
-                        message.NumUsers = object.NumUsers;
-                    else if (typeof object.NumUsers === "object")
-                        message.NumUsers = new $util.LongBits(object.NumUsers.low >>> 0, object.NumUsers.high >>> 0).toNumber(true);
+                    message.NumUsers = object.NumUsers >>> 0;
                 return message;
             };
     
@@ -6853,27 +6811,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    if ($util.Long) {
-                        var long = new $util.Long(0, 0, true);
-                        object.NumClients = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.NumClients = options.longs === String ? "0" : 0;
-                    if ($util.Long) {
-                        var long = new $util.Long(0, 0, true);
-                        object.NumUsers = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.NumUsers = options.longs === String ? "0" : 0;
+                    object.NumClients = 0;
+                    object.NumUsers = 0;
                 }
                 if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    if (typeof message.NumClients === "number")
-                        object.NumClients = options.longs === String ? String(message.NumClients) : message.NumClients;
-                    else
-                        object.NumClients = options.longs === String ? $util.Long.prototype.toString.call(message.NumClients) : options.longs === Number ? new $util.LongBits(message.NumClients.low >>> 0, message.NumClients.high >>> 0).toNumber(true) : message.NumClients;
+                    object.NumClients = message.NumClients;
                 if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    if (typeof message.NumUsers === "number")
-                        object.NumUsers = options.longs === String ? String(message.NumUsers) : message.NumUsers;
-                    else
-                        object.NumUsers = options.longs === String ? $util.Long.prototype.toString.call(message.NumUsers) : options.longs === Number ? new $util.LongBits(message.NumUsers.low >>> 0, message.NumUsers.high >>> 0).toNumber(true) : message.NumUsers;
+                    object.NumUsers = message.NumUsers;
                 return object;
             };
     

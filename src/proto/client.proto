@@ -22,14 +22,14 @@ enum MethodType {
 }
 
 message Command {
-    uint64 ID = 1;
+    uint32 ID = 1;
     MethodType Method = 2;
     bytes Params = 3;
 }
 
 message Reply {
-    uint64 ID = 1;
-    proto.Error Error = 2;
+    uint32 ID = 1;
+    Error Error = 2;
     bytes Result = 3;
 }
 
@@ -67,7 +67,8 @@ message Leave {
     ClientInfo Info = 1;
 }
 
-message Unsub {}
+message Unsub {
+}
 
 message ConnectRequest {
     string User = 1;
@@ -140,7 +141,8 @@ message UnsubscribeResponse {
     UnsubscribeResult Result = 2;
 }
 
-message UnsubscribeResult {}
+message UnsubscribeResult {
+}
 
 message PublishRequest {
     string Channel = 1;
@@ -152,7 +154,8 @@ message PublishResponse {
     PublishResult Result = 2;
 }
 
-message PublishResult {}
+message PublishResult {
+}
 
 message PresenceRequest {
     string Channel = 1;
@@ -177,8 +180,8 @@ message PresenceStatsResponse {
 }
 
 message PresenceStatsResult {
-    uint64 NumClients = 1;
-    uint64 NumUsers = 2;
+    uint32 NumClients = 1;
+    uint32 NumUsers = 2;
 }
 
 message HistoryRequest {
@@ -207,19 +210,20 @@ message PingResult {
     string Data = 1;
 }
 
-message RPCRequest{
+message RPCRequest {
     bytes Data = 1;
 }
 
-message RPCResponse{
+message RPCResponse {
     Error Error = 1;
     bytes Result = 2;
 }
 
-message MessageRequest{
+message MessageRequest {
     bytes Data = 1;
 }
 
 service Centrifugo {
-    rpc Communicate(stream Command) returns (stream Reply) {}
+    rpc Communicate (stream Command) returns (stream Reply) {
+    }
 }

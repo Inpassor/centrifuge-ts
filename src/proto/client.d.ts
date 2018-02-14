@@ -118,7 +118,7 @@ export namespace proto {
     interface ICommand {
 
         /** Command ID */
-        ID?: (number|Long|null);
+        ID?: (number|null);
 
         /** Command Method */
         Method?: (proto.MethodType|null);
@@ -137,7 +137,7 @@ export namespace proto {
         constructor(properties?: proto.ICommand);
 
         /** Command ID. */
-        public ID: (number|Long);
+        public ID: number;
 
         /** Command Method. */
         public Method: proto.MethodType;
@@ -220,7 +220,7 @@ export namespace proto {
     interface IReply {
 
         /** Reply ID */
-        ID?: (number|Long|null);
+        ID?: (number|null);
 
         /** Reply Error */
         Error?: (proto.IError|null);
@@ -239,7 +239,7 @@ export namespace proto {
         constructor(properties?: proto.IReply);
 
         /** Reply ID. */
-        public ID: (number|Long);
+        public ID: number;
 
         /** Reply Error. */
         public Error?: (proto.IError|null);
@@ -2880,10 +2880,10 @@ export namespace proto {
     interface IPresenceStatsResult {
 
         /** PresenceStatsResult NumClients */
-        NumClients?: (number|Long|null);
+        NumClients?: (number|null);
 
         /** PresenceStatsResult NumUsers */
-        NumUsers?: (number|Long|null);
+        NumUsers?: (number|null);
     }
 
     /** Represents a PresenceStatsResult. */
@@ -2896,10 +2896,10 @@ export namespace proto {
         constructor(properties?: proto.IPresenceStatsResult);
 
         /** PresenceStatsResult NumClients. */
-        public NumClients: (number|Long);
+        public NumClients: number;
 
         /** PresenceStatsResult NumUsers. */
-        public NumUsers: (number|Long);
+        public NumUsers: number;
 
         /**
          * Creates a new PresenceStatsResult instance using the specified properties.
