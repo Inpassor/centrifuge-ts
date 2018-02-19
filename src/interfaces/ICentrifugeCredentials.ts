@@ -1,6 +1,6 @@
 export interface ICentrifugeCredentials {
     user?: string;
-    time?: string;
+    exp?: string;
     sign?: string;
     info?: string;
 }

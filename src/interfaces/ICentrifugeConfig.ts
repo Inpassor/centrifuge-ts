@@ -27,7 +27,7 @@ export interface ICentrifugeConfig {
     authHeaders?: Object;
     authParams?: Object;
     user?: string;
-    time?: string;
+    exp?: string;
     sign?: string;
     url?: string;
 }

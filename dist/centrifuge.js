@@ -478,17 +478,17 @@ var Centrifuge = (function (_super) {
                 Centrifuge.log('Configuration parameter \'user\' expected to be string');
             }
         }
-        if (!config.time) {
+        if (!config.exp) {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'time\'');
             }
             else {
-                this._debug('Configuration parameter \'time\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
             }
         }
         else {
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.time)) {
-                Centrifuge.log('Configuration parameter \'time\' expected to be string');
+            if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["d" /* isString */])(config.exp)) {
+                Centrifuge.log('Configuration parameter \'exp\' expected to be string');
             }
         }
         if (!config.sign) {
@@ -736,7 +736,7 @@ var Centrifuge = (function (_super) {
             }
             _this._numRefreshFailed = 0;
             _this._config.user = data.user;
-            _this._config.time = data.time;
+            _this._config.exp = data.exp;
             _this._config.sign = data.sign;
             if ('info' in data) {
                 _this._config.info = data.info;
@@ -992,7 +992,7 @@ var Centrifuge = (function (_super) {
                 }
             };
             if (!_this._config.insecure) {
-                msg.params.time = _this._config.time;
+                msg.params.exp = _this._config.exp;
                 msg.params.sign = _this._config.sign;
             }
             _this._latencyStart = new Date();

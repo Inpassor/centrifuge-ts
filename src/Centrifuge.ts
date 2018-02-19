@@ -438,15 +438,15 @@ export class Centrifuge extends Observable {
             }
         }
 
-        if (!config.time) {
+        if (!config.exp) {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'time\'');
             } else {
-                this._debug('Configuration parameter \'time\' not found but this is OK for insecure mode');
+                this._debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
             }
         } else {
-            if (!isString(config.time)) {
-                Centrifuge.log('Configuration parameter \'time\' expected to be string');
+            if (!isString(config.exp)) {
+                Centrifuge.log('Configuration parameter \'exp\' expected to be string');
             }
         }
 
@@ -724,7 +724,7 @@ export class Centrifuge extends Observable {
             }
             this._numRefreshFailed = 0;
             this._config.user = data.user;
-            this._config.time = data.time;
+            this._config.exp = data.exp;
             this._config.sign = data.sign;
             if ('info' in data) {
                 this._config.info = data.info;
@@ -1005,7 +1005,7 @@ export class Centrifuge extends Observable {
 
             if (!this._config.insecure) {
                 // in insecure client mode we don't need time and sign.
-                msg.params.time = this._config.time;
+                msg.params.exp = this._config.exp;
                 msg.params.sign = this._config.sign;
             }
             this._latencyStart = new Date();
