@@ -125,18 +125,17 @@ export class Centrifuge extends Observable {
         // create request to authEndpoint with collected private channels
         // to ask if this client can subscribe on each channel
         this._isAuthBatching = false;
-        const authChannels = [...this._authChannels];
-        this._authChannels = {};
         const channels = [];
 
-        for (channel in authChannels) {
-            if (authChannels.hasOwnProperty(channel)) {
+        for (channel in this._authChannels) {
+            if (this._authChannels.hasOwnProperty(channel)) {
                 if (!this._getSub(channel)) {
                     continue;
                 }
                 channels.push(channel);
             }
         }
+        this._authChannels = {};
 
         if (channels.length === 0) {
             return;
