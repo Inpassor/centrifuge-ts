@@ -21,7 +21,7 @@
         "install": "install",
         "proto": "pbjs ./node_modules/centrifuge/misc/proto/client.proto -t static-module -o ./src/Proto.js && pbts -o ./src/Proto.d.ts ./src/Proto.js",
         "build": "node_modules/.bin/webpack --mode production",
-        "watch": "node_modules/.bin/webpack --mode development --watch"
+        "watch": "node_modules/.bin/webpack --mode production --watch"
     },
     "contributors": [
         "Alexander Emelin",
