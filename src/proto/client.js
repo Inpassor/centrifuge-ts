@@ -31,8 +31,8 @@
              * Properties of an Error.
              * @memberof proto
              * @interface IError
-             * @property {number|null} [Code] Error Code
-             * @property {string|null} [Message] Error Message
+             * @property {number|null} [code] Error code
+             * @property {string|null} [message] Error message
              */
     
             /**
@@ -51,20 +51,20 @@
             }
     
             /**
-             * Error Code.
-             * @member {number} Code
+             * Error code.
+             * @member {number} code
              * @memberof proto.Error
              * @instance
              */
-            Error.prototype.Code = 0;
+            Error.prototype.code = 0;
     
             /**
-             * Error Message.
-             * @member {string} Message
+             * Error message.
+             * @member {string} message
              * @memberof proto.Error
              * @instance
              */
-            Error.prototype.Message = "";
+            Error.prototype.message = "";
     
             /**
              * Creates a new Error instance using the specified properties.
@@ -90,10 +90,10 @@
             Error.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Code != null && message.hasOwnProperty("Code"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.Code);
-                if (message.Message != null && message.hasOwnProperty("Message"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Message);
+                if (message.code != null && message.hasOwnProperty("code"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.code);
+                if (message.message != null && message.hasOwnProperty("message"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.message);
                 return writer;
             };
     
@@ -129,10 +129,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Code = reader.uint32();
+                        message.code = reader.uint32();
                         break;
                     case 2:
-                        message.Message = reader.string();
+                        message.message = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -169,12 +169,12 @@
             Error.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Code != null && message.hasOwnProperty("Code"))
-                    if (!$util.isInteger(message.Code))
-                        return "Code: integer expected";
-                if (message.Message != null && message.hasOwnProperty("Message"))
-                    if (!$util.isString(message.Message))
-                        return "Message: string expected";
+                if (message.code != null && message.hasOwnProperty("code"))
+                    if (!$util.isInteger(message.code))
+                        return "code: integer expected";
+                if (message.message != null && message.hasOwnProperty("message"))
+                    if (!$util.isString(message.message))
+                        return "message: string expected";
                 return null;
             };
     
@@ -190,10 +190,10 @@
                 if (object instanceof $root.proto.Error)
                     return object;
                 var message = new $root.proto.Error();
-                if (object.Code != null)
-                    message.Code = object.Code >>> 0;
-                if (object.Message != null)
-                    message.Message = String(object.Message);
+                if (object.code != null)
+                    message.code = object.code >>> 0;
+                if (object.message != null)
+                    message.message = String(object.message);
                 return message;
             };
     
@@ -211,13 +211,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Code = 0;
-                    object.Message = "";
+                    object.code = 0;
+                    object.message = "";
                 }
-                if (message.Code != null && message.hasOwnProperty("Code"))
-                    object.Code = message.Code;
-                if (message.Message != null && message.hasOwnProperty("Message"))
-                    object.Message = message.Message;
+                if (message.code != null && message.hasOwnProperty("code"))
+                    object.code = message.code;
+                if (message.message != null && message.hasOwnProperty("message"))
+                    object.message = message.message;
                 return object;
             };
     
@@ -273,9 +273,9 @@
              * Properties of a Command.
              * @memberof proto
              * @interface ICommand
-             * @property {number|null} [ID] Command ID
-             * @property {proto.MethodType|null} [Method] Command Method
-             * @property {Uint8Array|null} [Params] Command Params
+             * @property {number|null} [id] Command id
+             * @property {proto.MethodType|null} [method] Command method
+             * @property {Uint8Array|null} [params] Command params
              */
     
             /**
@@ -294,28 +294,28 @@
             }
     
             /**
-             * Command ID.
-             * @member {number} ID
+             * Command id.
+             * @member {number} id
              * @memberof proto.Command
              * @instance
              */
-            Command.prototype.ID = 0;
+            Command.prototype.id = 0;
     
             /**
-             * Command Method.
-             * @member {proto.MethodType} Method
+             * Command method.
+             * @member {proto.MethodType} method
              * @memberof proto.Command
              * @instance
              */
-            Command.prototype.Method = 0;
+            Command.prototype.method = 0;
     
             /**
-             * Command Params.
-             * @member {Uint8Array} Params
+             * Command params.
+             * @member {Uint8Array} params
              * @memberof proto.Command
              * @instance
              */
-            Command.prototype.Params = $util.newBuffer([]);
+            Command.prototype.params = $util.newBuffer([]);
     
             /**
              * Creates a new Command instance using the specified properties.
@@ -341,12 +341,12 @@
             Command.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.ID);
-                if (message.Method != null && message.hasOwnProperty("Method"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Method);
-                if (message.Params != null && message.hasOwnProperty("Params"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.Params);
+                if (message.id != null && message.hasOwnProperty("id"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.id);
+                if (message.method != null && message.hasOwnProperty("method"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.method);
+                if (message.params != null && message.hasOwnProperty("params"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.params);
                 return writer;
             };
     
@@ -382,13 +382,13 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.ID = reader.uint32();
+                        message.id = reader.uint32();
                         break;
                     case 2:
-                        message.Method = reader.int32();
+                        message.method = reader.int32();
                         break;
                     case 3:
-                        message.Params = reader.bytes();
+                        message.params = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -425,13 +425,13 @@
             Command.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (!$util.isInteger(message.ID))
-                        return "ID: integer expected";
-                if (message.Method != null && message.hasOwnProperty("Method"))
-                    switch (message.Method) {
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isInteger(message.id))
+                        return "id: integer expected";
+                if (message.method != null && message.hasOwnProperty("method"))
+                    switch (message.method) {
                     default:
-                        return "Method: enum value expected";
+                        return "method: enum value expected";
                     case 0:
                     case 1:
                     case 2:
@@ -445,9 +445,9 @@
                     case 10:
                         break;
                     }
-                if (message.Params != null && message.hasOwnProperty("Params"))
-                    if (!(message.Params && typeof message.Params.length === "number" || $util.isString(message.Params)))
-                        return "Params: buffer expected";
+                if (message.params != null && message.hasOwnProperty("params"))
+                    if (!(message.params && typeof message.params.length === "number" || $util.isString(message.params)))
+                        return "params: buffer expected";
                 return null;
             };
     
@@ -463,59 +463,59 @@
                 if (object instanceof $root.proto.Command)
                     return object;
                 var message = new $root.proto.Command();
-                if (object.ID != null)
-                    message.ID = object.ID >>> 0;
-                switch (object.Method) {
+                if (object.id != null)
+                    message.id = object.id >>> 0;
+                switch (object.method) {
                 case "CONNECT":
                 case 0:
-                    message.Method = 0;
+                    message.method = 0;
                     break;
                 case "REFRESH":
                 case 1:
-                    message.Method = 1;
+                    message.method = 1;
                     break;
                 case "SUBSCRIBE":
                 case 2:
-                    message.Method = 2;
+                    message.method = 2;
                     break;
                 case "UNSUBSCRIBE":
                 case 3:
-                    message.Method = 3;
+                    message.method = 3;
                     break;
                 case "PUBLISH":
                 case 4:
-                    message.Method = 4;
+                    message.method = 4;
                     break;
                 case "PRESENCE":
                 case 5:
-                    message.Method = 5;
+                    message.method = 5;
                     break;
                 case "PRESENCE_STATS":
                 case 6:
-                    message.Method = 6;
+                    message.method = 6;
                     break;
                 case "HISTORY":
                 case 7:
-                    message.Method = 7;
+                    message.method = 7;
                     break;
                 case "PING":
                 case 8:
-                    message.Method = 8;
+                    message.method = 8;
                     break;
                 case "RPC":
                 case 9:
-                    message.Method = 9;
+                    message.method = 9;
                     break;
                 case "MESSAGE":
                 case 10:
-                    message.Method = 10;
+                    message.method = 10;
                     break;
                 }
-                if (object.Params != null)
-                    if (typeof object.Params === "string")
-                        $util.base64.decode(object.Params, message.Params = $util.newBuffer($util.base64.length(object.Params)), 0);
-                    else if (object.Params.length)
-                        message.Params = object.Params;
+                if (object.params != null)
+                    if (typeof object.params === "string")
+                        $util.base64.decode(object.params, message.params = $util.newBuffer($util.base64.length(object.params)), 0);
+                    else if (object.params.length)
+                        message.params = object.params;
                 return message;
             };
     
@@ -533,16 +533,16 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.ID = 0;
-                    object.Method = options.enums === String ? "CONNECT" : 0;
-                    object.Params = options.bytes === String ? "" : [];
+                    object.id = 0;
+                    object.method = options.enums === String ? "CONNECT" : 0;
+                    object.params = options.bytes === String ? "" : [];
                 }
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    object.ID = message.ID;
-                if (message.Method != null && message.hasOwnProperty("Method"))
-                    object.Method = options.enums === String ? $root.proto.MethodType[message.Method] : message.Method;
-                if (message.Params != null && message.hasOwnProperty("Params"))
-                    object.Params = options.bytes === String ? $util.base64.encode(message.Params, 0, message.Params.length) : options.bytes === Array ? Array.prototype.slice.call(message.Params) : message.Params;
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.method != null && message.hasOwnProperty("method"))
+                    object.method = options.enums === String ? $root.proto.MethodType[message.method] : message.method;
+                if (message.params != null && message.hasOwnProperty("params"))
+                    object.params = options.bytes === String ? $util.base64.encode(message.params, 0, message.params.length) : options.bytes === Array ? Array.prototype.slice.call(message.params) : message.params;
                 return object;
             };
     
@@ -566,9 +566,9 @@
              * Properties of a Reply.
              * @memberof proto
              * @interface IReply
-             * @property {number|null} [ID] Reply ID
-             * @property {proto.IError|null} [Error] Reply Error
-             * @property {Uint8Array|null} [Result] Reply Result
+             * @property {number|null} [id] Reply id
+             * @property {proto.IError|null} [error] Reply error
+             * @property {Uint8Array|null} [result] Reply result
              */
     
             /**
@@ -587,28 +587,28 @@
             }
     
             /**
-             * Reply ID.
-             * @member {number} ID
+             * Reply id.
+             * @member {number} id
              * @memberof proto.Reply
              * @instance
              */
-            Reply.prototype.ID = 0;
+            Reply.prototype.id = 0;
     
             /**
-             * Reply Error.
-             * @member {proto.IError|null|undefined} Error
+             * Reply error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.Reply
              * @instance
              */
-            Reply.prototype.Error = null;
+            Reply.prototype.error = null;
     
             /**
-             * Reply Result.
-             * @member {Uint8Array} Result
+             * Reply result.
+             * @member {Uint8Array} result
              * @memberof proto.Reply
              * @instance
              */
-            Reply.prototype.Result = $util.newBuffer([]);
+            Reply.prototype.result = $util.newBuffer([]);
     
             /**
              * Creates a new Reply instance using the specified properties.
@@ -634,12 +634,12 @@
             Reply.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.ID);
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.Result);
+                if (message.id != null && message.hasOwnProperty("id"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.id);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.result);
                 return writer;
             };
     
@@ -675,13 +675,13 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.ID = reader.uint32();
+                        message.id = reader.uint32();
                         break;
                     case 2:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 3:
-                        message.Result = reader.bytes();
+                        message.result = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -718,17 +718,17 @@
             Reply.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    if (!$util.isInteger(message.ID))
-                        return "ID: integer expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isInteger(message.id))
+                        return "id: integer expected";
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    if (!(message.Result && typeof message.Result.length === "number" || $util.isString(message.Result)))
-                        return "Result: buffer expected";
+                if (message.result != null && message.hasOwnProperty("result"))
+                    if (!(message.result && typeof message.result.length === "number" || $util.isString(message.result)))
+                        return "result: buffer expected";
                 return null;
             };
     
@@ -744,18 +744,18 @@
                 if (object instanceof $root.proto.Reply)
                     return object;
                 var message = new $root.proto.Reply();
-                if (object.ID != null)
-                    message.ID = object.ID >>> 0;
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.Reply.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.id != null)
+                    message.id = object.id >>> 0;
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.Reply.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null)
-                    if (typeof object.Result === "string")
-                        $util.base64.decode(object.Result, message.Result = $util.newBuffer($util.base64.length(object.Result)), 0);
-                    else if (object.Result.length)
-                        message.Result = object.Result;
+                if (object.result != null)
+                    if (typeof object.result === "string")
+                        $util.base64.decode(object.result, message.result = $util.newBuffer($util.base64.length(object.result)), 0);
+                    else if (object.result.length)
+                        message.result = object.result;
                 return message;
             };
     
@@ -773,16 +773,16 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.ID = 0;
-                    object.Error = null;
-                    object.Result = options.bytes === String ? "" : [];
+                    object.id = 0;
+                    object.error = null;
+                    object.result = options.bytes === String ? "" : [];
                 }
-                if (message.ID != null && message.hasOwnProperty("ID"))
-                    object.ID = message.ID;
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = options.bytes === String ? $util.base64.encode(message.Result, 0, message.Result.length) : options.bytes === Array ? Array.prototype.slice.call(message.Result) : message.Result;
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = options.bytes === String ? $util.base64.encode(message.result, 0, message.result.length) : options.bytes === Array ? Array.prototype.slice.call(message.result) : message.result;
                 return object;
             };
     
@@ -824,9 +824,9 @@
              * Properties of a Message.
              * @memberof proto
              * @interface IMessage
-             * @property {proto.MessageType|null} [Type] Message Type
-             * @property {string|null} [Channel] Message Channel
-             * @property {Uint8Array|null} [Data] Message Data
+             * @property {proto.MessageType|null} [type] Message type
+             * @property {string|null} [channel] Message channel
+             * @property {Uint8Array|null} [data] Message data
              */
     
             /**
@@ -845,28 +845,28 @@
             }
     
             /**
-             * Message Type.
-             * @member {proto.MessageType} Type
+             * Message type.
+             * @member {proto.MessageType} type
              * @memberof proto.Message
              * @instance
              */
-            Message.prototype.Type = 0;
+            Message.prototype.type = 0;
     
             /**
-             * Message Channel.
-             * @member {string} Channel
+             * Message channel.
+             * @member {string} channel
              * @memberof proto.Message
              * @instance
              */
-            Message.prototype.Channel = "";
+            Message.prototype.channel = "";
     
             /**
-             * Message Data.
-             * @member {Uint8Array} Data
+             * Message data.
+             * @member {Uint8Array} data
              * @memberof proto.Message
              * @instance
              */
-            Message.prototype.Data = $util.newBuffer([]);
+            Message.prototype.data = $util.newBuffer([]);
     
             /**
              * Creates a new Message instance using the specified properties.
@@ -892,12 +892,12 @@
             Message.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Type != null && message.hasOwnProperty("Type"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.Type);
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Channel);
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.Data);
+                if (message.type != null && message.hasOwnProperty("type"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.type);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.channel);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.data);
                 return writer;
             };
     
@@ -933,13 +933,13 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Type = reader.int32();
+                        message.type = reader.int32();
                         break;
                     case 2:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     case 3:
-                        message.Data = reader.bytes();
+                        message.data = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -976,22 +976,22 @@
             Message.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Type != null && message.hasOwnProperty("Type"))
-                    switch (message.Type) {
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
                     default:
-                        return "Type: enum value expected";
+                        return "type: enum value expected";
                     case 0:
                     case 1:
                     case 2:
                     case 3:
                         break;
                     }
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
-                        return "Data: buffer expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
                 return null;
             };
     
@@ -1007,31 +1007,31 @@
                 if (object instanceof $root.proto.Message)
                     return object;
                 var message = new $root.proto.Message();
-                switch (object.Type) {
+                switch (object.type) {
                 case "PUBLICATION":
                 case 0:
-                    message.Type = 0;
+                    message.type = 0;
                     break;
                 case "JOIN":
                 case 1:
-                    message.Type = 1;
+                    message.type = 1;
                     break;
                 case "LEAVE":
                 case 2:
-                    message.Type = 2;
+                    message.type = 2;
                     break;
                 case "UNSUB":
                 case 3:
-                    message.Type = 3;
+                    message.type = 3;
                     break;
                 }
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
-                if (object.Data != null)
-                    if (typeof object.Data === "string")
-                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
-                    else if (object.Data.length)
-                        message.Data = object.Data;
+                if (object.channel != null)
+                    message.channel = String(object.channel);
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
                 return message;
             };
     
@@ -1049,16 +1049,16 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Type = options.enums === String ? "PUBLICATION" : 0;
-                    object.Channel = "";
-                    object.Data = options.bytes === String ? "" : [];
+                    object.type = options.enums === String ? "PUBLICATION" : 0;
+                    object.channel = "";
+                    object.data = options.bytes === String ? "" : [];
                 }
-                if (message.Type != null && message.hasOwnProperty("Type"))
-                    object.Type = options.enums === String ? $root.proto.MessageType[message.Type] : message.Type;
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.proto.MessageType[message.type] : message.type;
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
                 return object;
             };
     
@@ -1082,10 +1082,10 @@
              * Properties of a ClientInfo.
              * @memberof proto
              * @interface IClientInfo
-             * @property {string|null} [User] ClientInfo User
-             * @property {string|null} [Client] ClientInfo Client
-             * @property {Uint8Array|null} [ConnInfo] ClientInfo ConnInfo
-             * @property {Uint8Array|null} [ChanInfo] ClientInfo ChanInfo
+             * @property {string|null} [user] ClientInfo user
+             * @property {string|null} [client] ClientInfo client
+             * @property {Uint8Array|null} [connInfo] ClientInfo connInfo
+             * @property {Uint8Array|null} [chanInfo] ClientInfo chanInfo
              */
     
             /**
@@ -1104,36 +1104,36 @@
             }
     
             /**
-             * ClientInfo User.
-             * @member {string} User
+             * ClientInfo user.
+             * @member {string} user
              * @memberof proto.ClientInfo
              * @instance
              */
-            ClientInfo.prototype.User = "";
+            ClientInfo.prototype.user = "";
     
             /**
-             * ClientInfo Client.
-             * @member {string} Client
+             * ClientInfo client.
+             * @member {string} client
              * @memberof proto.ClientInfo
              * @instance
              */
-            ClientInfo.prototype.Client = "";
+            ClientInfo.prototype.client = "";
     
             /**
-             * ClientInfo ConnInfo.
-             * @member {Uint8Array} ConnInfo
+             * ClientInfo connInfo.
+             * @member {Uint8Array} connInfo
              * @memberof proto.ClientInfo
              * @instance
              */
-            ClientInfo.prototype.ConnInfo = $util.newBuffer([]);
+            ClientInfo.prototype.connInfo = $util.newBuffer([]);
     
             /**
-             * ClientInfo ChanInfo.
-             * @member {Uint8Array} ChanInfo
+             * ClientInfo chanInfo.
+             * @member {Uint8Array} chanInfo
              * @memberof proto.ClientInfo
              * @instance
              */
-            ClientInfo.prototype.ChanInfo = $util.newBuffer([]);
+            ClientInfo.prototype.chanInfo = $util.newBuffer([]);
     
             /**
              * Creates a new ClientInfo instance using the specified properties.
@@ -1159,14 +1159,14 @@
             ClientInfo.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.User != null && message.hasOwnProperty("User"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.User);
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Client);
-                if (message.ConnInfo != null && message.hasOwnProperty("ConnInfo"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.ConnInfo);
-                if (message.ChanInfo != null && message.hasOwnProperty("ChanInfo"))
-                    writer.uint32(/* id 4, wireType 2 =*/34).bytes(message.ChanInfo);
+                if (message.user != null && message.hasOwnProperty("user"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.user);
+                if (message.client != null && message.hasOwnProperty("client"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.client);
+                if (message.connInfo != null && message.hasOwnProperty("connInfo"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.connInfo);
+                if (message.chanInfo != null && message.hasOwnProperty("chanInfo"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).bytes(message.chanInfo);
                 return writer;
             };
     
@@ -1202,16 +1202,16 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.User = reader.string();
+                        message.user = reader.string();
                         break;
                     case 2:
-                        message.Client = reader.string();
+                        message.client = reader.string();
                         break;
                     case 3:
-                        message.ConnInfo = reader.bytes();
+                        message.connInfo = reader.bytes();
                         break;
                     case 4:
-                        message.ChanInfo = reader.bytes();
+                        message.chanInfo = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1248,18 +1248,18 @@
             ClientInfo.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.User != null && message.hasOwnProperty("User"))
-                    if (!$util.isString(message.User))
-                        return "User: string expected";
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    if (!$util.isString(message.Client))
-                        return "Client: string expected";
-                if (message.ConnInfo != null && message.hasOwnProperty("ConnInfo"))
-                    if (!(message.ConnInfo && typeof message.ConnInfo.length === "number" || $util.isString(message.ConnInfo)))
-                        return "ConnInfo: buffer expected";
-                if (message.ChanInfo != null && message.hasOwnProperty("ChanInfo"))
-                    if (!(message.ChanInfo && typeof message.ChanInfo.length === "number" || $util.isString(message.ChanInfo)))
-                        return "ChanInfo: buffer expected";
+                if (message.user != null && message.hasOwnProperty("user"))
+                    if (!$util.isString(message.user))
+                        return "user: string expected";
+                if (message.client != null && message.hasOwnProperty("client"))
+                    if (!$util.isString(message.client))
+                        return "client: string expected";
+                if (message.connInfo != null && message.hasOwnProperty("connInfo"))
+                    if (!(message.connInfo && typeof message.connInfo.length === "number" || $util.isString(message.connInfo)))
+                        return "connInfo: buffer expected";
+                if (message.chanInfo != null && message.hasOwnProperty("chanInfo"))
+                    if (!(message.chanInfo && typeof message.chanInfo.length === "number" || $util.isString(message.chanInfo)))
+                        return "chanInfo: buffer expected";
                 return null;
             };
     
@@ -1275,20 +1275,20 @@
                 if (object instanceof $root.proto.ClientInfo)
                     return object;
                 var message = new $root.proto.ClientInfo();
-                if (object.User != null)
-                    message.User = String(object.User);
-                if (object.Client != null)
-                    message.Client = String(object.Client);
-                if (object.ConnInfo != null)
-                    if (typeof object.ConnInfo === "string")
-                        $util.base64.decode(object.ConnInfo, message.ConnInfo = $util.newBuffer($util.base64.length(object.ConnInfo)), 0);
-                    else if (object.ConnInfo.length)
-                        message.ConnInfo = object.ConnInfo;
-                if (object.ChanInfo != null)
-                    if (typeof object.ChanInfo === "string")
-                        $util.base64.decode(object.ChanInfo, message.ChanInfo = $util.newBuffer($util.base64.length(object.ChanInfo)), 0);
-                    else if (object.ChanInfo.length)
-                        message.ChanInfo = object.ChanInfo;
+                if (object.user != null)
+                    message.user = String(object.user);
+                if (object.client != null)
+                    message.client = String(object.client);
+                if (object.connInfo != null)
+                    if (typeof object.connInfo === "string")
+                        $util.base64.decode(object.connInfo, message.connInfo = $util.newBuffer($util.base64.length(object.connInfo)), 0);
+                    else if (object.connInfo.length)
+                        message.connInfo = object.connInfo;
+                if (object.chanInfo != null)
+                    if (typeof object.chanInfo === "string")
+                        $util.base64.decode(object.chanInfo, message.chanInfo = $util.newBuffer($util.base64.length(object.chanInfo)), 0);
+                    else if (object.chanInfo.length)
+                        message.chanInfo = object.chanInfo;
                 return message;
             };
     
@@ -1306,19 +1306,19 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.User = "";
-                    object.Client = "";
-                    object.ConnInfo = options.bytes === String ? "" : [];
-                    object.ChanInfo = options.bytes === String ? "" : [];
+                    object.user = "";
+                    object.client = "";
+                    object.connInfo = options.bytes === String ? "" : [];
+                    object.chanInfo = options.bytes === String ? "" : [];
                 }
-                if (message.User != null && message.hasOwnProperty("User"))
-                    object.User = message.User;
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    object.Client = message.Client;
-                if (message.ConnInfo != null && message.hasOwnProperty("ConnInfo"))
-                    object.ConnInfo = options.bytes === String ? $util.base64.encode(message.ConnInfo, 0, message.ConnInfo.length) : options.bytes === Array ? Array.prototype.slice.call(message.ConnInfo) : message.ConnInfo;
-                if (message.ChanInfo != null && message.hasOwnProperty("ChanInfo"))
-                    object.ChanInfo = options.bytes === String ? $util.base64.encode(message.ChanInfo, 0, message.ChanInfo.length) : options.bytes === Array ? Array.prototype.slice.call(message.ChanInfo) : message.ChanInfo;
+                if (message.user != null && message.hasOwnProperty("user"))
+                    object.user = message.user;
+                if (message.client != null && message.hasOwnProperty("client"))
+                    object.client = message.client;
+                if (message.connInfo != null && message.hasOwnProperty("connInfo"))
+                    object.connInfo = options.bytes === String ? $util.base64.encode(message.connInfo, 0, message.connInfo.length) : options.bytes === Array ? Array.prototype.slice.call(message.connInfo) : message.connInfo;
+                if (message.chanInfo != null && message.hasOwnProperty("chanInfo"))
+                    object.chanInfo = options.bytes === String ? $util.base64.encode(message.chanInfo, 0, message.chanInfo.length) : options.bytes === Array ? Array.prototype.slice.call(message.chanInfo) : message.chanInfo;
                 return object;
             };
     
@@ -1342,9 +1342,9 @@
              * Properties of a Publication.
              * @memberof proto
              * @interface IPublication
-             * @property {string|null} [UID] Publication UID
-             * @property {Uint8Array|null} [Data] Publication Data
-             * @property {proto.IClientInfo|null} [Info] Publication Info
+             * @property {string|null} [uid] Publication uid
+             * @property {Uint8Array|null} [data] Publication data
+             * @property {proto.IClientInfo|null} [info] Publication info
              */
     
             /**
@@ -1363,28 +1363,28 @@
             }
     
             /**
-             * Publication UID.
-             * @member {string} UID
+             * Publication uid.
+             * @member {string} uid
              * @memberof proto.Publication
              * @instance
              */
-            Publication.prototype.UID = "";
+            Publication.prototype.uid = "";
     
             /**
-             * Publication Data.
-             * @member {Uint8Array} Data
+             * Publication data.
+             * @member {Uint8Array} data
              * @memberof proto.Publication
              * @instance
              */
-            Publication.prototype.Data = $util.newBuffer([]);
+            Publication.prototype.data = $util.newBuffer([]);
     
             /**
-             * Publication Info.
-             * @member {proto.IClientInfo|null|undefined} Info
+             * Publication info.
+             * @member {proto.IClientInfo|null|undefined} info
              * @memberof proto.Publication
              * @instance
              */
-            Publication.prototype.Info = null;
+            Publication.prototype.info = null;
     
             /**
              * Creates a new Publication instance using the specified properties.
@@ -1410,12 +1410,12 @@
             Publication.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.UID != null && message.hasOwnProperty("UID"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.UID);
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.Data);
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    $root.proto.ClientInfo.encode(message.Info, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.uid != null && message.hasOwnProperty("uid"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.uid);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.data);
+                if (message.info != null && message.hasOwnProperty("info"))
+                    $root.proto.ClientInfo.encode(message.info, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 return writer;
             };
     
@@ -1451,13 +1451,13 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.UID = reader.string();
+                        message.uid = reader.string();
                         break;
                     case 2:
-                        message.Data = reader.bytes();
+                        message.data = reader.bytes();
                         break;
                     case 3:
-                        message.Info = $root.proto.ClientInfo.decode(reader, reader.uint32());
+                        message.info = $root.proto.ClientInfo.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1494,16 +1494,16 @@
             Publication.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.UID != null && message.hasOwnProperty("UID"))
-                    if (!$util.isString(message.UID))
-                        return "UID: string expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
-                        return "Data: buffer expected";
-                if (message.Info != null && message.hasOwnProperty("Info")) {
-                    var error = $root.proto.ClientInfo.verify(message.Info);
+                if (message.uid != null && message.hasOwnProperty("uid"))
+                    if (!$util.isString(message.uid))
+                        return "uid: string expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
+                if (message.info != null && message.hasOwnProperty("info")) {
+                    var error = $root.proto.ClientInfo.verify(message.info);
                     if (error)
-                        return "Info." + error;
+                        return "info." + error;
                 }
                 return null;
             };
@@ -1520,17 +1520,17 @@
                 if (object instanceof $root.proto.Publication)
                     return object;
                 var message = new $root.proto.Publication();
-                if (object.UID != null)
-                    message.UID = String(object.UID);
-                if (object.Data != null)
-                    if (typeof object.Data === "string")
-                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
-                    else if (object.Data.length)
-                        message.Data = object.Data;
-                if (object.Info != null) {
-                    if (typeof object.Info !== "object")
-                        throw TypeError(".proto.Publication.Info: object expected");
-                    message.Info = $root.proto.ClientInfo.fromObject(object.Info);
+                if (object.uid != null)
+                    message.uid = String(object.uid);
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
+                if (object.info != null) {
+                    if (typeof object.info !== "object")
+                        throw TypeError(".proto.Publication.info: object expected");
+                    message.info = $root.proto.ClientInfo.fromObject(object.info);
                 }
                 return message;
             };
@@ -1549,16 +1549,16 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.UID = "";
-                    object.Data = options.bytes === String ? "" : [];
-                    object.Info = null;
+                    object.uid = "";
+                    object.data = options.bytes === String ? "" : [];
+                    object.info = null;
                 }
-                if (message.UID != null && message.hasOwnProperty("UID"))
-                    object.UID = message.UID;
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = $root.proto.ClientInfo.toObject(message.Info, options);
+                if (message.uid != null && message.hasOwnProperty("uid"))
+                    object.uid = message.uid;
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = $root.proto.ClientInfo.toObject(message.info, options);
                 return object;
             };
     
@@ -1582,7 +1582,7 @@
              * Properties of a Join.
              * @memberof proto
              * @interface IJoin
-             * @property {proto.IClientInfo|null} [Info] Join Info
+             * @property {proto.IClientInfo|null} [info] Join info
              */
     
             /**
@@ -1601,12 +1601,12 @@
             }
     
             /**
-             * Join Info.
-             * @member {proto.IClientInfo|null|undefined} Info
+             * Join info.
+             * @member {proto.IClientInfo|null|undefined} info
              * @memberof proto.Join
              * @instance
              */
-            Join.prototype.Info = null;
+            Join.prototype.info = null;
     
             /**
              * Creates a new Join instance using the specified properties.
@@ -1632,8 +1632,8 @@
             Join.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    $root.proto.ClientInfo.encode(message.Info, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.info != null && message.hasOwnProperty("info"))
+                    $root.proto.ClientInfo.encode(message.info, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 return writer;
             };
     
@@ -1669,7 +1669,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Info = $root.proto.ClientInfo.decode(reader, reader.uint32());
+                        message.info = $root.proto.ClientInfo.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1706,10 +1706,10 @@
             Join.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Info != null && message.hasOwnProperty("Info")) {
-                    var error = $root.proto.ClientInfo.verify(message.Info);
+                if (message.info != null && message.hasOwnProperty("info")) {
+                    var error = $root.proto.ClientInfo.verify(message.info);
                     if (error)
-                        return "Info." + error;
+                        return "info." + error;
                 }
                 return null;
             };
@@ -1726,10 +1726,10 @@
                 if (object instanceof $root.proto.Join)
                     return object;
                 var message = new $root.proto.Join();
-                if (object.Info != null) {
-                    if (typeof object.Info !== "object")
-                        throw TypeError(".proto.Join.Info: object expected");
-                    message.Info = $root.proto.ClientInfo.fromObject(object.Info);
+                if (object.info != null) {
+                    if (typeof object.info !== "object")
+                        throw TypeError(".proto.Join.info: object expected");
+                    message.info = $root.proto.ClientInfo.fromObject(object.info);
                 }
                 return message;
             };
@@ -1748,9 +1748,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Info = null;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = $root.proto.ClientInfo.toObject(message.Info, options);
+                    object.info = null;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = $root.proto.ClientInfo.toObject(message.info, options);
                 return object;
             };
     
@@ -1774,7 +1774,7 @@
              * Properties of a Leave.
              * @memberof proto
              * @interface ILeave
-             * @property {proto.IClientInfo|null} [Info] Leave Info
+             * @property {proto.IClientInfo|null} [info] Leave info
              */
     
             /**
@@ -1793,12 +1793,12 @@
             }
     
             /**
-             * Leave Info.
-             * @member {proto.IClientInfo|null|undefined} Info
+             * Leave info.
+             * @member {proto.IClientInfo|null|undefined} info
              * @memberof proto.Leave
              * @instance
              */
-            Leave.prototype.Info = null;
+            Leave.prototype.info = null;
     
             /**
              * Creates a new Leave instance using the specified properties.
@@ -1824,8 +1824,8 @@
             Leave.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    $root.proto.ClientInfo.encode(message.Info, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.info != null && message.hasOwnProperty("info"))
+                    $root.proto.ClientInfo.encode(message.info, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 return writer;
             };
     
@@ -1861,7 +1861,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Info = $root.proto.ClientInfo.decode(reader, reader.uint32());
+                        message.info = $root.proto.ClientInfo.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1898,10 +1898,10 @@
             Leave.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Info != null && message.hasOwnProperty("Info")) {
-                    var error = $root.proto.ClientInfo.verify(message.Info);
+                if (message.info != null && message.hasOwnProperty("info")) {
+                    var error = $root.proto.ClientInfo.verify(message.info);
                     if (error)
-                        return "Info." + error;
+                        return "info." + error;
                 }
                 return null;
             };
@@ -1918,10 +1918,10 @@
                 if (object instanceof $root.proto.Leave)
                     return object;
                 var message = new $root.proto.Leave();
-                if (object.Info != null) {
-                    if (typeof object.Info !== "object")
-                        throw TypeError(".proto.Leave.Info: object expected");
-                    message.Info = $root.proto.ClientInfo.fromObject(object.Info);
+                if (object.info != null) {
+                    if (typeof object.info !== "object")
+                        throw TypeError(".proto.Leave.info: object expected");
+                    message.info = $root.proto.ClientInfo.fromObject(object.info);
                 }
                 return message;
             };
@@ -1940,9 +1940,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Info = null;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = $root.proto.ClientInfo.toObject(message.Info, options);
+                    object.info = null;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = $root.proto.ClientInfo.toObject(message.info, options);
                 return object;
             };
     
@@ -2126,11 +2126,11 @@
              * Properties of a ConnectRequest.
              * @memberof proto
              * @interface IConnectRequest
-             * @property {string|null} [User] ConnectRequest User
-             * @property {string|null} [Exp] ConnectRequest Exp
-             * @property {string|null} [Info] ConnectRequest Info
-             * @property {string|null} [Opts] ConnectRequest Opts
-             * @property {string|null} [Sign] ConnectRequest Sign
+             * @property {string|null} [user] ConnectRequest user
+             * @property {string|null} [exp] ConnectRequest exp
+             * @property {string|null} [info] ConnectRequest info
+             * @property {string|null} [opts] ConnectRequest opts
+             * @property {string|null} [sign] ConnectRequest sign
              */
     
             /**
@@ -2149,44 +2149,44 @@
             }
     
             /**
-             * ConnectRequest User.
-             * @member {string} User
+             * ConnectRequest user.
+             * @member {string} user
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.User = "";
+            ConnectRequest.prototype.user = "";
     
             /**
-             * ConnectRequest Exp.
-             * @member {string} Exp
+             * ConnectRequest exp.
+             * @member {string} exp
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.Exp = "";
+            ConnectRequest.prototype.exp = "";
     
             /**
-             * ConnectRequest Info.
-             * @member {string} Info
+             * ConnectRequest info.
+             * @member {string} info
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.Info = "";
+            ConnectRequest.prototype.info = "";
     
             /**
-             * ConnectRequest Opts.
-             * @member {string} Opts
+             * ConnectRequest opts.
+             * @member {string} opts
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.Opts = "";
+            ConnectRequest.prototype.opts = "";
     
             /**
-             * ConnectRequest Sign.
-             * @member {string} Sign
+             * ConnectRequest sign.
+             * @member {string} sign
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.Sign = "";
+            ConnectRequest.prototype.sign = "";
     
             /**
              * Creates a new ConnectRequest instance using the specified properties.
@@ -2212,16 +2212,16 @@
             ConnectRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.User != null && message.hasOwnProperty("User"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.User);
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Exp);
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.Info);
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.Opts);
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.Sign);
+                if (message.user != null && message.hasOwnProperty("user"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.user);
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.exp);
+                if (message.info != null && message.hasOwnProperty("info"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.opts);
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.sign);
                 return writer;
             };
     
@@ -2257,19 +2257,19 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.User = reader.string();
+                        message.user = reader.string();
                         break;
                     case 2:
-                        message.Exp = reader.string();
+                        message.exp = reader.string();
                         break;
                     case 3:
-                        message.Info = reader.string();
+                        message.info = reader.string();
                         break;
                     case 4:
-                        message.Opts = reader.string();
+                        message.opts = reader.string();
                         break;
                     case 5:
-                        message.Sign = reader.string();
+                        message.sign = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -2306,21 +2306,21 @@
             ConnectRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.User != null && message.hasOwnProperty("User"))
-                    if (!$util.isString(message.User))
-                        return "User: string expected";
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    if (!$util.isString(message.Exp))
-                        return "Exp: string expected";
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    if (!$util.isString(message.Info))
-                        return "Info: string expected";
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    if (!$util.isString(message.Opts))
-                        return "Opts: string expected";
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    if (!$util.isString(message.Sign))
-                        return "Sign: string expected";
+                if (message.user != null && message.hasOwnProperty("user"))
+                    if (!$util.isString(message.user))
+                        return "user: string expected";
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    if (!$util.isString(message.exp))
+                        return "exp: string expected";
+                if (message.info != null && message.hasOwnProperty("info"))
+                    if (!$util.isString(message.info))
+                        return "info: string expected";
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    if (!$util.isString(message.opts))
+                        return "opts: string expected";
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    if (!$util.isString(message.sign))
+                        return "sign: string expected";
                 return null;
             };
     
@@ -2336,16 +2336,16 @@
                 if (object instanceof $root.proto.ConnectRequest)
                     return object;
                 var message = new $root.proto.ConnectRequest();
-                if (object.User != null)
-                    message.User = String(object.User);
-                if (object.Exp != null)
-                    message.Exp = String(object.Exp);
-                if (object.Info != null)
-                    message.Info = String(object.Info);
-                if (object.Opts != null)
-                    message.Opts = String(object.Opts);
-                if (object.Sign != null)
-                    message.Sign = String(object.Sign);
+                if (object.user != null)
+                    message.user = String(object.user);
+                if (object.exp != null)
+                    message.exp = String(object.exp);
+                if (object.info != null)
+                    message.info = String(object.info);
+                if (object.opts != null)
+                    message.opts = String(object.opts);
+                if (object.sign != null)
+                    message.sign = String(object.sign);
                 return message;
             };
     
@@ -2363,22 +2363,22 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.User = "";
-                    object.Exp = "";
-                    object.Info = "";
-                    object.Opts = "";
-                    object.Sign = "";
+                    object.user = "";
+                    object.exp = "";
+                    object.info = "";
+                    object.opts = "";
+                    object.sign = "";
                 }
-                if (message.User != null && message.hasOwnProperty("User"))
-                    object.User = message.User;
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    object.Exp = message.Exp;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = message.Info;
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    object.Opts = message.Opts;
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    object.Sign = message.Sign;
+                if (message.user != null && message.hasOwnProperty("user"))
+                    object.user = message.user;
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    object.exp = message.exp;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = message.info;
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    object.opts = message.opts;
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    object.sign = message.sign;
                 return object;
             };
     
@@ -2402,8 +2402,8 @@
              * Properties of a ConnectResponse.
              * @memberof proto
              * @interface IConnectResponse
-             * @property {proto.IError|null} [Error] ConnectResponse Error
-             * @property {proto.IConnectResult|null} [Result] ConnectResponse Result
+             * @property {proto.IError|null} [error] ConnectResponse error
+             * @property {proto.IConnectResult|null} [result] ConnectResponse result
              */
     
             /**
@@ -2422,20 +2422,20 @@
             }
     
             /**
-             * ConnectResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * ConnectResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.ConnectResponse
              * @instance
              */
-            ConnectResponse.prototype.Error = null;
+            ConnectResponse.prototype.error = null;
     
             /**
-             * ConnectResponse Result.
-             * @member {proto.IConnectResult|null|undefined} Result
+             * ConnectResponse result.
+             * @member {proto.IConnectResult|null|undefined} result
              * @memberof proto.ConnectResponse
              * @instance
              */
-            ConnectResponse.prototype.Result = null;
+            ConnectResponse.prototype.result = null;
     
             /**
              * Creates a new ConnectResponse instance using the specified properties.
@@ -2461,10 +2461,10 @@
             ConnectResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.ConnectResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.ConnectResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -2500,10 +2500,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.ConnectResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.ConnectResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -2540,15 +2540,15 @@
             ConnectResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.ConnectResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.ConnectResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -2565,15 +2565,15 @@
                 if (object instanceof $root.proto.ConnectResponse)
                     return object;
                 var message = new $root.proto.ConnectResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.ConnectResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.ConnectResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.ConnectResponse.Result: object expected");
-                    message.Result = $root.proto.ConnectResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.ConnectResponse.result: object expected");
+                    message.result = $root.proto.ConnectResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -2592,13 +2592,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.ConnectResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.ConnectResult.toObject(message.result, options);
                 return object;
             };
     
@@ -2622,11 +2622,11 @@
              * Properties of a ConnectResult.
              * @memberof proto
              * @interface IConnectResult
-             * @property {string|null} [Client] ConnectResult Client
-             * @property {string|null} [Version] ConnectResult Version
-             * @property {boolean|null} [Expires] ConnectResult Expires
-             * @property {boolean|null} [Expired] ConnectResult Expired
-             * @property {number|null} [TTL] ConnectResult TTL
+             * @property {string|null} [client] ConnectResult client
+             * @property {string|null} [version] ConnectResult version
+             * @property {boolean|null} [expires] ConnectResult expires
+             * @property {boolean|null} [expired] ConnectResult expired
+             * @property {number|null} [ttl] ConnectResult ttl
              */
     
             /**
@@ -2645,44 +2645,44 @@
             }
     
             /**
-             * ConnectResult Client.
-             * @member {string} Client
+             * ConnectResult client.
+             * @member {string} client
              * @memberof proto.ConnectResult
              * @instance
              */
-            ConnectResult.prototype.Client = "";
+            ConnectResult.prototype.client = "";
     
             /**
-             * ConnectResult Version.
-             * @member {string} Version
+             * ConnectResult version.
+             * @member {string} version
              * @memberof proto.ConnectResult
              * @instance
              */
-            ConnectResult.prototype.Version = "";
+            ConnectResult.prototype.version = "";
     
             /**
-             * ConnectResult Expires.
-             * @member {boolean} Expires
+             * ConnectResult expires.
+             * @member {boolean} expires
              * @memberof proto.ConnectResult
              * @instance
              */
-            ConnectResult.prototype.Expires = false;
+            ConnectResult.prototype.expires = false;
     
             /**
-             * ConnectResult Expired.
-             * @member {boolean} Expired
+             * ConnectResult expired.
+             * @member {boolean} expired
              * @memberof proto.ConnectResult
              * @instance
              */
-            ConnectResult.prototype.Expired = false;
+            ConnectResult.prototype.expired = false;
     
             /**
-             * ConnectResult TTL.
-             * @member {number} TTL
+             * ConnectResult ttl.
+             * @member {number} ttl
              * @memberof proto.ConnectResult
              * @instance
              */
-            ConnectResult.prototype.TTL = 0;
+            ConnectResult.prototype.ttl = 0;
     
             /**
              * Creates a new ConnectResult instance using the specified properties.
@@ -2708,16 +2708,16 @@
             ConnectResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Client);
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Version);
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.Expires);
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.Expired);
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.TTL);
+                if (message.client != null && message.hasOwnProperty("client"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.client);
+                if (message.version != null && message.hasOwnProperty("version"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.version);
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.expires);
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.expired);
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.ttl);
                 return writer;
             };
     
@@ -2753,19 +2753,19 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Client = reader.string();
+                        message.client = reader.string();
                         break;
                     case 2:
-                        message.Version = reader.string();
+                        message.version = reader.string();
                         break;
                     case 3:
-                        message.Expires = reader.bool();
+                        message.expires = reader.bool();
                         break;
                     case 4:
-                        message.Expired = reader.bool();
+                        message.expired = reader.bool();
                         break;
                     case 5:
-                        message.TTL = reader.uint32();
+                        message.ttl = reader.uint32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -2802,21 +2802,21 @@
             ConnectResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    if (!$util.isString(message.Client))
-                        return "Client: string expected";
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    if (!$util.isString(message.Version))
-                        return "Version: string expected";
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    if (typeof message.Expires !== "boolean")
-                        return "Expires: boolean expected";
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    if (typeof message.Expired !== "boolean")
-                        return "Expired: boolean expected";
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    if (!$util.isInteger(message.TTL))
-                        return "TTL: integer expected";
+                if (message.client != null && message.hasOwnProperty("client"))
+                    if (!$util.isString(message.client))
+                        return "client: string expected";
+                if (message.version != null && message.hasOwnProperty("version"))
+                    if (!$util.isString(message.version))
+                        return "version: string expected";
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    if (typeof message.expires !== "boolean")
+                        return "expires: boolean expected";
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    if (typeof message.expired !== "boolean")
+                        return "expired: boolean expected";
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    if (!$util.isInteger(message.ttl))
+                        return "ttl: integer expected";
                 return null;
             };
     
@@ -2832,16 +2832,16 @@
                 if (object instanceof $root.proto.ConnectResult)
                     return object;
                 var message = new $root.proto.ConnectResult();
-                if (object.Client != null)
-                    message.Client = String(object.Client);
-                if (object.Version != null)
-                    message.Version = String(object.Version);
-                if (object.Expires != null)
-                    message.Expires = Boolean(object.Expires);
-                if (object.Expired != null)
-                    message.Expired = Boolean(object.Expired);
-                if (object.TTL != null)
-                    message.TTL = object.TTL >>> 0;
+                if (object.client != null)
+                    message.client = String(object.client);
+                if (object.version != null)
+                    message.version = String(object.version);
+                if (object.expires != null)
+                    message.expires = Boolean(object.expires);
+                if (object.expired != null)
+                    message.expired = Boolean(object.expired);
+                if (object.ttl != null)
+                    message.ttl = object.ttl >>> 0;
                 return message;
             };
     
@@ -2859,22 +2859,22 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Client = "";
-                    object.Version = "";
-                    object.Expires = false;
-                    object.Expired = false;
-                    object.TTL = 0;
+                    object.client = "";
+                    object.version = "";
+                    object.expires = false;
+                    object.expired = false;
+                    object.ttl = 0;
                 }
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    object.Client = message.Client;
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    object.Version = message.Version;
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    object.Expires = message.Expires;
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    object.Expired = message.Expired;
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    object.TTL = message.TTL;
+                if (message.client != null && message.hasOwnProperty("client"))
+                    object.client = message.client;
+                if (message.version != null && message.hasOwnProperty("version"))
+                    object.version = message.version;
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    object.expires = message.expires;
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    object.expired = message.expired;
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    object.ttl = message.ttl;
                 return object;
             };
     
@@ -2898,11 +2898,11 @@
              * Properties of a RefreshRequest.
              * @memberof proto
              * @interface IRefreshRequest
-             * @property {string|null} [User] RefreshRequest User
-             * @property {string|null} [Exp] RefreshRequest Exp
-             * @property {string|null} [Info] RefreshRequest Info
-             * @property {string|null} [Opts] RefreshRequest Opts
-             * @property {string|null} [Sign] RefreshRequest Sign
+             * @property {string|null} [user] RefreshRequest user
+             * @property {string|null} [exp] RefreshRequest exp
+             * @property {string|null} [info] RefreshRequest info
+             * @property {string|null} [opts] RefreshRequest opts
+             * @property {string|null} [sign] RefreshRequest sign
              */
     
             /**
@@ -2921,44 +2921,44 @@
             }
     
             /**
-             * RefreshRequest User.
-             * @member {string} User
+             * RefreshRequest user.
+             * @member {string} user
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.User = "";
+            RefreshRequest.prototype.user = "";
     
             /**
-             * RefreshRequest Exp.
-             * @member {string} Exp
+             * RefreshRequest exp.
+             * @member {string} exp
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.Exp = "";
+            RefreshRequest.prototype.exp = "";
     
             /**
-             * RefreshRequest Info.
-             * @member {string} Info
+             * RefreshRequest info.
+             * @member {string} info
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.Info = "";
+            RefreshRequest.prototype.info = "";
     
             /**
-             * RefreshRequest Opts.
-             * @member {string} Opts
+             * RefreshRequest opts.
+             * @member {string} opts
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.Opts = "";
+            RefreshRequest.prototype.opts = "";
     
             /**
-             * RefreshRequest Sign.
-             * @member {string} Sign
+             * RefreshRequest sign.
+             * @member {string} sign
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.Sign = "";
+            RefreshRequest.prototype.sign = "";
     
             /**
              * Creates a new RefreshRequest instance using the specified properties.
@@ -2984,16 +2984,16 @@
             RefreshRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.User != null && message.hasOwnProperty("User"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.User);
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Exp);
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.Info);
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.Opts);
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.Sign);
+                if (message.user != null && message.hasOwnProperty("user"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.user);
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.exp);
+                if (message.info != null && message.hasOwnProperty("info"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.opts);
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.sign);
                 return writer;
             };
     
@@ -3029,19 +3029,19 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.User = reader.string();
+                        message.user = reader.string();
                         break;
                     case 2:
-                        message.Exp = reader.string();
+                        message.exp = reader.string();
                         break;
                     case 3:
-                        message.Info = reader.string();
+                        message.info = reader.string();
                         break;
                     case 4:
-                        message.Opts = reader.string();
+                        message.opts = reader.string();
                         break;
                     case 5:
-                        message.Sign = reader.string();
+                        message.sign = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3078,21 +3078,21 @@
             RefreshRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.User != null && message.hasOwnProperty("User"))
-                    if (!$util.isString(message.User))
-                        return "User: string expected";
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    if (!$util.isString(message.Exp))
-                        return "Exp: string expected";
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    if (!$util.isString(message.Info))
-                        return "Info: string expected";
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    if (!$util.isString(message.Opts))
-                        return "Opts: string expected";
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    if (!$util.isString(message.Sign))
-                        return "Sign: string expected";
+                if (message.user != null && message.hasOwnProperty("user"))
+                    if (!$util.isString(message.user))
+                        return "user: string expected";
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    if (!$util.isString(message.exp))
+                        return "exp: string expected";
+                if (message.info != null && message.hasOwnProperty("info"))
+                    if (!$util.isString(message.info))
+                        return "info: string expected";
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    if (!$util.isString(message.opts))
+                        return "opts: string expected";
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    if (!$util.isString(message.sign))
+                        return "sign: string expected";
                 return null;
             };
     
@@ -3108,16 +3108,16 @@
                 if (object instanceof $root.proto.RefreshRequest)
                     return object;
                 var message = new $root.proto.RefreshRequest();
-                if (object.User != null)
-                    message.User = String(object.User);
-                if (object.Exp != null)
-                    message.Exp = String(object.Exp);
-                if (object.Info != null)
-                    message.Info = String(object.Info);
-                if (object.Opts != null)
-                    message.Opts = String(object.Opts);
-                if (object.Sign != null)
-                    message.Sign = String(object.Sign);
+                if (object.user != null)
+                    message.user = String(object.user);
+                if (object.exp != null)
+                    message.exp = String(object.exp);
+                if (object.info != null)
+                    message.info = String(object.info);
+                if (object.opts != null)
+                    message.opts = String(object.opts);
+                if (object.sign != null)
+                    message.sign = String(object.sign);
                 return message;
             };
     
@@ -3135,22 +3135,22 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.User = "";
-                    object.Exp = "";
-                    object.Info = "";
-                    object.Opts = "";
-                    object.Sign = "";
+                    object.user = "";
+                    object.exp = "";
+                    object.info = "";
+                    object.opts = "";
+                    object.sign = "";
                 }
-                if (message.User != null && message.hasOwnProperty("User"))
-                    object.User = message.User;
-                if (message.Exp != null && message.hasOwnProperty("Exp"))
-                    object.Exp = message.Exp;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = message.Info;
-                if (message.Opts != null && message.hasOwnProperty("Opts"))
-                    object.Opts = message.Opts;
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    object.Sign = message.Sign;
+                if (message.user != null && message.hasOwnProperty("user"))
+                    object.user = message.user;
+                if (message.exp != null && message.hasOwnProperty("exp"))
+                    object.exp = message.exp;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = message.info;
+                if (message.opts != null && message.hasOwnProperty("opts"))
+                    object.opts = message.opts;
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    object.sign = message.sign;
                 return object;
             };
     
@@ -3174,8 +3174,8 @@
              * Properties of a RefreshResponse.
              * @memberof proto
              * @interface IRefreshResponse
-             * @property {proto.IError|null} [Error] RefreshResponse Error
-             * @property {proto.IRefreshResult|null} [Result] RefreshResponse Result
+             * @property {proto.IError|null} [error] RefreshResponse error
+             * @property {proto.IRefreshResult|null} [result] RefreshResponse result
              */
     
             /**
@@ -3194,20 +3194,20 @@
             }
     
             /**
-             * RefreshResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * RefreshResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.RefreshResponse
              * @instance
              */
-            RefreshResponse.prototype.Error = null;
+            RefreshResponse.prototype.error = null;
     
             /**
-             * RefreshResponse Result.
-             * @member {proto.IRefreshResult|null|undefined} Result
+             * RefreshResponse result.
+             * @member {proto.IRefreshResult|null|undefined} result
              * @memberof proto.RefreshResponse
              * @instance
              */
-            RefreshResponse.prototype.Result = null;
+            RefreshResponse.prototype.result = null;
     
             /**
              * Creates a new RefreshResponse instance using the specified properties.
@@ -3233,10 +3233,10 @@
             RefreshResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.RefreshResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.RefreshResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -3272,10 +3272,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.RefreshResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.RefreshResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3312,15 +3312,15 @@
             RefreshResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.RefreshResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.RefreshResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -3337,15 +3337,15 @@
                 if (object instanceof $root.proto.RefreshResponse)
                     return object;
                 var message = new $root.proto.RefreshResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.RefreshResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.RefreshResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.RefreshResponse.Result: object expected");
-                    message.Result = $root.proto.RefreshResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.RefreshResponse.result: object expected");
+                    message.result = $root.proto.RefreshResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -3364,13 +3364,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.RefreshResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.RefreshResult.toObject(message.result, options);
                 return object;
             };
     
@@ -3394,11 +3394,11 @@
              * Properties of a RefreshResult.
              * @memberof proto
              * @interface IRefreshResult
-             * @property {string|null} [Client] RefreshResult Client
-             * @property {string|null} [Version] RefreshResult Version
-             * @property {boolean|null} [Expires] RefreshResult Expires
-             * @property {boolean|null} [Expired] RefreshResult Expired
-             * @property {number|null} [TTL] RefreshResult TTL
+             * @property {string|null} [client] RefreshResult client
+             * @property {string|null} [version] RefreshResult version
+             * @property {boolean|null} [expires] RefreshResult expires
+             * @property {boolean|null} [expired] RefreshResult expired
+             * @property {number|null} [ttl] RefreshResult ttl
              */
     
             /**
@@ -3417,44 +3417,44 @@
             }
     
             /**
-             * RefreshResult Client.
-             * @member {string} Client
+             * RefreshResult client.
+             * @member {string} client
              * @memberof proto.RefreshResult
              * @instance
              */
-            RefreshResult.prototype.Client = "";
+            RefreshResult.prototype.client = "";
     
             /**
-             * RefreshResult Version.
-             * @member {string} Version
+             * RefreshResult version.
+             * @member {string} version
              * @memberof proto.RefreshResult
              * @instance
              */
-            RefreshResult.prototype.Version = "";
+            RefreshResult.prototype.version = "";
     
             /**
-             * RefreshResult Expires.
-             * @member {boolean} Expires
+             * RefreshResult expires.
+             * @member {boolean} expires
              * @memberof proto.RefreshResult
              * @instance
              */
-            RefreshResult.prototype.Expires = false;
+            RefreshResult.prototype.expires = false;
     
             /**
-             * RefreshResult Expired.
-             * @member {boolean} Expired
+             * RefreshResult expired.
+             * @member {boolean} expired
              * @memberof proto.RefreshResult
              * @instance
              */
-            RefreshResult.prototype.Expired = false;
+            RefreshResult.prototype.expired = false;
     
             /**
-             * RefreshResult TTL.
-             * @member {number} TTL
+             * RefreshResult ttl.
+             * @member {number} ttl
              * @memberof proto.RefreshResult
              * @instance
              */
-            RefreshResult.prototype.TTL = 0;
+            RefreshResult.prototype.ttl = 0;
     
             /**
              * Creates a new RefreshResult instance using the specified properties.
@@ -3480,16 +3480,16 @@
             RefreshResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Client);
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Version);
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.Expires);
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.Expired);
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.TTL);
+                if (message.client != null && message.hasOwnProperty("client"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.client);
+                if (message.version != null && message.hasOwnProperty("version"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.version);
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.expires);
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.expired);
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).uint32(message.ttl);
                 return writer;
             };
     
@@ -3525,19 +3525,19 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Client = reader.string();
+                        message.client = reader.string();
                         break;
                     case 2:
-                        message.Version = reader.string();
+                        message.version = reader.string();
                         break;
                     case 3:
-                        message.Expires = reader.bool();
+                        message.expires = reader.bool();
                         break;
                     case 4:
-                        message.Expired = reader.bool();
+                        message.expired = reader.bool();
                         break;
                     case 5:
-                        message.TTL = reader.uint32();
+                        message.ttl = reader.uint32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3574,21 +3574,21 @@
             RefreshResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    if (!$util.isString(message.Client))
-                        return "Client: string expected";
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    if (!$util.isString(message.Version))
-                        return "Version: string expected";
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    if (typeof message.Expires !== "boolean")
-                        return "Expires: boolean expected";
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    if (typeof message.Expired !== "boolean")
-                        return "Expired: boolean expected";
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    if (!$util.isInteger(message.TTL))
-                        return "TTL: integer expected";
+                if (message.client != null && message.hasOwnProperty("client"))
+                    if (!$util.isString(message.client))
+                        return "client: string expected";
+                if (message.version != null && message.hasOwnProperty("version"))
+                    if (!$util.isString(message.version))
+                        return "version: string expected";
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    if (typeof message.expires !== "boolean")
+                        return "expires: boolean expected";
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    if (typeof message.expired !== "boolean")
+                        return "expired: boolean expected";
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    if (!$util.isInteger(message.ttl))
+                        return "ttl: integer expected";
                 return null;
             };
     
@@ -3604,16 +3604,16 @@
                 if (object instanceof $root.proto.RefreshResult)
                     return object;
                 var message = new $root.proto.RefreshResult();
-                if (object.Client != null)
-                    message.Client = String(object.Client);
-                if (object.Version != null)
-                    message.Version = String(object.Version);
-                if (object.Expires != null)
-                    message.Expires = Boolean(object.Expires);
-                if (object.Expired != null)
-                    message.Expired = Boolean(object.Expired);
-                if (object.TTL != null)
-                    message.TTL = object.TTL >>> 0;
+                if (object.client != null)
+                    message.client = String(object.client);
+                if (object.version != null)
+                    message.version = String(object.version);
+                if (object.expires != null)
+                    message.expires = Boolean(object.expires);
+                if (object.expired != null)
+                    message.expired = Boolean(object.expired);
+                if (object.ttl != null)
+                    message.ttl = object.ttl >>> 0;
                 return message;
             };
     
@@ -3631,22 +3631,22 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Client = "";
-                    object.Version = "";
-                    object.Expires = false;
-                    object.Expired = false;
-                    object.TTL = 0;
+                    object.client = "";
+                    object.version = "";
+                    object.expires = false;
+                    object.expired = false;
+                    object.ttl = 0;
                 }
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    object.Client = message.Client;
-                if (message.Version != null && message.hasOwnProperty("Version"))
-                    object.Version = message.Version;
-                if (message.Expires != null && message.hasOwnProperty("Expires"))
-                    object.Expires = message.Expires;
-                if (message.Expired != null && message.hasOwnProperty("Expired"))
-                    object.Expired = message.Expired;
-                if (message.TTL != null && message.hasOwnProperty("TTL"))
-                    object.TTL = message.TTL;
+                if (message.client != null && message.hasOwnProperty("client"))
+                    object.client = message.client;
+                if (message.version != null && message.hasOwnProperty("version"))
+                    object.version = message.version;
+                if (message.expires != null && message.hasOwnProperty("expires"))
+                    object.expires = message.expires;
+                if (message.expired != null && message.hasOwnProperty("expired"))
+                    object.expired = message.expired;
+                if (message.ttl != null && message.hasOwnProperty("ttl"))
+                    object.ttl = message.ttl;
                 return object;
             };
     
@@ -3670,12 +3670,12 @@
              * Properties of a SubscribeRequest.
              * @memberof proto
              * @interface ISubscribeRequest
-             * @property {string|null} [Channel] SubscribeRequest Channel
-             * @property {string|null} [Client] SubscribeRequest Client
-             * @property {string|null} [Info] SubscribeRequest Info
-             * @property {string|null} [Sign] SubscribeRequest Sign
-             * @property {boolean|null} [Recover] SubscribeRequest Recover
-             * @property {string|null} [Last] SubscribeRequest Last
+             * @property {string|null} [channel] SubscribeRequest channel
+             * @property {string|null} [client] SubscribeRequest client
+             * @property {string|null} [info] SubscribeRequest info
+             * @property {string|null} [sign] SubscribeRequest sign
+             * @property {boolean|null} [recover] SubscribeRequest recover
+             * @property {string|null} [last] SubscribeRequest last
              */
     
             /**
@@ -3694,52 +3694,52 @@
             }
     
             /**
-             * SubscribeRequest Channel.
-             * @member {string} Channel
+             * SubscribeRequest channel.
+             * @member {string} channel
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Channel = "";
+            SubscribeRequest.prototype.channel = "";
     
             /**
-             * SubscribeRequest Client.
-             * @member {string} Client
+             * SubscribeRequest client.
+             * @member {string} client
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Client = "";
+            SubscribeRequest.prototype.client = "";
     
             /**
-             * SubscribeRequest Info.
-             * @member {string} Info
+             * SubscribeRequest info.
+             * @member {string} info
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Info = "";
+            SubscribeRequest.prototype.info = "";
     
             /**
-             * SubscribeRequest Sign.
-             * @member {string} Sign
+             * SubscribeRequest sign.
+             * @member {string} sign
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Sign = "";
+            SubscribeRequest.prototype.sign = "";
     
             /**
-             * SubscribeRequest Recover.
-             * @member {boolean} Recover
+             * SubscribeRequest recover.
+             * @member {boolean} recover
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Recover = false;
+            SubscribeRequest.prototype.recover = false;
     
             /**
-             * SubscribeRequest Last.
-             * @member {string} Last
+             * SubscribeRequest last.
+             * @member {string} last
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.Last = "";
+            SubscribeRequest.prototype.last = "";
     
             /**
              * Creates a new SubscribeRequest instance using the specified properties.
@@ -3765,18 +3765,18 @@
             SubscribeRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Client);
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.Info);
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.Sign);
-                if (message.Recover != null && message.hasOwnProperty("Recover"))
-                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.Recover);
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.Last);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
+                if (message.client != null && message.hasOwnProperty("client"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.client);
+                if (message.info != null && message.hasOwnProperty("info"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.sign);
+                if (message.recover != null && message.hasOwnProperty("recover"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.recover);
+                if (message.last != null && message.hasOwnProperty("last"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.last);
                 return writer;
             };
     
@@ -3812,22 +3812,22 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     case 2:
-                        message.Client = reader.string();
+                        message.client = reader.string();
                         break;
                     case 3:
-                        message.Info = reader.string();
+                        message.info = reader.string();
                         break;
                     case 4:
-                        message.Sign = reader.string();
+                        message.sign = reader.string();
                         break;
                     case 5:
-                        message.Recover = reader.bool();
+                        message.recover = reader.bool();
                         break;
                     case 6:
-                        message.Last = reader.string();
+                        message.last = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3864,24 +3864,24 @@
             SubscribeRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    if (!$util.isString(message.Client))
-                        return "Client: string expected";
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    if (!$util.isString(message.Info))
-                        return "Info: string expected";
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    if (!$util.isString(message.Sign))
-                        return "Sign: string expected";
-                if (message.Recover != null && message.hasOwnProperty("Recover"))
-                    if (typeof message.Recover !== "boolean")
-                        return "Recover: boolean expected";
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    if (!$util.isString(message.Last))
-                        return "Last: string expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
+                if (message.client != null && message.hasOwnProperty("client"))
+                    if (!$util.isString(message.client))
+                        return "client: string expected";
+                if (message.info != null && message.hasOwnProperty("info"))
+                    if (!$util.isString(message.info))
+                        return "info: string expected";
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    if (!$util.isString(message.sign))
+                        return "sign: string expected";
+                if (message.recover != null && message.hasOwnProperty("recover"))
+                    if (typeof message.recover !== "boolean")
+                        return "recover: boolean expected";
+                if (message.last != null && message.hasOwnProperty("last"))
+                    if (!$util.isString(message.last))
+                        return "last: string expected";
                 return null;
             };
     
@@ -3897,18 +3897,18 @@
                 if (object instanceof $root.proto.SubscribeRequest)
                     return object;
                 var message = new $root.proto.SubscribeRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
-                if (object.Client != null)
-                    message.Client = String(object.Client);
-                if (object.Info != null)
-                    message.Info = String(object.Info);
-                if (object.Sign != null)
-                    message.Sign = String(object.Sign);
-                if (object.Recover != null)
-                    message.Recover = Boolean(object.Recover);
-                if (object.Last != null)
-                    message.Last = String(object.Last);
+                if (object.channel != null)
+                    message.channel = String(object.channel);
+                if (object.client != null)
+                    message.client = String(object.client);
+                if (object.info != null)
+                    message.info = String(object.info);
+                if (object.sign != null)
+                    message.sign = String(object.sign);
+                if (object.recover != null)
+                    message.recover = Boolean(object.recover);
+                if (object.last != null)
+                    message.last = String(object.last);
                 return message;
             };
     
@@ -3926,25 +3926,25 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Channel = "";
-                    object.Client = "";
-                    object.Info = "";
-                    object.Sign = "";
-                    object.Recover = false;
-                    object.Last = "";
+                    object.channel = "";
+                    object.client = "";
+                    object.info = "";
+                    object.sign = "";
+                    object.recover = false;
+                    object.last = "";
                 }
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
-                if (message.Client != null && message.hasOwnProperty("Client"))
-                    object.Client = message.Client;
-                if (message.Info != null && message.hasOwnProperty("Info"))
-                    object.Info = message.Info;
-                if (message.Sign != null && message.hasOwnProperty("Sign"))
-                    object.Sign = message.Sign;
-                if (message.Recover != null && message.hasOwnProperty("Recover"))
-                    object.Recover = message.Recover;
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    object.Last = message.Last;
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
+                if (message.client != null && message.hasOwnProperty("client"))
+                    object.client = message.client;
+                if (message.info != null && message.hasOwnProperty("info"))
+                    object.info = message.info;
+                if (message.sign != null && message.hasOwnProperty("sign"))
+                    object.sign = message.sign;
+                if (message.recover != null && message.hasOwnProperty("recover"))
+                    object.recover = message.recover;
+                if (message.last != null && message.hasOwnProperty("last"))
+                    object.last = message.last;
                 return object;
             };
     
@@ -3968,8 +3968,8 @@
              * Properties of a SubscribeResponse.
              * @memberof proto
              * @interface ISubscribeResponse
-             * @property {proto.IError|null} [Error] SubscribeResponse Error
-             * @property {proto.ISubscribeResult|null} [Result] SubscribeResponse Result
+             * @property {proto.IError|null} [error] SubscribeResponse error
+             * @property {proto.ISubscribeResult|null} [result] SubscribeResponse result
              */
     
             /**
@@ -3988,20 +3988,20 @@
             }
     
             /**
-             * SubscribeResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * SubscribeResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.SubscribeResponse
              * @instance
              */
-            SubscribeResponse.prototype.Error = null;
+            SubscribeResponse.prototype.error = null;
     
             /**
-             * SubscribeResponse Result.
-             * @member {proto.ISubscribeResult|null|undefined} Result
+             * SubscribeResponse result.
+             * @member {proto.ISubscribeResult|null|undefined} result
              * @memberof proto.SubscribeResponse
              * @instance
              */
-            SubscribeResponse.prototype.Result = null;
+            SubscribeResponse.prototype.result = null;
     
             /**
              * Creates a new SubscribeResponse instance using the specified properties.
@@ -4027,10 +4027,10 @@
             SubscribeResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.SubscribeResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.SubscribeResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -4066,10 +4066,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.SubscribeResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.SubscribeResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -4106,15 +4106,15 @@
             SubscribeResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.SubscribeResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.SubscribeResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -4131,15 +4131,15 @@
                 if (object instanceof $root.proto.SubscribeResponse)
                     return object;
                 var message = new $root.proto.SubscribeResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.SubscribeResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.SubscribeResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.SubscribeResponse.Result: object expected");
-                    message.Result = $root.proto.SubscribeResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.SubscribeResponse.result: object expected");
+                    message.result = $root.proto.SubscribeResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -4158,13 +4158,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.SubscribeResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.SubscribeResult.toObject(message.result, options);
                 return object;
             };
     
@@ -4188,9 +4188,9 @@
              * Properties of a SubscribeResult.
              * @memberof proto
              * @interface ISubscribeResult
-             * @property {string|null} [Last] SubscribeResult Last
-             * @property {boolean|null} [Recovered] SubscribeResult Recovered
-             * @property {Array.<proto.IPublication>|null} [Publications] SubscribeResult Publications
+             * @property {string|null} [last] SubscribeResult last
+             * @property {boolean|null} [recovered] SubscribeResult recovered
+             * @property {Array.<proto.IPublication>|null} [publications] SubscribeResult publications
              */
     
             /**
@@ -4202,7 +4202,7 @@
              * @param {proto.ISubscribeResult=} [properties] Properties to set
              */
             function SubscribeResult(properties) {
-                this.Publications = [];
+                this.publications = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -4210,28 +4210,28 @@
             }
     
             /**
-             * SubscribeResult Last.
-             * @member {string} Last
+             * SubscribeResult last.
+             * @member {string} last
              * @memberof proto.SubscribeResult
              * @instance
              */
-            SubscribeResult.prototype.Last = "";
+            SubscribeResult.prototype.last = "";
     
             /**
-             * SubscribeResult Recovered.
-             * @member {boolean} Recovered
+             * SubscribeResult recovered.
+             * @member {boolean} recovered
              * @memberof proto.SubscribeResult
              * @instance
              */
-            SubscribeResult.prototype.Recovered = false;
+            SubscribeResult.prototype.recovered = false;
     
             /**
-             * SubscribeResult Publications.
-             * @member {Array.<proto.IPublication>} Publications
+             * SubscribeResult publications.
+             * @member {Array.<proto.IPublication>} publications
              * @memberof proto.SubscribeResult
              * @instance
              */
-            SubscribeResult.prototype.Publications = $util.emptyArray;
+            SubscribeResult.prototype.publications = $util.emptyArray;
     
             /**
              * Creates a new SubscribeResult instance using the specified properties.
@@ -4257,13 +4257,13 @@
             SubscribeResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Last);
-                if (message.Recovered != null && message.hasOwnProperty("Recovered"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.Recovered);
-                if (message.Publications != null && message.Publications.length)
-                    for (var i = 0; i < message.Publications.length; ++i)
-                        $root.proto.Publication.encode(message.Publications[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.last != null && message.hasOwnProperty("last"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.last);
+                if (message.recovered != null && message.hasOwnProperty("recovered"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.recovered);
+                if (message.publications != null && message.publications.length)
+                    for (var i = 0; i < message.publications.length; ++i)
+                        $root.proto.Publication.encode(message.publications[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 return writer;
             };
     
@@ -4299,15 +4299,15 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Last = reader.string();
+                        message.last = reader.string();
                         break;
                     case 2:
-                        message.Recovered = reader.bool();
+                        message.recovered = reader.bool();
                         break;
                     case 3:
-                        if (!(message.Publications && message.Publications.length))
-                            message.Publications = [];
-                        message.Publications.push($root.proto.Publication.decode(reader, reader.uint32()));
+                        if (!(message.publications && message.publications.length))
+                            message.publications = [];
+                        message.publications.push($root.proto.Publication.decode(reader, reader.uint32()));
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -4344,19 +4344,19 @@
             SubscribeResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    if (!$util.isString(message.Last))
-                        return "Last: string expected";
-                if (message.Recovered != null && message.hasOwnProperty("Recovered"))
-                    if (typeof message.Recovered !== "boolean")
-                        return "Recovered: boolean expected";
-                if (message.Publications != null && message.hasOwnProperty("Publications")) {
-                    if (!Array.isArray(message.Publications))
-                        return "Publications: array expected";
-                    for (var i = 0; i < message.Publications.length; ++i) {
-                        var error = $root.proto.Publication.verify(message.Publications[i]);
+                if (message.last != null && message.hasOwnProperty("last"))
+                    if (!$util.isString(message.last))
+                        return "last: string expected";
+                if (message.recovered != null && message.hasOwnProperty("recovered"))
+                    if (typeof message.recovered !== "boolean")
+                        return "recovered: boolean expected";
+                if (message.publications != null && message.hasOwnProperty("publications")) {
+                    if (!Array.isArray(message.publications))
+                        return "publications: array expected";
+                    for (var i = 0; i < message.publications.length; ++i) {
+                        var error = $root.proto.Publication.verify(message.publications[i]);
                         if (error)
-                            return "Publications." + error;
+                            return "publications." + error;
                     }
                 }
                 return null;
@@ -4374,18 +4374,18 @@
                 if (object instanceof $root.proto.SubscribeResult)
                     return object;
                 var message = new $root.proto.SubscribeResult();
-                if (object.Last != null)
-                    message.Last = String(object.Last);
-                if (object.Recovered != null)
-                    message.Recovered = Boolean(object.Recovered);
-                if (object.Publications) {
-                    if (!Array.isArray(object.Publications))
-                        throw TypeError(".proto.SubscribeResult.Publications: array expected");
-                    message.Publications = [];
-                    for (var i = 0; i < object.Publications.length; ++i) {
-                        if (typeof object.Publications[i] !== "object")
-                            throw TypeError(".proto.SubscribeResult.Publications: object expected");
-                        message.Publications[i] = $root.proto.Publication.fromObject(object.Publications[i]);
+                if (object.last != null)
+                    message.last = String(object.last);
+                if (object.recovered != null)
+                    message.recovered = Boolean(object.recovered);
+                if (object.publications) {
+                    if (!Array.isArray(object.publications))
+                        throw TypeError(".proto.SubscribeResult.publications: array expected");
+                    message.publications = [];
+                    for (var i = 0; i < object.publications.length; ++i) {
+                        if (typeof object.publications[i] !== "object")
+                            throw TypeError(".proto.SubscribeResult.publications: object expected");
+                        message.publications[i] = $root.proto.Publication.fromObject(object.publications[i]);
                     }
                 }
                 return message;
@@ -4405,19 +4405,19 @@
                     options = {};
                 var object = {};
                 if (options.arrays || options.defaults)
-                    object.Publications = [];
+                    object.publications = [];
                 if (options.defaults) {
-                    object.Last = "";
-                    object.Recovered = false;
+                    object.last = "";
+                    object.recovered = false;
                 }
-                if (message.Last != null && message.hasOwnProperty("Last"))
-                    object.Last = message.Last;
-                if (message.Recovered != null && message.hasOwnProperty("Recovered"))
-                    object.Recovered = message.Recovered;
-                if (message.Publications && message.Publications.length) {
-                    object.Publications = [];
-                    for (var j = 0; j < message.Publications.length; ++j)
-                        object.Publications[j] = $root.proto.Publication.toObject(message.Publications[j], options);
+                if (message.last != null && message.hasOwnProperty("last"))
+                    object.last = message.last;
+                if (message.recovered != null && message.hasOwnProperty("recovered"))
+                    object.recovered = message.recovered;
+                if (message.publications && message.publications.length) {
+                    object.publications = [];
+                    for (var j = 0; j < message.publications.length; ++j)
+                        object.publications[j] = $root.proto.Publication.toObject(message.publications[j], options);
                 }
                 return object;
             };
@@ -4442,7 +4442,7 @@
              * Properties of an UnsubscribeRequest.
              * @memberof proto
              * @interface IUnsubscribeRequest
-             * @property {string|null} [Channel] UnsubscribeRequest Channel
+             * @property {string|null} [channel] UnsubscribeRequest channel
              */
     
             /**
@@ -4461,12 +4461,12 @@
             }
     
             /**
-             * UnsubscribeRequest Channel.
-             * @member {string} Channel
+             * UnsubscribeRequest channel.
+             * @member {string} channel
              * @memberof proto.UnsubscribeRequest
              * @instance
              */
-            UnsubscribeRequest.prototype.Channel = "";
+            UnsubscribeRequest.prototype.channel = "";
     
             /**
              * Creates a new UnsubscribeRequest instance using the specified properties.
@@ -4492,8 +4492,8 @@
             UnsubscribeRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
                 return writer;
             };
     
@@ -4529,7 +4529,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -4566,9 +4566,9 @@
             UnsubscribeRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
                 return null;
             };
     
@@ -4584,8 +4584,8 @@
                 if (object instanceof $root.proto.UnsubscribeRequest)
                     return object;
                 var message = new $root.proto.UnsubscribeRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
+                if (object.channel != null)
+                    message.channel = String(object.channel);
                 return message;
             };
     
@@ -4603,9 +4603,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Channel = "";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
+                    object.channel = "";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
                 return object;
             };
     
@@ -4629,8 +4629,8 @@
              * Properties of an UnsubscribeResponse.
              * @memberof proto
              * @interface IUnsubscribeResponse
-             * @property {proto.IError|null} [Error] UnsubscribeResponse Error
-             * @property {proto.IUnsubscribeResult|null} [Result] UnsubscribeResponse Result
+             * @property {proto.IError|null} [error] UnsubscribeResponse error
+             * @property {proto.IUnsubscribeResult|null} [result] UnsubscribeResponse result
              */
     
             /**
@@ -4649,20 +4649,20 @@
             }
     
             /**
-             * UnsubscribeResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * UnsubscribeResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.UnsubscribeResponse
              * @instance
              */
-            UnsubscribeResponse.prototype.Error = null;
+            UnsubscribeResponse.prototype.error = null;
     
             /**
-             * UnsubscribeResponse Result.
-             * @member {proto.IUnsubscribeResult|null|undefined} Result
+             * UnsubscribeResponse result.
+             * @member {proto.IUnsubscribeResult|null|undefined} result
              * @memberof proto.UnsubscribeResponse
              * @instance
              */
-            UnsubscribeResponse.prototype.Result = null;
+            UnsubscribeResponse.prototype.result = null;
     
             /**
              * Creates a new UnsubscribeResponse instance using the specified properties.
@@ -4688,10 +4688,10 @@
             UnsubscribeResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.UnsubscribeResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.UnsubscribeResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -4727,10 +4727,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.UnsubscribeResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.UnsubscribeResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -4767,15 +4767,15 @@
             UnsubscribeResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.UnsubscribeResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.UnsubscribeResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -4792,15 +4792,15 @@
                 if (object instanceof $root.proto.UnsubscribeResponse)
                     return object;
                 var message = new $root.proto.UnsubscribeResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.UnsubscribeResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.UnsubscribeResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.UnsubscribeResponse.Result: object expected");
-                    message.Result = $root.proto.UnsubscribeResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.UnsubscribeResponse.result: object expected");
+                    message.result = $root.proto.UnsubscribeResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -4819,13 +4819,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.UnsubscribeResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.UnsubscribeResult.toObject(message.result, options);
                 return object;
             };
     
@@ -5009,8 +5009,8 @@
              * Properties of a PublishRequest.
              * @memberof proto
              * @interface IPublishRequest
-             * @property {string|null} [Channel] PublishRequest Channel
-             * @property {Uint8Array|null} [Data] PublishRequest Data
+             * @property {string|null} [channel] PublishRequest channel
+             * @property {Uint8Array|null} [data] PublishRequest data
              */
     
             /**
@@ -5029,20 +5029,20 @@
             }
     
             /**
-             * PublishRequest Channel.
-             * @member {string} Channel
+             * PublishRequest channel.
+             * @member {string} channel
              * @memberof proto.PublishRequest
              * @instance
              */
-            PublishRequest.prototype.Channel = "";
+            PublishRequest.prototype.channel = "";
     
             /**
-             * PublishRequest Data.
-             * @member {Uint8Array} Data
+             * PublishRequest data.
+             * @member {Uint8Array} data
              * @memberof proto.PublishRequest
              * @instance
              */
-            PublishRequest.prototype.Data = $util.newBuffer([]);
+            PublishRequest.prototype.data = $util.newBuffer([]);
     
             /**
              * Creates a new PublishRequest instance using the specified properties.
@@ -5068,10 +5068,10 @@
             PublishRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.Data);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.data);
                 return writer;
             };
     
@@ -5107,10 +5107,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     case 2:
-                        message.Data = reader.bytes();
+                        message.data = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -5147,12 +5147,12 @@
             PublishRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
-                        return "Data: buffer expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
                 return null;
             };
     
@@ -5168,13 +5168,13 @@
                 if (object instanceof $root.proto.PublishRequest)
                     return object;
                 var message = new $root.proto.PublishRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
-                if (object.Data != null)
-                    if (typeof object.Data === "string")
-                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
-                    else if (object.Data.length)
-                        message.Data = object.Data;
+                if (object.channel != null)
+                    message.channel = String(object.channel);
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
                 return message;
             };
     
@@ -5192,13 +5192,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Channel = "";
-                    object.Data = options.bytes === String ? "" : [];
+                    object.channel = "";
+                    object.data = options.bytes === String ? "" : [];
                 }
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
                 return object;
             };
     
@@ -5222,8 +5222,8 @@
              * Properties of a PublishResponse.
              * @memberof proto
              * @interface IPublishResponse
-             * @property {proto.IError|null} [Error] PublishResponse Error
-             * @property {proto.IPublishResult|null} [Result] PublishResponse Result
+             * @property {proto.IError|null} [error] PublishResponse error
+             * @property {proto.IPublishResult|null} [result] PublishResponse result
              */
     
             /**
@@ -5242,20 +5242,20 @@
             }
     
             /**
-             * PublishResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * PublishResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.PublishResponse
              * @instance
              */
-            PublishResponse.prototype.Error = null;
+            PublishResponse.prototype.error = null;
     
             /**
-             * PublishResponse Result.
-             * @member {proto.IPublishResult|null|undefined} Result
+             * PublishResponse result.
+             * @member {proto.IPublishResult|null|undefined} result
              * @memberof proto.PublishResponse
              * @instance
              */
-            PublishResponse.prototype.Result = null;
+            PublishResponse.prototype.result = null;
     
             /**
              * Creates a new PublishResponse instance using the specified properties.
@@ -5281,10 +5281,10 @@
             PublishResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.PublishResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.PublishResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -5320,10 +5320,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.PublishResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.PublishResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -5360,15 +5360,15 @@
             PublishResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.PublishResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.PublishResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -5385,15 +5385,15 @@
                 if (object instanceof $root.proto.PublishResponse)
                     return object;
                 var message = new $root.proto.PublishResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.PublishResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.PublishResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.PublishResponse.Result: object expected");
-                    message.Result = $root.proto.PublishResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.PublishResponse.result: object expected");
+                    message.result = $root.proto.PublishResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -5412,13 +5412,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.PublishResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.PublishResult.toObject(message.result, options);
                 return object;
             };
     
@@ -5602,7 +5602,7 @@
              * Properties of a PresenceRequest.
              * @memberof proto
              * @interface IPresenceRequest
-             * @property {string|null} [Channel] PresenceRequest Channel
+             * @property {string|null} [channel] PresenceRequest channel
              */
     
             /**
@@ -5621,12 +5621,12 @@
             }
     
             /**
-             * PresenceRequest Channel.
-             * @member {string} Channel
+             * PresenceRequest channel.
+             * @member {string} channel
              * @memberof proto.PresenceRequest
              * @instance
              */
-            PresenceRequest.prototype.Channel = "";
+            PresenceRequest.prototype.channel = "";
     
             /**
              * Creates a new PresenceRequest instance using the specified properties.
@@ -5652,8 +5652,8 @@
             PresenceRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
                 return writer;
             };
     
@@ -5689,7 +5689,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -5726,9 +5726,9 @@
             PresenceRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
                 return null;
             };
     
@@ -5744,8 +5744,8 @@
                 if (object instanceof $root.proto.PresenceRequest)
                     return object;
                 var message = new $root.proto.PresenceRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
+                if (object.channel != null)
+                    message.channel = String(object.channel);
                 return message;
             };
     
@@ -5763,9 +5763,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Channel = "";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
+                    object.channel = "";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
                 return object;
             };
     
@@ -5789,8 +5789,8 @@
              * Properties of a PresenceResponse.
              * @memberof proto
              * @interface IPresenceResponse
-             * @property {proto.IError|null} [Error] PresenceResponse Error
-             * @property {proto.IPresenceResult|null} [Result] PresenceResponse Result
+             * @property {proto.IError|null} [error] PresenceResponse error
+             * @property {proto.IPresenceResult|null} [result] PresenceResponse result
              */
     
             /**
@@ -5809,20 +5809,20 @@
             }
     
             /**
-             * PresenceResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * PresenceResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.PresenceResponse
              * @instance
              */
-            PresenceResponse.prototype.Error = null;
+            PresenceResponse.prototype.error = null;
     
             /**
-             * PresenceResponse Result.
-             * @member {proto.IPresenceResult|null|undefined} Result
+             * PresenceResponse result.
+             * @member {proto.IPresenceResult|null|undefined} result
              * @memberof proto.PresenceResponse
              * @instance
              */
-            PresenceResponse.prototype.Result = null;
+            PresenceResponse.prototype.result = null;
     
             /**
              * Creates a new PresenceResponse instance using the specified properties.
@@ -5848,10 +5848,10 @@
             PresenceResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.PresenceResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.PresenceResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -5887,10 +5887,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.PresenceResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.PresenceResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -5927,15 +5927,15 @@
             PresenceResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.PresenceResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.PresenceResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -5952,15 +5952,15 @@
                 if (object instanceof $root.proto.PresenceResponse)
                     return object;
                 var message = new $root.proto.PresenceResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.PresenceResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.PresenceResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.PresenceResponse.Result: object expected");
-                    message.Result = $root.proto.PresenceResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.PresenceResponse.result: object expected");
+                    message.result = $root.proto.PresenceResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -5979,13 +5979,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.PresenceResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.PresenceResult.toObject(message.result, options);
                 return object;
             };
     
@@ -6009,7 +6009,7 @@
              * Properties of a PresenceResult.
              * @memberof proto
              * @interface IPresenceResult
-             * @property {Object.<string,proto.IClientInfo>|null} [Presence] PresenceResult Presence
+             * @property {Object.<string,proto.IClientInfo>|null} [presence] PresenceResult presence
              */
     
             /**
@@ -6021,7 +6021,7 @@
              * @param {proto.IPresenceResult=} [properties] Properties to set
              */
             function PresenceResult(properties) {
-                this.Presence = {};
+                this.presence = {};
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -6029,12 +6029,12 @@
             }
     
             /**
-             * PresenceResult Presence.
-             * @member {Object.<string,proto.IClientInfo>} Presence
+             * PresenceResult presence.
+             * @member {Object.<string,proto.IClientInfo>} presence
              * @memberof proto.PresenceResult
              * @instance
              */
-            PresenceResult.prototype.Presence = $util.emptyObject;
+            PresenceResult.prototype.presence = $util.emptyObject;
     
             /**
              * Creates a new PresenceResult instance using the specified properties.
@@ -6060,10 +6060,10 @@
             PresenceResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Presence != null && message.hasOwnProperty("Presence"))
-                    for (var keys = Object.keys(message.Presence), i = 0; i < keys.length; ++i) {
+                if (message.presence != null && message.hasOwnProperty("presence"))
+                    for (var keys = Object.keys(message.presence), i = 0; i < keys.length; ++i) {
                         writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
-                        $root.proto.ClientInfo.encode(message.Presence[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                        $root.proto.ClientInfo.encode(message.presence[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
                     }
                 return writer;
             };
@@ -6101,11 +6101,11 @@
                     switch (tag >>> 3) {
                     case 1:
                         reader.skip().pos++;
-                        if (message.Presence === $util.emptyObject)
-                            message.Presence = {};
+                        if (message.presence === $util.emptyObject)
+                            message.presence = {};
                         key = reader.string();
                         reader.pos++;
-                        message.Presence[key] = $root.proto.ClientInfo.decode(reader, reader.uint32());
+                        message.presence[key] = $root.proto.ClientInfo.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6142,14 +6142,14 @@
             PresenceResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Presence != null && message.hasOwnProperty("Presence")) {
-                    if (!$util.isObject(message.Presence))
-                        return "Presence: object expected";
-                    var key = Object.keys(message.Presence);
+                if (message.presence != null && message.hasOwnProperty("presence")) {
+                    if (!$util.isObject(message.presence))
+                        return "presence: object expected";
+                    var key = Object.keys(message.presence);
                     for (var i = 0; i < key.length; ++i) {
-                        var error = $root.proto.ClientInfo.verify(message.Presence[key[i]]);
+                        var error = $root.proto.ClientInfo.verify(message.presence[key[i]]);
                         if (error)
-                            return "Presence." + error;
+                            return "presence." + error;
                     }
                 }
                 return null;
@@ -6167,14 +6167,14 @@
                 if (object instanceof $root.proto.PresenceResult)
                     return object;
                 var message = new $root.proto.PresenceResult();
-                if (object.Presence) {
-                    if (typeof object.Presence !== "object")
-                        throw TypeError(".proto.PresenceResult.Presence: object expected");
-                    message.Presence = {};
-                    for (var keys = Object.keys(object.Presence), i = 0; i < keys.length; ++i) {
-                        if (typeof object.Presence[keys[i]] !== "object")
-                            throw TypeError(".proto.PresenceResult.Presence: object expected");
-                        message.Presence[keys[i]] = $root.proto.ClientInfo.fromObject(object.Presence[keys[i]]);
+                if (object.presence) {
+                    if (typeof object.presence !== "object")
+                        throw TypeError(".proto.PresenceResult.presence: object expected");
+                    message.presence = {};
+                    for (var keys = Object.keys(object.presence), i = 0; i < keys.length; ++i) {
+                        if (typeof object.presence[keys[i]] !== "object")
+                            throw TypeError(".proto.PresenceResult.presence: object expected");
+                        message.presence[keys[i]] = $root.proto.ClientInfo.fromObject(object.presence[keys[i]]);
                     }
                 }
                 return message;
@@ -6194,12 +6194,12 @@
                     options = {};
                 var object = {};
                 if (options.objects || options.defaults)
-                    object.Presence = {};
+                    object.presence = {};
                 var keys2;
-                if (message.Presence && (keys2 = Object.keys(message.Presence)).length) {
-                    object.Presence = {};
+                if (message.presence && (keys2 = Object.keys(message.presence)).length) {
+                    object.presence = {};
                     for (var j = 0; j < keys2.length; ++j)
-                        object.Presence[keys2[j]] = $root.proto.ClientInfo.toObject(message.Presence[keys2[j]], options);
+                        object.presence[keys2[j]] = $root.proto.ClientInfo.toObject(message.presence[keys2[j]], options);
                 }
                 return object;
             };
@@ -6224,7 +6224,7 @@
              * Properties of a PresenceStatsRequest.
              * @memberof proto
              * @interface IPresenceStatsRequest
-             * @property {string|null} [Channel] PresenceStatsRequest Channel
+             * @property {string|null} [channel] PresenceStatsRequest channel
              */
     
             /**
@@ -6243,12 +6243,12 @@
             }
     
             /**
-             * PresenceStatsRequest Channel.
-             * @member {string} Channel
+             * PresenceStatsRequest channel.
+             * @member {string} channel
              * @memberof proto.PresenceStatsRequest
              * @instance
              */
-            PresenceStatsRequest.prototype.Channel = "";
+            PresenceStatsRequest.prototype.channel = "";
     
             /**
              * Creates a new PresenceStatsRequest instance using the specified properties.
@@ -6274,8 +6274,8 @@
             PresenceStatsRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
                 return writer;
             };
     
@@ -6311,7 +6311,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6348,9 +6348,9 @@
             PresenceStatsRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
                 return null;
             };
     
@@ -6366,8 +6366,8 @@
                 if (object instanceof $root.proto.PresenceStatsRequest)
                     return object;
                 var message = new $root.proto.PresenceStatsRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
+                if (object.channel != null)
+                    message.channel = String(object.channel);
                 return message;
             };
     
@@ -6385,9 +6385,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Channel = "";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
+                    object.channel = "";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
                 return object;
             };
     
@@ -6411,8 +6411,8 @@
              * Properties of a PresenceStatsResponse.
              * @memberof proto
              * @interface IPresenceStatsResponse
-             * @property {proto.IError|null} [Error] PresenceStatsResponse Error
-             * @property {proto.IPresenceStatsResult|null} [Result] PresenceStatsResponse Result
+             * @property {proto.IError|null} [error] PresenceStatsResponse error
+             * @property {proto.IPresenceStatsResult|null} [result] PresenceStatsResponse result
              */
     
             /**
@@ -6431,20 +6431,20 @@
             }
     
             /**
-             * PresenceStatsResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * PresenceStatsResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.PresenceStatsResponse
              * @instance
              */
-            PresenceStatsResponse.prototype.Error = null;
+            PresenceStatsResponse.prototype.error = null;
     
             /**
-             * PresenceStatsResponse Result.
-             * @member {proto.IPresenceStatsResult|null|undefined} Result
+             * PresenceStatsResponse result.
+             * @member {proto.IPresenceStatsResult|null|undefined} result
              * @memberof proto.PresenceStatsResponse
              * @instance
              */
-            PresenceStatsResponse.prototype.Result = null;
+            PresenceStatsResponse.prototype.result = null;
     
             /**
              * Creates a new PresenceStatsResponse instance using the specified properties.
@@ -6470,10 +6470,10 @@
             PresenceStatsResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.PresenceStatsResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.PresenceStatsResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -6509,10 +6509,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.PresenceStatsResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.PresenceStatsResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6549,15 +6549,15 @@
             PresenceStatsResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.PresenceStatsResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.PresenceStatsResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -6574,15 +6574,15 @@
                 if (object instanceof $root.proto.PresenceStatsResponse)
                     return object;
                 var message = new $root.proto.PresenceStatsResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.PresenceStatsResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.PresenceStatsResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.PresenceStatsResponse.Result: object expected");
-                    message.Result = $root.proto.PresenceStatsResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.PresenceStatsResponse.result: object expected");
+                    message.result = $root.proto.PresenceStatsResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -6601,13 +6601,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.PresenceStatsResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.PresenceStatsResult.toObject(message.result, options);
                 return object;
             };
     
@@ -6631,8 +6631,8 @@
              * Properties of a PresenceStatsResult.
              * @memberof proto
              * @interface IPresenceStatsResult
-             * @property {number|null} [NumClients] PresenceStatsResult NumClients
-             * @property {number|null} [NumUsers] PresenceStatsResult NumUsers
+             * @property {number|null} [numClients] PresenceStatsResult numClients
+             * @property {number|null} [numUsers] PresenceStatsResult numUsers
              */
     
             /**
@@ -6651,20 +6651,20 @@
             }
     
             /**
-             * PresenceStatsResult NumClients.
-             * @member {number} NumClients
+             * PresenceStatsResult numClients.
+             * @member {number} numClients
              * @memberof proto.PresenceStatsResult
              * @instance
              */
-            PresenceStatsResult.prototype.NumClients = 0;
+            PresenceStatsResult.prototype.numClients = 0;
     
             /**
-             * PresenceStatsResult NumUsers.
-             * @member {number} NumUsers
+             * PresenceStatsResult numUsers.
+             * @member {number} numUsers
              * @memberof proto.PresenceStatsResult
              * @instance
              */
-            PresenceStatsResult.prototype.NumUsers = 0;
+            PresenceStatsResult.prototype.numUsers = 0;
     
             /**
              * Creates a new PresenceStatsResult instance using the specified properties.
@@ -6690,10 +6690,10 @@
             PresenceStatsResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.NumClients);
-                if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.NumUsers);
+                if (message.numClients != null && message.hasOwnProperty("numClients"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.numClients);
+                if (message.numUsers != null && message.hasOwnProperty("numUsers"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.numUsers);
                 return writer;
             };
     
@@ -6729,10 +6729,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.NumClients = reader.uint32();
+                        message.numClients = reader.uint32();
                         break;
                     case 2:
-                        message.NumUsers = reader.uint32();
+                        message.numUsers = reader.uint32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6769,12 +6769,12 @@
             PresenceStatsResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    if (!$util.isInteger(message.NumClients))
-                        return "NumClients: integer expected";
-                if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    if (!$util.isInteger(message.NumUsers))
-                        return "NumUsers: integer expected";
+                if (message.numClients != null && message.hasOwnProperty("numClients"))
+                    if (!$util.isInteger(message.numClients))
+                        return "numClients: integer expected";
+                if (message.numUsers != null && message.hasOwnProperty("numUsers"))
+                    if (!$util.isInteger(message.numUsers))
+                        return "numUsers: integer expected";
                 return null;
             };
     
@@ -6790,10 +6790,10 @@
                 if (object instanceof $root.proto.PresenceStatsResult)
                     return object;
                 var message = new $root.proto.PresenceStatsResult();
-                if (object.NumClients != null)
-                    message.NumClients = object.NumClients >>> 0;
-                if (object.NumUsers != null)
-                    message.NumUsers = object.NumUsers >>> 0;
+                if (object.numClients != null)
+                    message.numClients = object.numClients >>> 0;
+                if (object.numUsers != null)
+                    message.numUsers = object.numUsers >>> 0;
                 return message;
             };
     
@@ -6811,13 +6811,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.NumClients = 0;
-                    object.NumUsers = 0;
+                    object.numClients = 0;
+                    object.numUsers = 0;
                 }
-                if (message.NumClients != null && message.hasOwnProperty("NumClients"))
-                    object.NumClients = message.NumClients;
-                if (message.NumUsers != null && message.hasOwnProperty("NumUsers"))
-                    object.NumUsers = message.NumUsers;
+                if (message.numClients != null && message.hasOwnProperty("numClients"))
+                    object.numClients = message.numClients;
+                if (message.numUsers != null && message.hasOwnProperty("numUsers"))
+                    object.numUsers = message.numUsers;
                 return object;
             };
     
@@ -6841,7 +6841,7 @@
              * Properties of a HistoryRequest.
              * @memberof proto
              * @interface IHistoryRequest
-             * @property {string|null} [Channel] HistoryRequest Channel
+             * @property {string|null} [channel] HistoryRequest channel
              */
     
             /**
@@ -6860,12 +6860,12 @@
             }
     
             /**
-             * HistoryRequest Channel.
-             * @member {string} Channel
+             * HistoryRequest channel.
+             * @member {string} channel
              * @memberof proto.HistoryRequest
              * @instance
              */
-            HistoryRequest.prototype.Channel = "";
+            HistoryRequest.prototype.channel = "";
     
             /**
              * Creates a new HistoryRequest instance using the specified properties.
@@ -6891,8 +6891,8 @@
             HistoryRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Channel);
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.channel);
                 return writer;
             };
     
@@ -6928,7 +6928,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Channel = reader.string();
+                        message.channel = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6965,9 +6965,9 @@
             HistoryRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    if (!$util.isString(message.Channel))
-                        return "Channel: string expected";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    if (!$util.isString(message.channel))
+                        return "channel: string expected";
                 return null;
             };
     
@@ -6983,8 +6983,8 @@
                 if (object instanceof $root.proto.HistoryRequest)
                     return object;
                 var message = new $root.proto.HistoryRequest();
-                if (object.Channel != null)
-                    message.Channel = String(object.Channel);
+                if (object.channel != null)
+                    message.channel = String(object.channel);
                 return message;
             };
     
@@ -7002,9 +7002,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Channel = "";
-                if (message.Channel != null && message.hasOwnProperty("Channel"))
-                    object.Channel = message.Channel;
+                    object.channel = "";
+                if (message.channel != null && message.hasOwnProperty("channel"))
+                    object.channel = message.channel;
                 return object;
             };
     
@@ -7028,8 +7028,8 @@
              * Properties of a HistoryResponse.
              * @memberof proto
              * @interface IHistoryResponse
-             * @property {proto.IError|null} [Error] HistoryResponse Error
-             * @property {proto.IHistoryResult|null} [Result] HistoryResponse Result
+             * @property {proto.IError|null} [error] HistoryResponse error
+             * @property {proto.IHistoryResult|null} [result] HistoryResponse result
              */
     
             /**
@@ -7048,20 +7048,20 @@
             }
     
             /**
-             * HistoryResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * HistoryResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.HistoryResponse
              * @instance
              */
-            HistoryResponse.prototype.Error = null;
+            HistoryResponse.prototype.error = null;
     
             /**
-             * HistoryResponse Result.
-             * @member {proto.IHistoryResult|null|undefined} Result
+             * HistoryResponse result.
+             * @member {proto.IHistoryResult|null|undefined} result
              * @memberof proto.HistoryResponse
              * @instance
              */
-            HistoryResponse.prototype.Result = null;
+            HistoryResponse.prototype.result = null;
     
             /**
              * Creates a new HistoryResponse instance using the specified properties.
@@ -7087,10 +7087,10 @@
             HistoryResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.HistoryResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.HistoryResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -7126,10 +7126,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.HistoryResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.HistoryResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -7166,15 +7166,15 @@
             HistoryResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.HistoryResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.HistoryResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -7191,15 +7191,15 @@
                 if (object instanceof $root.proto.HistoryResponse)
                     return object;
                 var message = new $root.proto.HistoryResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.HistoryResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.HistoryResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.HistoryResponse.Result: object expected");
-                    message.Result = $root.proto.HistoryResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.HistoryResponse.result: object expected");
+                    message.result = $root.proto.HistoryResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -7218,13 +7218,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.HistoryResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.HistoryResult.toObject(message.result, options);
                 return object;
             };
     
@@ -7248,7 +7248,7 @@
              * Properties of a HistoryResult.
              * @memberof proto
              * @interface IHistoryResult
-             * @property {Array.<proto.IPublication>|null} [Publications] HistoryResult Publications
+             * @property {Array.<proto.IPublication>|null} [publications] HistoryResult publications
              */
     
             /**
@@ -7260,7 +7260,7 @@
              * @param {proto.IHistoryResult=} [properties] Properties to set
              */
             function HistoryResult(properties) {
-                this.Publications = [];
+                this.publications = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -7268,12 +7268,12 @@
             }
     
             /**
-             * HistoryResult Publications.
-             * @member {Array.<proto.IPublication>} Publications
+             * HistoryResult publications.
+             * @member {Array.<proto.IPublication>} publications
              * @memberof proto.HistoryResult
              * @instance
              */
-            HistoryResult.prototype.Publications = $util.emptyArray;
+            HistoryResult.prototype.publications = $util.emptyArray;
     
             /**
              * Creates a new HistoryResult instance using the specified properties.
@@ -7299,9 +7299,9 @@
             HistoryResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Publications != null && message.Publications.length)
-                    for (var i = 0; i < message.Publications.length; ++i)
-                        $root.proto.Publication.encode(message.Publications[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.publications != null && message.publications.length)
+                    for (var i = 0; i < message.publications.length; ++i)
+                        $root.proto.Publication.encode(message.publications[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 return writer;
             };
     
@@ -7337,9 +7337,9 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        if (!(message.Publications && message.Publications.length))
-                            message.Publications = [];
-                        message.Publications.push($root.proto.Publication.decode(reader, reader.uint32()));
+                        if (!(message.publications && message.publications.length))
+                            message.publications = [];
+                        message.publications.push($root.proto.Publication.decode(reader, reader.uint32()));
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -7376,13 +7376,13 @@
             HistoryResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Publications != null && message.hasOwnProperty("Publications")) {
-                    if (!Array.isArray(message.Publications))
-                        return "Publications: array expected";
-                    for (var i = 0; i < message.Publications.length; ++i) {
-                        var error = $root.proto.Publication.verify(message.Publications[i]);
+                if (message.publications != null && message.hasOwnProperty("publications")) {
+                    if (!Array.isArray(message.publications))
+                        return "publications: array expected";
+                    for (var i = 0; i < message.publications.length; ++i) {
+                        var error = $root.proto.Publication.verify(message.publications[i]);
                         if (error)
-                            return "Publications." + error;
+                            return "publications." + error;
                     }
                 }
                 return null;
@@ -7400,14 +7400,14 @@
                 if (object instanceof $root.proto.HistoryResult)
                     return object;
                 var message = new $root.proto.HistoryResult();
-                if (object.Publications) {
-                    if (!Array.isArray(object.Publications))
-                        throw TypeError(".proto.HistoryResult.Publications: array expected");
-                    message.Publications = [];
-                    for (var i = 0; i < object.Publications.length; ++i) {
-                        if (typeof object.Publications[i] !== "object")
-                            throw TypeError(".proto.HistoryResult.Publications: object expected");
-                        message.Publications[i] = $root.proto.Publication.fromObject(object.Publications[i]);
+                if (object.publications) {
+                    if (!Array.isArray(object.publications))
+                        throw TypeError(".proto.HistoryResult.publications: array expected");
+                    message.publications = [];
+                    for (var i = 0; i < object.publications.length; ++i) {
+                        if (typeof object.publications[i] !== "object")
+                            throw TypeError(".proto.HistoryResult.publications: object expected");
+                        message.publications[i] = $root.proto.Publication.fromObject(object.publications[i]);
                     }
                 }
                 return message;
@@ -7427,11 +7427,11 @@
                     options = {};
                 var object = {};
                 if (options.arrays || options.defaults)
-                    object.Publications = [];
-                if (message.Publications && message.Publications.length) {
-                    object.Publications = [];
-                    for (var j = 0; j < message.Publications.length; ++j)
-                        object.Publications[j] = $root.proto.Publication.toObject(message.Publications[j], options);
+                    object.publications = [];
+                if (message.publications && message.publications.length) {
+                    object.publications = [];
+                    for (var j = 0; j < message.publications.length; ++j)
+                        object.publications[j] = $root.proto.Publication.toObject(message.publications[j], options);
                 }
                 return object;
             };
@@ -7456,7 +7456,7 @@
              * Properties of a PingRequest.
              * @memberof proto
              * @interface IPingRequest
-             * @property {string|null} [Data] PingRequest Data
+             * @property {string|null} [data] PingRequest data
              */
     
             /**
@@ -7475,12 +7475,12 @@
             }
     
             /**
-             * PingRequest Data.
-             * @member {string} Data
+             * PingRequest data.
+             * @member {string} data
              * @memberof proto.PingRequest
              * @instance
              */
-            PingRequest.prototype.Data = "";
+            PingRequest.prototype.data = "";
     
             /**
              * Creates a new PingRequest instance using the specified properties.
@@ -7506,8 +7506,8 @@
             PingRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Data);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.data);
                 return writer;
             };
     
@@ -7543,7 +7543,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Data = reader.string();
+                        message.data = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -7580,9 +7580,9 @@
             PingRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!$util.isString(message.Data))
-                        return "Data: string expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!$util.isString(message.data))
+                        return "data: string expected";
                 return null;
             };
     
@@ -7598,8 +7598,8 @@
                 if (object instanceof $root.proto.PingRequest)
                     return object;
                 var message = new $root.proto.PingRequest();
-                if (object.Data != null)
-                    message.Data = String(object.Data);
+                if (object.data != null)
+                    message.data = String(object.data);
                 return message;
             };
     
@@ -7617,9 +7617,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Data = "";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = message.Data;
+                    object.data = "";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = message.data;
                 return object;
             };
     
@@ -7643,8 +7643,8 @@
              * Properties of a PingResponse.
              * @memberof proto
              * @interface IPingResponse
-             * @property {proto.IError|null} [Error] PingResponse Error
-             * @property {proto.IPingResult|null} [Result] PingResponse Result
+             * @property {proto.IError|null} [error] PingResponse error
+             * @property {proto.IPingResult|null} [result] PingResponse result
              */
     
             /**
@@ -7663,20 +7663,20 @@
             }
     
             /**
-             * PingResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * PingResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.PingResponse
              * @instance
              */
-            PingResponse.prototype.Error = null;
+            PingResponse.prototype.error = null;
     
             /**
-             * PingResponse Result.
-             * @member {proto.IPingResult|null|undefined} Result
+             * PingResponse result.
+             * @member {proto.IPingResult|null|undefined} result
              * @memberof proto.PingResponse
              * @instance
              */
-            PingResponse.prototype.Result = null;
+            PingResponse.prototype.result = null;
     
             /**
              * Creates a new PingResponse instance using the specified properties.
@@ -7702,10 +7702,10 @@
             PingResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    $root.proto.PingResult.encode(message.Result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    $root.proto.PingResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -7741,10 +7741,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = $root.proto.PingResult.decode(reader, reader.uint32());
+                        message.result = $root.proto.PingResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -7781,15 +7781,15 @@
             PingResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result")) {
-                    var error = $root.proto.PingResult.verify(message.Result);
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.PingResult.verify(message.result);
                     if (error)
-                        return "Result." + error;
+                        return "result." + error;
                 }
                 return null;
             };
@@ -7806,15 +7806,15 @@
                 if (object instanceof $root.proto.PingResponse)
                     return object;
                 var message = new $root.proto.PingResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.PingResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.PingResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null) {
-                    if (typeof object.Result !== "object")
-                        throw TypeError(".proto.PingResponse.Result: object expected");
-                    message.Result = $root.proto.PingResult.fromObject(object.Result);
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.PingResponse.result: object expected");
+                    message.result = $root.proto.PingResult.fromObject(object.result);
                 }
                 return message;
             };
@@ -7833,13 +7833,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = null;
+                    object.error = null;
+                    object.result = null;
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = $root.proto.PingResult.toObject(message.Result, options);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = $root.proto.PingResult.toObject(message.result, options);
                 return object;
             };
     
@@ -7863,7 +7863,7 @@
              * Properties of a PingResult.
              * @memberof proto
              * @interface IPingResult
-             * @property {string|null} [Data] PingResult Data
+             * @property {string|null} [data] PingResult data
              */
     
             /**
@@ -7882,12 +7882,12 @@
             }
     
             /**
-             * PingResult Data.
-             * @member {string} Data
+             * PingResult data.
+             * @member {string} data
              * @memberof proto.PingResult
              * @instance
              */
-            PingResult.prototype.Data = "";
+            PingResult.prototype.data = "";
     
             /**
              * Creates a new PingResult instance using the specified properties.
@@ -7913,8 +7913,8 @@
             PingResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Data);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.data);
                 return writer;
             };
     
@@ -7950,7 +7950,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Data = reader.string();
+                        message.data = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -7987,9 +7987,9 @@
             PingResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!$util.isString(message.Data))
-                        return "Data: string expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!$util.isString(message.data))
+                        return "data: string expected";
                 return null;
             };
     
@@ -8005,8 +8005,8 @@
                 if (object instanceof $root.proto.PingResult)
                     return object;
                 var message = new $root.proto.PingResult();
-                if (object.Data != null)
-                    message.Data = String(object.Data);
+                if (object.data != null)
+                    message.data = String(object.data);
                 return message;
             };
     
@@ -8024,9 +8024,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Data = "";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = message.Data;
+                    object.data = "";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = message.data;
                 return object;
             };
     
@@ -8050,7 +8050,7 @@
              * Properties of a RPCRequest.
              * @memberof proto
              * @interface IRPCRequest
-             * @property {Uint8Array|null} [Data] RPCRequest Data
+             * @property {Uint8Array|null} [data] RPCRequest data
              */
     
             /**
@@ -8069,12 +8069,12 @@
             }
     
             /**
-             * RPCRequest Data.
-             * @member {Uint8Array} Data
+             * RPCRequest data.
+             * @member {Uint8Array} data
              * @memberof proto.RPCRequest
              * @instance
              */
-            RPCRequest.prototype.Data = $util.newBuffer([]);
+            RPCRequest.prototype.data = $util.newBuffer([]);
     
             /**
              * Creates a new RPCRequest instance using the specified properties.
@@ -8100,8 +8100,8 @@
             RPCRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Data);
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.data);
                 return writer;
             };
     
@@ -8137,7 +8137,7 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Data = reader.bytes();
+                        message.data = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -8174,9 +8174,9 @@
             RPCRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
-                        return "Data: buffer expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
                 return null;
             };
     
@@ -8192,11 +8192,11 @@
                 if (object instanceof $root.proto.RPCRequest)
                     return object;
                 var message = new $root.proto.RPCRequest();
-                if (object.Data != null)
-                    if (typeof object.Data === "string")
-                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
-                    else if (object.Data.length)
-                        message.Data = object.Data;
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
                 return message;
             };
     
@@ -8214,9 +8214,9 @@
                     options = {};
                 var object = {};
                 if (options.defaults)
-                    object.Data = options.bytes === String ? "" : [];
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
+                    object.data = options.bytes === String ? "" : [];
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
                 return object;
             };
     
@@ -8240,8 +8240,8 @@
              * Properties of a RPCResponse.
              * @memberof proto
              * @interface IRPCResponse
-             * @property {proto.IError|null} [Error] RPCResponse Error
-             * @property {Uint8Array|null} [Result] RPCResponse Result
+             * @property {proto.IError|null} [error] RPCResponse error
+             * @property {Uint8Array|null} [result] RPCResponse result
              */
     
             /**
@@ -8260,20 +8260,20 @@
             }
     
             /**
-             * RPCResponse Error.
-             * @member {proto.IError|null|undefined} Error
+             * RPCResponse error.
+             * @member {proto.IError|null|undefined} error
              * @memberof proto.RPCResponse
              * @instance
              */
-            RPCResponse.prototype.Error = null;
+            RPCResponse.prototype.error = null;
     
             /**
-             * RPCResponse Result.
-             * @member {Uint8Array} Result
+             * RPCResponse result.
+             * @member {Uint8Array} result
              * @memberof proto.RPCResponse
              * @instance
              */
-            RPCResponse.prototype.Result = $util.newBuffer([]);
+            RPCResponse.prototype.result = $util.newBuffer([]);
     
             /**
              * Creates a new RPCResponse instance using the specified properties.
@@ -8299,10 +8299,10 @@
             RPCResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    $root.proto.Error.encode(message.Error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.Result);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.result != null && message.hasOwnProperty("result"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.result);
                 return writer;
             };
     
@@ -8338,10 +8338,10 @@
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Error = $root.proto.Error.decode(reader, reader.uint32());
+                        message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.Result = reader.bytes();
+                        message.result = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -8378,14 +8378,14 @@
             RPCResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Error != null && message.hasOwnProperty("Error")) {
-                    var error = $root.proto.Error.verify(message.Error);
+                if (message.error != null && message.hasOwnProperty("error")) {
+                    var error = $root.proto.Error.verify(message.error);
                     if (error)
-                        return "Error." + error;
+                        return "error." + error;
                 }
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    if (!(message.Result && typeof message.Result.length === "number" || $util.isString(message.Result)))
-                        return "Result: buffer expected";
+                if (message.result != null && message.hasOwnProperty("result"))
+                    if (!(message.result && typeof message.result.length === "number" || $util.isString(message.result)))
+                        return "result: buffer expected";
                 return null;
             };
     
@@ -8401,16 +8401,16 @@
                 if (object instanceof $root.proto.RPCResponse)
                     return object;
                 var message = new $root.proto.RPCResponse();
-                if (object.Error != null) {
-                    if (typeof object.Error !== "object")
-                        throw TypeError(".proto.RPCResponse.Error: object expected");
-                    message.Error = $root.proto.Error.fromObject(object.Error);
+                if (object.error != null) {
+                    if (typeof object.error !== "object")
+                        throw TypeError(".proto.RPCResponse.error: object expected");
+                    message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.Result != null)
-                    if (typeof object.Result === "string")
-                        $util.base64.decode(object.Result, message.Result = $util.newBuffer($util.base64.length(object.Result)), 0);
-                    else if (object.Result.length)
-                        message.Result = object.Result;
+                if (object.result != null)
+                    if (typeof object.result === "string")
+                        $util.base64.decode(object.result, message.result = $util.newBuffer($util.base64.length(object.result)), 0);
+                    else if (object.result.length)
+                        message.result = object.result;
                 return message;
             };
     
@@ -8428,13 +8428,13 @@
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.Error = null;
-                    object.Result = options.bytes === String ? "" : [];
+                    object.error = null;
+                    object.result = options.bytes === String ? "" : [];
                 }
-                if (message.Error != null && message.hasOwnProperty("Error"))
-                    object.Error = $root.proto.Error.toObject(message.Error, options);
-                if (message.Result != null && message.hasOwnProperty("Result"))
-                    object.Result = options.bytes === String ? $util.base64.encode(message.Result, 0, message.Result.length) : options.bytes === Array ? Array.prototype.slice.call(message.Result) : message.Result;
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = $root.proto.Error.toObject(message.error, options);
+                if (message.result != null && message.hasOwnProperty("result"))
+                    object.result = options.bytes === String ? $util.base64.encode(message.result, 0, message.result.length) : options.bytes === Array ? Array.prototype.slice.call(message.result) : message.result;
                 return object;
             };
     
@@ -8452,231 +8452,41 @@
             return RPCResponse;
         })();
     
-        proto.MessageRequest = (function() {
+        proto.Centrifuge = (function() {
     
             /**
-             * Properties of a MessageRequest.
+             * Constructs a new Centrifuge service.
              * @memberof proto
-             * @interface IMessageRequest
-             * @property {Uint8Array|null} [Data] MessageRequest Data
-             */
-    
-            /**
-             * Constructs a new MessageRequest.
-             * @memberof proto
-             * @classdesc Represents a MessageRequest.
-             * @implements IMessageRequest
-             * @constructor
-             * @param {proto.IMessageRequest=} [properties] Properties to set
-             */
-            function MessageRequest(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-    
-            /**
-             * MessageRequest Data.
-             * @member {Uint8Array} Data
-             * @memberof proto.MessageRequest
-             * @instance
-             */
-            MessageRequest.prototype.Data = $util.newBuffer([]);
-    
-            /**
-             * Creates a new MessageRequest instance using the specified properties.
-             * @function create
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {proto.IMessageRequest=} [properties] Properties to set
-             * @returns {proto.MessageRequest} MessageRequest instance
-             */
-            MessageRequest.create = function create(properties) {
-                return new MessageRequest(properties);
-            };
-    
-            /**
-             * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
-             * @function encode
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            MessageRequest.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Data);
-                return writer;
-            };
-    
-            /**
-             * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            MessageRequest.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-    
-            /**
-             * Decodes a MessageRequest message from the specified reader or buffer.
-             * @function decode
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {proto.MessageRequest} MessageRequest
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            MessageRequest.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.proto.MessageRequest();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.Data = reader.bytes();
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-    
-            /**
-             * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {proto.MessageRequest} MessageRequest
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            MessageRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-    
-            /**
-             * Verifies a MessageRequest message.
-             * @function verify
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            MessageRequest.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    if (!(message.Data && typeof message.Data.length === "number" || $util.isString(message.Data)))
-                        return "Data: buffer expected";
-                return null;
-            };
-    
-            /**
-             * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {proto.MessageRequest} MessageRequest
-             */
-            MessageRequest.fromObject = function fromObject(object) {
-                if (object instanceof $root.proto.MessageRequest)
-                    return object;
-                var message = new $root.proto.MessageRequest();
-                if (object.Data != null)
-                    if (typeof object.Data === "string")
-                        $util.base64.decode(object.Data, message.Data = $util.newBuffer($util.base64.length(object.Data)), 0);
-                    else if (object.Data.length)
-                        message.Data = object.Data;
-                return message;
-            };
-    
-            /**
-             * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof proto.MessageRequest
-             * @static
-             * @param {proto.MessageRequest} message MessageRequest
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            MessageRequest.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                var object = {};
-                if (options.defaults)
-                    object.Data = options.bytes === String ? "" : [];
-                if (message.Data != null && message.hasOwnProperty("Data"))
-                    object.Data = options.bytes === String ? $util.base64.encode(message.Data, 0, message.Data.length) : options.bytes === Array ? Array.prototype.slice.call(message.Data) : message.Data;
-                return object;
-            };
-    
-            /**
-             * Converts this MessageRequest to JSON.
-             * @function toJSON
-             * @memberof proto.MessageRequest
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            MessageRequest.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-    
-            return MessageRequest;
-        })();
-    
-        proto.Centrifugo = (function() {
-    
-            /**
-             * Constructs a new Centrifugo service.
-             * @memberof proto
-             * @classdesc Represents a Centrifugo
+             * @classdesc Represents a Centrifuge
              * @extends $protobuf.rpc.Service
              * @constructor
              * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
              * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
              * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
              */
-            function Centrifugo(rpcImpl, requestDelimited, responseDelimited) {
+            function Centrifuge(rpcImpl, requestDelimited, responseDelimited) {
                 $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
             }
     
-            (Centrifugo.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = Centrifugo;
+            (Centrifuge.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = Centrifuge;
     
             /**
-             * Creates new Centrifugo service using the specified rpc implementation.
+             * Creates new Centrifuge service using the specified rpc implementation.
              * @function create
-             * @memberof proto.Centrifugo
+             * @memberof proto.Centrifuge
              * @static
              * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
              * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
              * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
-             * @returns {Centrifugo} RPC service. Useful where requests and/or responses are streamed.
+             * @returns {Centrifuge} RPC service. Useful where requests and/or responses are streamed.
              */
-            Centrifugo.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+            Centrifuge.create = function create(rpcImpl, requestDelimited, responseDelimited) {
                 return new this(rpcImpl, requestDelimited, responseDelimited);
             };
     
             /**
-             * Callback as used by {@link proto.Centrifugo#communicate}.
-             * @memberof proto.Centrifugo
+             * Callback as used by {@link proto.Centrifuge#communicate}.
+             * @memberof proto.Centrifuge
              * @typedef CommunicateCallback
              * @type {function}
              * @param {Error|null} error Error, if any
@@ -8686,28 +8496,28 @@
             /**
              * Calls Communicate.
              * @function communicate
-             * @memberof proto.Centrifugo
+             * @memberof proto.Centrifuge
              * @instance
              * @param {proto.ICommand} request Command message or plain object
-             * @param {proto.Centrifugo.CommunicateCallback} callback Node-style callback called with the error, if any, and Reply
+             * @param {proto.Centrifuge.CommunicateCallback} callback Node-style callback called with the error, if any, and Reply
              * @returns {undefined}
              * @variation 1
              */
-            Centrifugo.prototype.communicate = function communicate(request, callback) {
+            Centrifuge.prototype.communicate = function communicate(request, callback) {
                 return this.rpcCall(communicate, $root.proto.Command, $root.proto.Reply, request, callback);
             };
     
             /**
              * Calls Communicate.
              * @function communicate
-             * @memberof proto.Centrifugo
+             * @memberof proto.Centrifuge
              * @instance
              * @param {proto.ICommand} request Command message or plain object
              * @returns {Promise<proto.Reply>} Promise
              * @variation 2
              */
     
-            return Centrifugo;
+            return Centrifuge;
         })();
     
         return proto;

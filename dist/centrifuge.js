@@ -70,6 +70,139 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return isFunction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return isString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return log; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return stripSlash; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return startsWith; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return endsWith; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return errorExists; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return objectToQuery; });
+var isFunction = function (value) {
+    return typeof value === 'function';
+};
+var isString = function (value) {
+    return typeof value === 'string';
+};
+var log = function (level) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    if (console) {
+        var logger = console[level];
+        if (isFunction(logger)) {
+            logger.apply(logger, args);
+        }
+    }
+};
+var stripSlash = function (value) {
+    return value.replace(/\/$/, '');
+};
+var startsWith = function (value, prefix) {
+    return value.lastIndexOf(prefix, 0) === 0;
+};
+var endsWith = function (value, suffix) {
+    return value.indexOf(suffix, value.length - suffix.length) !== -1;
+};
+var errorExists = function (data) {
+    return 'error' in data && data.error !== null && data.error !== '';
+};
+var objectToQuery = function (object) {
+    var p = [];
+    for (var i in object) {
+        if (object.hasOwnProperty(i)) {
+            p.push(encodeURIComponent(i) + (object[i] ? '=' + encodeURIComponent(object[i]) : ''));
+        }
+    }
+    return p.join('&');
+};
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(typeof self !== 'undefined' ? self : this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
@@ -79,11 +212,80 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Observable", function() { return Observable; });
+var Observable = (function () {
+    function Observable() {
+        this.__callbacks = {};
+    }
+    Observable.prototype.on = function (events, fn) {
+        var _this = this;
+        events.replace(/[^\s]+/g, function (name) {
+            (_this.__callbacks[name] = _this.__callbacks[name] || []).push(fn);
+            return '';
+        });
+        return this;
+    };
+    Observable.prototype.one = function (name, fn) {
+        fn['one'] = true;
+        return this.on(name, fn);
+    };
+    Observable.prototype.off = function (events, fn) {
+        var _this = this;
+        if (events === '*') {
+            this.__callbacks = {};
+        }
+        else if (fn) {
+            var arr = this.__callbacks[events];
+            for (var i = 0, cb = void 0; (cb = arr && arr[i]); ++i) {
+                if (cb === fn) {
+                    arr.splice(i, 1);
+                }
+            }
+        }
+        else {
+            events.replace(/[^\s]+/g, function (name) {
+                _this.__callbacks[name] = [];
+                return '';
+            });
+        }
+        return this;
+    };
+    Observable.prototype.trigger = function (name, args) {
+        var fns = this.__callbacks[name] || [];
+        for (var i = 0, fn = void 0; (fn = fns[i]); ++i) {
+            if (!fn['busy']) {
+                fn['busy'] = true;
+                fn.apply(this, args);
+                if (fn['one']) {
+                    fns.splice(i, 1);
+                    i--;
+                }
+                fn['busy'] = false;
+            }
+        }
+        return this;
+    };
+    return Observable;
+}());
+
+
+
+/***/ })
+/******/ ]);
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Centrifuge", function() { return Centrifuge; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Functions__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Functions__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_observable__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Subscription__ = __webpack_require__(3);
+throw new Error("Cannot find module \"./proto/client\"");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -94,6 +296,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -113,8 +316,8 @@ var Centrifuge = (function (_super) {
         _this._refreshTimeout = null;
         _this._pongTimeout = null;
         _this._pingInterval = null;
-        _this._messageId = 0;
-        _this._messages = [];
+        _this._commandId = 0;
+        _this._commands = [];
         _this._isBatching = false;
         _this._isAuthBatching = false;
         _this._authChannels = {};
@@ -160,8 +363,8 @@ var Centrifuge = (function (_super) {
         this._disconnect('client');
     };
     Centrifuge.prototype.ping = function () {
-        this.addMessage({
-            method: 'ping'
+        this.addCommand({
+            method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.PING
         }).then(function (response) {
         }, function (error) {
         });
@@ -177,9 +380,9 @@ var Centrifuge = (function (_super) {
         }
     };
     Centrifuge.prototype.flush = function () {
-        var messages = this._messages.slice();
-        this._send(messages);
-        this._messages = [];
+        var commands = this._commands.slice();
+        this._send(commands);
+        this._commands = [];
     };
     Centrifuge.prototype.startAuthBatching = function () {
         this._isAuthBatching = true;
@@ -210,12 +413,8 @@ var Centrifuge = (function (_super) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
                         _this._subscribeError({
-                            error: 'authorization request failed',
-                            advice: 'fix',
-                            body: {
-                                channel: channel,
-                            }
-                        });
+                            message: 'authorization request failed',
+                        }, channel);
                     }
                 }
                 return;
@@ -231,40 +430,33 @@ var Centrifuge = (function (_super) {
                     var channelResponse = _data[channel];
                     if (!channelResponse) {
                         _this._subscribeError({
-                            error: 'channel not found in authorization response',
-                            advice: 'fix',
-                            body: {
-                                channel: channel,
-                            }
-                        });
+                            message: 'channel not found in authorization response',
+                        }, channel);
                         continue;
                     }
                     if (!channelResponse.status || channelResponse.status === 200) {
                         var msg = {
-                            method: 'subscribe',
+                            method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.SUBSCRIBE,
                             params: {
                                 channel: channel,
                                 client: _this._clientID,
                                 info: channelResponse.info,
                                 sign: channelResponse.sign
-                            }
+                            },
                         };
                         if (_this._recover(channel) === true) {
                             msg.params.recover = true;
                             msg.params.last = _this._getLastID(channel);
                         }
-                        _this.addMessage(msg).then(function (response) {
+                        _this.addCommand(msg).then(function (response) {
                             _this._subscribeResponse(response);
                         }, function (error) {
                         });
                     }
                     else {
                         _this._subscribeError({
-                            error: channelResponse.status,
-                            body: {
-                                channel: channel
-                            }
-                        });
+                            message: channelResponse.status,
+                        }, channel);
                     }
                 }
             }
@@ -330,7 +522,7 @@ var Centrifuge = (function (_super) {
         }
         else {
             var msg = {
-                method: 'subscribe',
+                method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.SUBSCRIBE,
                 params: {
                     channel: channel,
                 }
@@ -339,18 +531,18 @@ var Centrifuge = (function (_super) {
                 msg.params.recover = true;
                 msg.params.last = this._getLastID(channel);
             }
-            this.addMessage(msg).then(function (response) {
+            this.addCommand(msg).then(function (response) {
                 _this._subscribeResponse(response);
             }, function (error) {
-                _this._subscribeError(error);
+                _this._subscribeError(error, channel);
             });
         }
     };
     Centrifuge.prototype.unsubscribeSub = function (sub) {
         var _this = this;
         if (this.isConnected) {
-            this.addMessage({
-                method: 'unsubscribe',
+            this.addCommand({
+                method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.UNSUBSCRIBE,
                 params: {
                     channel: sub.channel
                 }
@@ -360,37 +552,30 @@ var Centrifuge = (function (_super) {
             });
         }
     };
-    Centrifuge.prototype.addMessage = function (message) {
+    Centrifuge.prototype.addCommand = function (command) {
         var _this = this;
         return new Promise(function (callback, errback) {
-            var uid = _this._getNextMessageId() + '';
-            message.uid = uid;
+            var id = _this._getNextCommandId();
+            command.id = id;
             if (_this._isBatching === true) {
-                _this._messages.push(message);
+                _this._commands.push(command);
             }
             else {
-                _this._send([message]);
+                _this._send([command]);
             }
-            _this._callbacks[uid] = {
+            _this._callbacks[id] = {
                 callback: callback,
                 errback: errback,
             };
             setTimeout(function () {
-                delete _this._callbacks[uid];
+                delete _this._callbacks[id];
                 if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
-                    errback(Centrifuge.createErrorObject('timeout', 'retry'));
+                    errback({
+                        message: 'Timeout',
+                    });
                 }
             }, _this._config.timeout);
         });
-    };
-    Centrifuge.createErrorObject = function (error, advice) {
-        var result = {
-            error: error,
-        };
-        if (advice) {
-            result.advice = advice;
-        }
-        return result;
     };
     Centrifuge.log = function () {
         var args = [];
@@ -586,7 +771,9 @@ var Centrifuge = (function (_super) {
                 var callbacks = this._callbacks[uid];
                 var errback = callbacks.errback;
                 if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
-                    errback(Centrifuge.createErrorObject('disconnected', 'retry'));
+                    errback({
+                        message: 'Disconnected',
+                    });
                 }
             }
         }
@@ -641,21 +828,21 @@ var Centrifuge = (function (_super) {
             this._transport.close();
         }
     };
-    Centrifuge.prototype._send = function (messages) {
-        if (!messages.length) {
+    Centrifuge.prototype._send = function (commands) {
+        if (!commands.length) {
             return;
         }
-        var encodedMessages = [];
-        for (var i in messages) {
-            if (messages.hasOwnProperty(i)) {
-                encodedMessages.push(JSON.stringify(messages[i]));
+        var encodedCommands = [];
+        for (var i in commands) {
+            if (commands.hasOwnProperty(i)) {
+                encodedCommands.push(JSON.stringify(commands[i]));
             }
         }
-        this._transport.send(encodedMessages.join("\n"));
-        this._debug('Send', messages);
+        this._transport.send(encodedCommands.join("\n"));
+        this._debug('Send', commands);
     };
-    Centrifuge.prototype._getNextMessageId = function () {
-        return ++this._messageId;
+    Centrifuge.prototype._getNextCommandId = function () {
+        return ++this._commandId;
     };
     Centrifuge.prototype._stopPing = function () {
         if (this._pongTimeout !== null) {
@@ -750,8 +937,8 @@ var Centrifuge = (function (_super) {
             }
             else {
                 _this._debug('Send refreshed credentials');
-                _this.addMessage({
-                    method: 'refresh',
+                _this.addCommand({
+                    method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.REFRESH,
                     params: data,
                 }).then(function (response) {
                     _this._refreshResponse(response);
@@ -843,8 +1030,7 @@ var Centrifuge = (function (_super) {
         }
         sub.setSubscribeSuccess(recovered);
     };
-    Centrifuge.prototype._subscribeError = function (error) {
-        var channel = error.channel;
+    Centrifuge.prototype._subscribeError = function (error, channel) {
         var sub = this._getSub(channel);
         if (!sub || !sub.isSubscribing) {
             return;
@@ -903,27 +1089,25 @@ var Centrifuge = (function (_super) {
         }
         sub.trigger('message', [body]);
     };
-    Centrifuge.prototype._handleResponse = function (message) {
-        var uid = message.uid;
-        if (!(uid in this._callbacks)) {
+    Centrifuge.prototype._handleReply = function (reply) {
+        var id = reply.id;
+        if (!(id in this._callbacks)) {
             return;
         }
-        var callbacks = this._callbacks[uid];
-        delete this._callbacks[uid];
-        if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["b" /* errorExists */])(message)) {
+        var callbacks = this._callbacks[id];
+        delete this._callbacks[id];
+        if (!Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["b" /* errorExists */])(reply)) {
             var callback = callbacks.callback;
             if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(callback)) {
-                callback(message.body);
+                callback(reply.result);
             }
         }
         else {
             var errback = callbacks.errback;
             if (Object(__WEBPACK_IMPORTED_MODULE_0__Functions__["c" /* isFunction */])(errback)) {
-                errback(Centrifuge.createErrorObject(message.error, message.advice));
+                errback(reply.error);
             }
-            this.trigger('error', [{
-                    message: message,
-                }]);
+            this.trigger('error', [reply.error]);
         }
     };
     Centrifuge.prototype._dispatchMessage = function (message) {
@@ -942,7 +1126,7 @@ var Centrifuge = (function (_super) {
                 this._messageResponse(message);
                 break;
             default:
-                this._handleResponse(message);
+                this._handleReply(message);
         }
     };
     Centrifuge.prototype._receive = function (data) {
@@ -985,7 +1169,7 @@ var Centrifuge = (function (_super) {
             }
             _this._resetRetry();
             var msg = {
-                method: 'connect',
+                method: __WEBPACK_IMPORTED_MODULE_3__proto_client__["proto"].MethodType.CONNECT,
                 params: {
                     user: _this._config.user,
                     info: _this._config.info,
@@ -996,7 +1180,7 @@ var Centrifuge = (function (_super) {
                 msg.params.sign = _this._config.sign;
             }
             _this._latencyStart = new Date();
-            _this.addMessage(msg).then(function (response) {
+            _this.addCommand(msg).then(function (response) {
                 _this._connectResponse(response);
             }, function (error) {
             });
@@ -1059,216 +1243,15 @@ var Centrifuge = (function (_super) {
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return isFunction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return isString; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return log; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return stripSlash; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return startsWith; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return endsWith; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return errorExists; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return objectToQuery; });
-var isFunction = function (value) {
-    return typeof value === 'function';
-};
-var isString = function (value) {
-    return typeof value === 'string';
-};
-var log = function (level) {
-    var args = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        args[_i - 1] = arguments[_i];
-    }
-    if (console) {
-        var logger = console[level];
-        if (isFunction(logger)) {
-            logger.apply(logger, args);
-        }
-    }
-};
-var stripSlash = function (value) {
-    return value.replace(/\/$/, '');
-};
-var startsWith = function (value, prefix) {
-    return value.lastIndexOf(prefix, 0) === 0;
-};
-var endsWith = function (value, suffix) {
-    return value.indexOf(suffix, value.length - suffix.length) !== -1;
-};
-var errorExists = function (data) {
-    return 'error' in data && data.error !== null && data.error !== '';
-};
-var objectToQuery = function (object) {
-    var p = [];
-    for (var i in object) {
-        if (object.hasOwnProperty(i)) {
-            p.push(encodeURIComponent(i) + (object[i] ? '=' + encodeURIComponent(object[i]) : ''));
-        }
-    }
-    return p.join('&');
-};
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Observable", function() { return Observable; });
-var Observable = (function () {
-    function Observable() {
-        this.__callbacks = {};
-    }
-    Observable.prototype.on = function (events, fn) {
-        var _this = this;
-        events.replace(/[^\s]+/g, function (name) {
-            (_this.__callbacks[name] = _this.__callbacks[name] || []).push(fn);
-            return '';
-        });
-        return this;
-    };
-    Observable.prototype.one = function (name, fn) {
-        fn['one'] = true;
-        return this.on(name, fn);
-    };
-    Observable.prototype.off = function (events, fn) {
-        var _this = this;
-        if (events === '*') {
-            this.__callbacks = {};
-        }
-        else if (fn) {
-            var arr = this.__callbacks[events];
-            for (var i = 0, cb = void 0; (cb = arr && arr[i]); ++i) {
-                if (cb === fn) {
-                    arr.splice(i, 1);
-                }
-            }
-        }
-        else {
-            events.replace(/[^\s]+/g, function (name) {
-                _this.__callbacks[name] = [];
-                return '';
-            });
-        }
-        return this;
-    };
-    Observable.prototype.trigger = function (name, args) {
-        var fns = this.__callbacks[name] || [];
-        for (var i = 0, fn = void 0; (fn = fns[i]); ++i) {
-            if (!fn['busy']) {
-                fn['busy'] = true;
-                fn.apply(this, args);
-                if (fn['one']) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                fn['busy'] = false;
-            }
-        }
-        return this;
-    };
-    return Observable;
-}());
-
-
-
-/***/ })
-/******/ ]);
-});
-
-/***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Subscription; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Functions__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Functions__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_js_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_js_observable__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Centrifuge__ = __webpack_require__(0);
+throw new Error("Cannot find module \"./proto/client\"");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -1375,9 +1358,8 @@ var Subscription = (function (_super) {
         }
         this._status = 'error';
         this._error = error;
-        var errContext = this._getSubscribeError();
-        this.trigger('error', [errContext]);
-        this._reject(errContext);
+        this.trigger('error', [error]);
+        this._reject(error);
     };
     Subscription.prototype.triggerUnsubscribe = function () {
         this.trigger('unsubscribe', [{
@@ -1393,7 +1375,7 @@ var Subscription = (function (_super) {
                 callback(this._getSubscribeSuccess());
             }
             else {
-                errback(this._getSubscribeError());
+                errback(this._error);
             }
         }
     };
@@ -1409,13 +1391,13 @@ var Subscription = (function (_super) {
         this._centrifuge.unsubscribeSub(this);
     };
     Subscription.prototype.publish = function (data) {
-        return this._request('publish', data);
+        return this._request(__WEBPACK_IMPORTED_MODULE_2__proto_client__["proto"].MethodType.PUBLISH, data);
     };
     Subscription.prototype.presence = function () {
-        return this._request('presence');
+        return this._request(__WEBPACK_IMPORTED_MODULE_2__proto_client__["proto"].MethodType.PRESENCE);
     };
     Subscription.prototype.history = function () {
-        return this._request('history');
+        return this._request(__WEBPACK_IMPORTED_MODULE_2__proto_client__["proto"].MethodType.HISTORY);
     };
     Subscription.prototype._initializePromise = function () {
         var _this = this;
@@ -1438,22 +1420,20 @@ var Subscription = (function (_super) {
             recovered: this._recovered
         };
     };
-    Subscription.prototype._getSubscribeError = function () {
-        var subscribeError = this._error;
-        subscribeError.channel = this.channel;
-        subscribeError.isResubscribe = this._isResubscribe;
-        return subscribeError;
-    };
     Subscription.prototype._request = function (method, data) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             if (_this.isUnsubscribed) {
-                reject(__WEBPACK_IMPORTED_MODULE_2__Centrifuge__["Centrifuge"].createErrorObject('subscription unsubscribed', 'fix'));
+                reject({
+                    message: 'Subscription unsubscribed',
+                });
                 return;
             }
             _this._promise.then(function () {
                 if (!_this._centrifuge.isConnected) {
-                    reject(__WEBPACK_IMPORTED_MODULE_2__Centrifuge__["Centrifuge"].createErrorObject('disconnected', 'retry'));
+                    reject({
+                        message: 'Disconnected',
+                    });
                     return;
                 }
                 var params = {
@@ -1462,7 +1442,7 @@ var Subscription = (function (_super) {
                 if (data) {
                     params['data'] = data;
                 }
-                _this._centrifuge.addMessage({
+                _this._centrifuge.addCommand({
                     method: method,
                     params: params,
                 }).then(function (response) {

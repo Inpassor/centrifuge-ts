@@ -6,11 +6,11 @@ export namespace proto {
     /** Properties of an Error. */
     interface IError {
 
-        /** Error Code */
-        Code?: (number|null);
+        /** Error code */
+        code?: (number|null);
 
-        /** Error Message */
-        Message?: (string|null);
+        /** Error message */
+        message?: (string|null);
     }
 
     /** Represents an Error. */
@@ -22,11 +22,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IError);
 
-        /** Error Code. */
-        public Code: number;
+        /** Error code. */
+        public code: number;
 
-        /** Error Message. */
-        public Message: string;
+        /** Error message. */
+        public message: string;
 
         /**
          * Creates a new Error instance using the specified properties.
@@ -117,14 +117,14 @@ export namespace proto {
     /** Properties of a Command. */
     interface ICommand {
 
-        /** Command ID */
-        ID?: (number|null);
+        /** Command id */
+        id?: (number|null);
 
-        /** Command Method */
-        Method?: (proto.MethodType|null);
+        /** Command method */
+        method?: (proto.MethodType|null);
 
-        /** Command Params */
-        Params?: (Uint8Array|null);
+        /** Command params */
+        params?: (Uint8Array|null);
     }
 
     /** Represents a Command. */
@@ -136,14 +136,14 @@ export namespace proto {
          */
         constructor(properties?: proto.ICommand);
 
-        /** Command ID. */
-        public ID: number;
+        /** Command id. */
+        public id: number;
 
-        /** Command Method. */
-        public Method: proto.MethodType;
+        /** Command method. */
+        public method: proto.MethodType;
 
-        /** Command Params. */
-        public Params: Uint8Array;
+        /** Command params. */
+        public params: Uint8Array;
 
         /**
          * Creates a new Command instance using the specified properties.
@@ -219,14 +219,14 @@ export namespace proto {
     /** Properties of a Reply. */
     interface IReply {
 
-        /** Reply ID */
-        ID?: (number|null);
+        /** Reply id */
+        id?: (number|null);
 
-        /** Reply Error */
-        Error?: (proto.IError|null);
+        /** Reply error */
+        error?: (proto.IError|null);
 
-        /** Reply Result */
-        Result?: (Uint8Array|null);
+        /** Reply result */
+        result?: (Uint8Array|null);
     }
 
     /** Represents a Reply. */
@@ -238,14 +238,14 @@ export namespace proto {
          */
         constructor(properties?: proto.IReply);
 
-        /** Reply ID. */
-        public ID: number;
+        /** Reply id. */
+        public id: number;
 
-        /** Reply Error. */
-        public Error?: (proto.IError|null);
+        /** Reply error. */
+        public error?: (proto.IError|null);
 
-        /** Reply Result. */
-        public Result: Uint8Array;
+        /** Reply result. */
+        public result: Uint8Array;
 
         /**
          * Creates a new Reply instance using the specified properties.
@@ -329,14 +329,14 @@ export namespace proto {
     /** Properties of a Message. */
     interface IMessage {
 
-        /** Message Type */
-        Type?: (proto.MessageType|null);
+        /** Message type */
+        type?: (proto.MessageType|null);
 
-        /** Message Channel */
-        Channel?: (string|null);
+        /** Message channel */
+        channel?: (string|null);
 
-        /** Message Data */
-        Data?: (Uint8Array|null);
+        /** Message data */
+        data?: (Uint8Array|null);
     }
 
     /** Represents a Message. */
@@ -348,14 +348,14 @@ export namespace proto {
          */
         constructor(properties?: proto.IMessage);
 
-        /** Message Type. */
-        public Type: proto.MessageType;
+        /** Message type. */
+        public type: proto.MessageType;
 
-        /** Message Channel. */
-        public Channel: string;
+        /** Message channel. */
+        public channel: string;
 
-        /** Message Data. */
-        public Data: Uint8Array;
+        /** Message data. */
+        public data: Uint8Array;
 
         /**
          * Creates a new Message instance using the specified properties.
@@ -431,17 +431,17 @@ export namespace proto {
     /** Properties of a ClientInfo. */
     interface IClientInfo {
 
-        /** ClientInfo User */
-        User?: (string|null);
+        /** ClientInfo user */
+        user?: (string|null);
 
-        /** ClientInfo Client */
-        Client?: (string|null);
+        /** ClientInfo client */
+        client?: (string|null);
 
-        /** ClientInfo ConnInfo */
-        ConnInfo?: (Uint8Array|null);
+        /** ClientInfo connInfo */
+        connInfo?: (Uint8Array|null);
 
-        /** ClientInfo ChanInfo */
-        ChanInfo?: (Uint8Array|null);
+        /** ClientInfo chanInfo */
+        chanInfo?: (Uint8Array|null);
     }
 
     /** Represents a ClientInfo. */
@@ -453,17 +453,17 @@ export namespace proto {
          */
         constructor(properties?: proto.IClientInfo);
 
-        /** ClientInfo User. */
-        public User: string;
+        /** ClientInfo user. */
+        public user: string;
 
-        /** ClientInfo Client. */
-        public Client: string;
+        /** ClientInfo client. */
+        public client: string;
 
-        /** ClientInfo ConnInfo. */
-        public ConnInfo: Uint8Array;
+        /** ClientInfo connInfo. */
+        public connInfo: Uint8Array;
 
-        /** ClientInfo ChanInfo. */
-        public ChanInfo: Uint8Array;
+        /** ClientInfo chanInfo. */
+        public chanInfo: Uint8Array;
 
         /**
          * Creates a new ClientInfo instance using the specified properties.
@@ -539,14 +539,14 @@ export namespace proto {
     /** Properties of a Publication. */
     interface IPublication {
 
-        /** Publication UID */
-        UID?: (string|null);
+        /** Publication uid */
+        uid?: (string|null);
 
-        /** Publication Data */
-        Data?: (Uint8Array|null);
+        /** Publication data */
+        data?: (Uint8Array|null);
 
-        /** Publication Info */
-        Info?: (proto.IClientInfo|null);
+        /** Publication info */
+        info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Publication. */
@@ -558,14 +558,14 @@ export namespace proto {
          */
         constructor(properties?: proto.IPublication);
 
-        /** Publication UID. */
-        public UID: string;
+        /** Publication uid. */
+        public uid: string;
 
-        /** Publication Data. */
-        public Data: Uint8Array;
+        /** Publication data. */
+        public data: Uint8Array;
 
-        /** Publication Info. */
-        public Info?: (proto.IClientInfo|null);
+        /** Publication info. */
+        public info?: (proto.IClientInfo|null);
 
         /**
          * Creates a new Publication instance using the specified properties.
@@ -641,8 +641,8 @@ export namespace proto {
     /** Properties of a Join. */
     interface IJoin {
 
-        /** Join Info */
-        Info?: (proto.IClientInfo|null);
+        /** Join info */
+        info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Join. */
@@ -654,8 +654,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IJoin);
 
-        /** Join Info. */
-        public Info?: (proto.IClientInfo|null);
+        /** Join info. */
+        public info?: (proto.IClientInfo|null);
 
         /**
          * Creates a new Join instance using the specified properties.
@@ -731,8 +731,8 @@ export namespace proto {
     /** Properties of a Leave. */
     interface ILeave {
 
-        /** Leave Info */
-        Info?: (proto.IClientInfo|null);
+        /** Leave info */
+        info?: (proto.IClientInfo|null);
     }
 
     /** Represents a Leave. */
@@ -744,8 +744,8 @@ export namespace proto {
          */
         constructor(properties?: proto.ILeave);
 
-        /** Leave Info. */
-        public Info?: (proto.IClientInfo|null);
+        /** Leave info. */
+        public info?: (proto.IClientInfo|null);
 
         /**
          * Creates a new Leave instance using the specified properties.
@@ -905,20 +905,20 @@ export namespace proto {
     /** Properties of a ConnectRequest. */
     interface IConnectRequest {
 
-        /** ConnectRequest User */
-        User?: (string|null);
+        /** ConnectRequest user */
+        user?: (string|null);
 
-        /** ConnectRequest Exp */
-        Exp?: (string|null);
+        /** ConnectRequest exp */
+        exp?: (string|null);
 
-        /** ConnectRequest Info */
-        Info?: (string|null);
+        /** ConnectRequest info */
+        info?: (string|null);
 
-        /** ConnectRequest Opts */
-        Opts?: (string|null);
+        /** ConnectRequest opts */
+        opts?: (string|null);
 
-        /** ConnectRequest Sign */
-        Sign?: (string|null);
+        /** ConnectRequest sign */
+        sign?: (string|null);
     }
 
     /** Represents a ConnectRequest. */
@@ -930,20 +930,20 @@ export namespace proto {
          */
         constructor(properties?: proto.IConnectRequest);
 
-        /** ConnectRequest User. */
-        public User: string;
+        /** ConnectRequest user. */
+        public user: string;
 
-        /** ConnectRequest Exp. */
-        public Exp: string;
+        /** ConnectRequest exp. */
+        public exp: string;
 
-        /** ConnectRequest Info. */
-        public Info: string;
+        /** ConnectRequest info. */
+        public info: string;
 
-        /** ConnectRequest Opts. */
-        public Opts: string;
+        /** ConnectRequest opts. */
+        public opts: string;
 
-        /** ConnectRequest Sign. */
-        public Sign: string;
+        /** ConnectRequest sign. */
+        public sign: string;
 
         /**
          * Creates a new ConnectRequest instance using the specified properties.
@@ -1019,11 +1019,11 @@ export namespace proto {
     /** Properties of a ConnectResponse. */
     interface IConnectResponse {
 
-        /** ConnectResponse Error */
-        Error?: (proto.IError|null);
+        /** ConnectResponse error */
+        error?: (proto.IError|null);
 
-        /** ConnectResponse Result */
-        Result?: (proto.IConnectResult|null);
+        /** ConnectResponse result */
+        result?: (proto.IConnectResult|null);
     }
 
     /** Represents a ConnectResponse. */
@@ -1035,11 +1035,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IConnectResponse);
 
-        /** ConnectResponse Error. */
-        public Error?: (proto.IError|null);
+        /** ConnectResponse error. */
+        public error?: (proto.IError|null);
 
-        /** ConnectResponse Result. */
-        public Result?: (proto.IConnectResult|null);
+        /** ConnectResponse result. */
+        public result?: (proto.IConnectResult|null);
 
         /**
          * Creates a new ConnectResponse instance using the specified properties.
@@ -1115,20 +1115,20 @@ export namespace proto {
     /** Properties of a ConnectResult. */
     interface IConnectResult {
 
-        /** ConnectResult Client */
-        Client?: (string|null);
+        /** ConnectResult client */
+        client?: (string|null);
 
-        /** ConnectResult Version */
-        Version?: (string|null);
+        /** ConnectResult version */
+        version?: (string|null);
 
-        /** ConnectResult Expires */
-        Expires?: (boolean|null);
+        /** ConnectResult expires */
+        expires?: (boolean|null);
 
-        /** ConnectResult Expired */
-        Expired?: (boolean|null);
+        /** ConnectResult expired */
+        expired?: (boolean|null);
 
-        /** ConnectResult TTL */
-        TTL?: (number|null);
+        /** ConnectResult ttl */
+        ttl?: (number|null);
     }
 
     /** Represents a ConnectResult. */
@@ -1140,20 +1140,20 @@ export namespace proto {
          */
         constructor(properties?: proto.IConnectResult);
 
-        /** ConnectResult Client. */
-        public Client: string;
+        /** ConnectResult client. */
+        public client: string;
 
-        /** ConnectResult Version. */
-        public Version: string;
+        /** ConnectResult version. */
+        public version: string;
 
-        /** ConnectResult Expires. */
-        public Expires: boolean;
+        /** ConnectResult expires. */
+        public expires: boolean;
 
-        /** ConnectResult Expired. */
-        public Expired: boolean;
+        /** ConnectResult expired. */
+        public expired: boolean;
 
-        /** ConnectResult TTL. */
-        public TTL: number;
+        /** ConnectResult ttl. */
+        public ttl: number;
 
         /**
          * Creates a new ConnectResult instance using the specified properties.
@@ -1229,20 +1229,20 @@ export namespace proto {
     /** Properties of a RefreshRequest. */
     interface IRefreshRequest {
 
-        /** RefreshRequest User */
-        User?: (string|null);
+        /** RefreshRequest user */
+        user?: (string|null);
 
-        /** RefreshRequest Exp */
-        Exp?: (string|null);
+        /** RefreshRequest exp */
+        exp?: (string|null);
 
-        /** RefreshRequest Info */
-        Info?: (string|null);
+        /** RefreshRequest info */
+        info?: (string|null);
 
-        /** RefreshRequest Opts */
-        Opts?: (string|null);
+        /** RefreshRequest opts */
+        opts?: (string|null);
 
-        /** RefreshRequest Sign */
-        Sign?: (string|null);
+        /** RefreshRequest sign */
+        sign?: (string|null);
     }
 
     /** Represents a RefreshRequest. */
@@ -1254,20 +1254,20 @@ export namespace proto {
          */
         constructor(properties?: proto.IRefreshRequest);
 
-        /** RefreshRequest User. */
-        public User: string;
+        /** RefreshRequest user. */
+        public user: string;
 
-        /** RefreshRequest Exp. */
-        public Exp: string;
+        /** RefreshRequest exp. */
+        public exp: string;
 
-        /** RefreshRequest Info. */
-        public Info: string;
+        /** RefreshRequest info. */
+        public info: string;
 
-        /** RefreshRequest Opts. */
-        public Opts: string;
+        /** RefreshRequest opts. */
+        public opts: string;
 
-        /** RefreshRequest Sign. */
-        public Sign: string;
+        /** RefreshRequest sign. */
+        public sign: string;
 
         /**
          * Creates a new RefreshRequest instance using the specified properties.
@@ -1343,11 +1343,11 @@ export namespace proto {
     /** Properties of a RefreshResponse. */
     interface IRefreshResponse {
 
-        /** RefreshResponse Error */
-        Error?: (proto.IError|null);
+        /** RefreshResponse error */
+        error?: (proto.IError|null);
 
-        /** RefreshResponse Result */
-        Result?: (proto.IRefreshResult|null);
+        /** RefreshResponse result */
+        result?: (proto.IRefreshResult|null);
     }
 
     /** Represents a RefreshResponse. */
@@ -1359,11 +1359,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IRefreshResponse);
 
-        /** RefreshResponse Error. */
-        public Error?: (proto.IError|null);
+        /** RefreshResponse error. */
+        public error?: (proto.IError|null);
 
-        /** RefreshResponse Result. */
-        public Result?: (proto.IRefreshResult|null);
+        /** RefreshResponse result. */
+        public result?: (proto.IRefreshResult|null);
 
         /**
          * Creates a new RefreshResponse instance using the specified properties.
@@ -1439,20 +1439,20 @@ export namespace proto {
     /** Properties of a RefreshResult. */
     interface IRefreshResult {
 
-        /** RefreshResult Client */
-        Client?: (string|null);
+        /** RefreshResult client */
+        client?: (string|null);
 
-        /** RefreshResult Version */
-        Version?: (string|null);
+        /** RefreshResult version */
+        version?: (string|null);
 
-        /** RefreshResult Expires */
-        Expires?: (boolean|null);
+        /** RefreshResult expires */
+        expires?: (boolean|null);
 
-        /** RefreshResult Expired */
-        Expired?: (boolean|null);
+        /** RefreshResult expired */
+        expired?: (boolean|null);
 
-        /** RefreshResult TTL */
-        TTL?: (number|null);
+        /** RefreshResult ttl */
+        ttl?: (number|null);
     }
 
     /** Represents a RefreshResult. */
@@ -1464,20 +1464,20 @@ export namespace proto {
          */
         constructor(properties?: proto.IRefreshResult);
 
-        /** RefreshResult Client. */
-        public Client: string;
+        /** RefreshResult client. */
+        public client: string;
 
-        /** RefreshResult Version. */
-        public Version: string;
+        /** RefreshResult version. */
+        public version: string;
 
-        /** RefreshResult Expires. */
-        public Expires: boolean;
+        /** RefreshResult expires. */
+        public expires: boolean;
 
-        /** RefreshResult Expired. */
-        public Expired: boolean;
+        /** RefreshResult expired. */
+        public expired: boolean;
 
-        /** RefreshResult TTL. */
-        public TTL: number;
+        /** RefreshResult ttl. */
+        public ttl: number;
 
         /**
          * Creates a new RefreshResult instance using the specified properties.
@@ -1553,23 +1553,23 @@ export namespace proto {
     /** Properties of a SubscribeRequest. */
     interface ISubscribeRequest {
 
-        /** SubscribeRequest Channel */
-        Channel?: (string|null);
+        /** SubscribeRequest channel */
+        channel?: (string|null);
 
-        /** SubscribeRequest Client */
-        Client?: (string|null);
+        /** SubscribeRequest client */
+        client?: (string|null);
 
-        /** SubscribeRequest Info */
-        Info?: (string|null);
+        /** SubscribeRequest info */
+        info?: (string|null);
 
-        /** SubscribeRequest Sign */
-        Sign?: (string|null);
+        /** SubscribeRequest sign */
+        sign?: (string|null);
 
-        /** SubscribeRequest Recover */
-        Recover?: (boolean|null);
+        /** SubscribeRequest recover */
+        recover?: (boolean|null);
 
-        /** SubscribeRequest Last */
-        Last?: (string|null);
+        /** SubscribeRequest last */
+        last?: (string|null);
     }
 
     /** Represents a SubscribeRequest. */
@@ -1581,23 +1581,23 @@ export namespace proto {
          */
         constructor(properties?: proto.ISubscribeRequest);
 
-        /** SubscribeRequest Channel. */
-        public Channel: string;
+        /** SubscribeRequest channel. */
+        public channel: string;
 
-        /** SubscribeRequest Client. */
-        public Client: string;
+        /** SubscribeRequest client. */
+        public client: string;
 
-        /** SubscribeRequest Info. */
-        public Info: string;
+        /** SubscribeRequest info. */
+        public info: string;
 
-        /** SubscribeRequest Sign. */
-        public Sign: string;
+        /** SubscribeRequest sign. */
+        public sign: string;
 
-        /** SubscribeRequest Recover. */
-        public Recover: boolean;
+        /** SubscribeRequest recover. */
+        public recover: boolean;
 
-        /** SubscribeRequest Last. */
-        public Last: string;
+        /** SubscribeRequest last. */
+        public last: string;
 
         /**
          * Creates a new SubscribeRequest instance using the specified properties.
@@ -1673,11 +1673,11 @@ export namespace proto {
     /** Properties of a SubscribeResponse. */
     interface ISubscribeResponse {
 
-        /** SubscribeResponse Error */
-        Error?: (proto.IError|null);
+        /** SubscribeResponse error */
+        error?: (proto.IError|null);
 
-        /** SubscribeResponse Result */
-        Result?: (proto.ISubscribeResult|null);
+        /** SubscribeResponse result */
+        result?: (proto.ISubscribeResult|null);
     }
 
     /** Represents a SubscribeResponse. */
@@ -1689,11 +1689,11 @@ export namespace proto {
          */
         constructor(properties?: proto.ISubscribeResponse);
 
-        /** SubscribeResponse Error. */
-        public Error?: (proto.IError|null);
+        /** SubscribeResponse error. */
+        public error?: (proto.IError|null);
 
-        /** SubscribeResponse Result. */
-        public Result?: (proto.ISubscribeResult|null);
+        /** SubscribeResponse result. */
+        public result?: (proto.ISubscribeResult|null);
 
         /**
          * Creates a new SubscribeResponse instance using the specified properties.
@@ -1769,14 +1769,14 @@ export namespace proto {
     /** Properties of a SubscribeResult. */
     interface ISubscribeResult {
 
-        /** SubscribeResult Last */
-        Last?: (string|null);
+        /** SubscribeResult last */
+        last?: (string|null);
 
-        /** SubscribeResult Recovered */
-        Recovered?: (boolean|null);
+        /** SubscribeResult recovered */
+        recovered?: (boolean|null);
 
-        /** SubscribeResult Publications */
-        Publications?: (proto.IPublication[]|null);
+        /** SubscribeResult publications */
+        publications?: (proto.IPublication[]|null);
     }
 
     /** Represents a SubscribeResult. */
@@ -1788,14 +1788,14 @@ export namespace proto {
          */
         constructor(properties?: proto.ISubscribeResult);
 
-        /** SubscribeResult Last. */
-        public Last: string;
+        /** SubscribeResult last. */
+        public last: string;
 
-        /** SubscribeResult Recovered. */
-        public Recovered: boolean;
+        /** SubscribeResult recovered. */
+        public recovered: boolean;
 
-        /** SubscribeResult Publications. */
-        public Publications: proto.IPublication[];
+        /** SubscribeResult publications. */
+        public publications: proto.IPublication[];
 
         /**
          * Creates a new SubscribeResult instance using the specified properties.
@@ -1871,8 +1871,8 @@ export namespace proto {
     /** Properties of an UnsubscribeRequest. */
     interface IUnsubscribeRequest {
 
-        /** UnsubscribeRequest Channel */
-        Channel?: (string|null);
+        /** UnsubscribeRequest channel */
+        channel?: (string|null);
     }
 
     /** Represents an UnsubscribeRequest. */
@@ -1884,8 +1884,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IUnsubscribeRequest);
 
-        /** UnsubscribeRequest Channel. */
-        public Channel: string;
+        /** UnsubscribeRequest channel. */
+        public channel: string;
 
         /**
          * Creates a new UnsubscribeRequest instance using the specified properties.
@@ -1961,11 +1961,11 @@ export namespace proto {
     /** Properties of an UnsubscribeResponse. */
     interface IUnsubscribeResponse {
 
-        /** UnsubscribeResponse Error */
-        Error?: (proto.IError|null);
+        /** UnsubscribeResponse error */
+        error?: (proto.IError|null);
 
-        /** UnsubscribeResponse Result */
-        Result?: (proto.IUnsubscribeResult|null);
+        /** UnsubscribeResponse result */
+        result?: (proto.IUnsubscribeResult|null);
     }
 
     /** Represents an UnsubscribeResponse. */
@@ -1977,11 +1977,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IUnsubscribeResponse);
 
-        /** UnsubscribeResponse Error. */
-        public Error?: (proto.IError|null);
+        /** UnsubscribeResponse error. */
+        public error?: (proto.IError|null);
 
-        /** UnsubscribeResponse Result. */
-        public Result?: (proto.IUnsubscribeResult|null);
+        /** UnsubscribeResponse result. */
+        public result?: (proto.IUnsubscribeResult|null);
 
         /**
          * Creates a new UnsubscribeResponse instance using the specified properties.
@@ -2141,11 +2141,11 @@ export namespace proto {
     /** Properties of a PublishRequest. */
     interface IPublishRequest {
 
-        /** PublishRequest Channel */
-        Channel?: (string|null);
+        /** PublishRequest channel */
+        channel?: (string|null);
 
-        /** PublishRequest Data */
-        Data?: (Uint8Array|null);
+        /** PublishRequest data */
+        data?: (Uint8Array|null);
     }
 
     /** Represents a PublishRequest. */
@@ -2157,11 +2157,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPublishRequest);
 
-        /** PublishRequest Channel. */
-        public Channel: string;
+        /** PublishRequest channel. */
+        public channel: string;
 
-        /** PublishRequest Data. */
-        public Data: Uint8Array;
+        /** PublishRequest data. */
+        public data: Uint8Array;
 
         /**
          * Creates a new PublishRequest instance using the specified properties.
@@ -2237,11 +2237,11 @@ export namespace proto {
     /** Properties of a PublishResponse. */
     interface IPublishResponse {
 
-        /** PublishResponse Error */
-        Error?: (proto.IError|null);
+        /** PublishResponse error */
+        error?: (proto.IError|null);
 
-        /** PublishResponse Result */
-        Result?: (proto.IPublishResult|null);
+        /** PublishResponse result */
+        result?: (proto.IPublishResult|null);
     }
 
     /** Represents a PublishResponse. */
@@ -2253,11 +2253,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPublishResponse);
 
-        /** PublishResponse Error. */
-        public Error?: (proto.IError|null);
+        /** PublishResponse error. */
+        public error?: (proto.IError|null);
 
-        /** PublishResponse Result. */
-        public Result?: (proto.IPublishResult|null);
+        /** PublishResponse result. */
+        public result?: (proto.IPublishResult|null);
 
         /**
          * Creates a new PublishResponse instance using the specified properties.
@@ -2417,8 +2417,8 @@ export namespace proto {
     /** Properties of a PresenceRequest. */
     interface IPresenceRequest {
 
-        /** PresenceRequest Channel */
-        Channel?: (string|null);
+        /** PresenceRequest channel */
+        channel?: (string|null);
     }
 
     /** Represents a PresenceRequest. */
@@ -2430,8 +2430,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceRequest);
 
-        /** PresenceRequest Channel. */
-        public Channel: string;
+        /** PresenceRequest channel. */
+        public channel: string;
 
         /**
          * Creates a new PresenceRequest instance using the specified properties.
@@ -2507,11 +2507,11 @@ export namespace proto {
     /** Properties of a PresenceResponse. */
     interface IPresenceResponse {
 
-        /** PresenceResponse Error */
-        Error?: (proto.IError|null);
+        /** PresenceResponse error */
+        error?: (proto.IError|null);
 
-        /** PresenceResponse Result */
-        Result?: (proto.IPresenceResult|null);
+        /** PresenceResponse result */
+        result?: (proto.IPresenceResult|null);
     }
 
     /** Represents a PresenceResponse. */
@@ -2523,11 +2523,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceResponse);
 
-        /** PresenceResponse Error. */
-        public Error?: (proto.IError|null);
+        /** PresenceResponse error. */
+        public error?: (proto.IError|null);
 
-        /** PresenceResponse Result. */
-        public Result?: (proto.IPresenceResult|null);
+        /** PresenceResponse result. */
+        public result?: (proto.IPresenceResult|null);
 
         /**
          * Creates a new PresenceResponse instance using the specified properties.
@@ -2603,8 +2603,8 @@ export namespace proto {
     /** Properties of a PresenceResult. */
     interface IPresenceResult {
 
-        /** PresenceResult Presence */
-        Presence?: ({ [k: string]: proto.IClientInfo }|null);
+        /** PresenceResult presence */
+        presence?: ({ [k: string]: proto.IClientInfo }|null);
     }
 
     /** Represents a PresenceResult. */
@@ -2616,8 +2616,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceResult);
 
-        /** PresenceResult Presence. */
-        public Presence: { [k: string]: proto.IClientInfo };
+        /** PresenceResult presence. */
+        public presence: { [k: string]: proto.IClientInfo };
 
         /**
          * Creates a new PresenceResult instance using the specified properties.
@@ -2693,8 +2693,8 @@ export namespace proto {
     /** Properties of a PresenceStatsRequest. */
     interface IPresenceStatsRequest {
 
-        /** PresenceStatsRequest Channel */
-        Channel?: (string|null);
+        /** PresenceStatsRequest channel */
+        channel?: (string|null);
     }
 
     /** Represents a PresenceStatsRequest. */
@@ -2706,8 +2706,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceStatsRequest);
 
-        /** PresenceStatsRequest Channel. */
-        public Channel: string;
+        /** PresenceStatsRequest channel. */
+        public channel: string;
 
         /**
          * Creates a new PresenceStatsRequest instance using the specified properties.
@@ -2783,11 +2783,11 @@ export namespace proto {
     /** Properties of a PresenceStatsResponse. */
     interface IPresenceStatsResponse {
 
-        /** PresenceStatsResponse Error */
-        Error?: (proto.IError|null);
+        /** PresenceStatsResponse error */
+        error?: (proto.IError|null);
 
-        /** PresenceStatsResponse Result */
-        Result?: (proto.IPresenceStatsResult|null);
+        /** PresenceStatsResponse result */
+        result?: (proto.IPresenceStatsResult|null);
     }
 
     /** Represents a PresenceStatsResponse. */
@@ -2799,11 +2799,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceStatsResponse);
 
-        /** PresenceStatsResponse Error. */
-        public Error?: (proto.IError|null);
+        /** PresenceStatsResponse error. */
+        public error?: (proto.IError|null);
 
-        /** PresenceStatsResponse Result. */
-        public Result?: (proto.IPresenceStatsResult|null);
+        /** PresenceStatsResponse result. */
+        public result?: (proto.IPresenceStatsResult|null);
 
         /**
          * Creates a new PresenceStatsResponse instance using the specified properties.
@@ -2879,11 +2879,11 @@ export namespace proto {
     /** Properties of a PresenceStatsResult. */
     interface IPresenceStatsResult {
 
-        /** PresenceStatsResult NumClients */
-        NumClients?: (number|null);
+        /** PresenceStatsResult numClients */
+        numClients?: (number|null);
 
-        /** PresenceStatsResult NumUsers */
-        NumUsers?: (number|null);
+        /** PresenceStatsResult numUsers */
+        numUsers?: (number|null);
     }
 
     /** Represents a PresenceStatsResult. */
@@ -2895,11 +2895,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPresenceStatsResult);
 
-        /** PresenceStatsResult NumClients. */
-        public NumClients: number;
+        /** PresenceStatsResult numClients. */
+        public numClients: number;
 
-        /** PresenceStatsResult NumUsers. */
-        public NumUsers: number;
+        /** PresenceStatsResult numUsers. */
+        public numUsers: number;
 
         /**
          * Creates a new PresenceStatsResult instance using the specified properties.
@@ -2975,8 +2975,8 @@ export namespace proto {
     /** Properties of a HistoryRequest. */
     interface IHistoryRequest {
 
-        /** HistoryRequest Channel */
-        Channel?: (string|null);
+        /** HistoryRequest channel */
+        channel?: (string|null);
     }
 
     /** Represents a HistoryRequest. */
@@ -2988,8 +2988,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IHistoryRequest);
 
-        /** HistoryRequest Channel. */
-        public Channel: string;
+        /** HistoryRequest channel. */
+        public channel: string;
 
         /**
          * Creates a new HistoryRequest instance using the specified properties.
@@ -3065,11 +3065,11 @@ export namespace proto {
     /** Properties of a HistoryResponse. */
     interface IHistoryResponse {
 
-        /** HistoryResponse Error */
-        Error?: (proto.IError|null);
+        /** HistoryResponse error */
+        error?: (proto.IError|null);
 
-        /** HistoryResponse Result */
-        Result?: (proto.IHistoryResult|null);
+        /** HistoryResponse result */
+        result?: (proto.IHistoryResult|null);
     }
 
     /** Represents a HistoryResponse. */
@@ -3081,11 +3081,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IHistoryResponse);
 
-        /** HistoryResponse Error. */
-        public Error?: (proto.IError|null);
+        /** HistoryResponse error. */
+        public error?: (proto.IError|null);
 
-        /** HistoryResponse Result. */
-        public Result?: (proto.IHistoryResult|null);
+        /** HistoryResponse result. */
+        public result?: (proto.IHistoryResult|null);
 
         /**
          * Creates a new HistoryResponse instance using the specified properties.
@@ -3161,8 +3161,8 @@ export namespace proto {
     /** Properties of a HistoryResult. */
     interface IHistoryResult {
 
-        /** HistoryResult Publications */
-        Publications?: (proto.IPublication[]|null);
+        /** HistoryResult publications */
+        publications?: (proto.IPublication[]|null);
     }
 
     /** Represents a HistoryResult. */
@@ -3174,8 +3174,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IHistoryResult);
 
-        /** HistoryResult Publications. */
-        public Publications: proto.IPublication[];
+        /** HistoryResult publications. */
+        public publications: proto.IPublication[];
 
         /**
          * Creates a new HistoryResult instance using the specified properties.
@@ -3251,8 +3251,8 @@ export namespace proto {
     /** Properties of a PingRequest. */
     interface IPingRequest {
 
-        /** PingRequest Data */
-        Data?: (string|null);
+        /** PingRequest data */
+        data?: (string|null);
     }
 
     /** Represents a PingRequest. */
@@ -3264,8 +3264,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IPingRequest);
 
-        /** PingRequest Data. */
-        public Data: string;
+        /** PingRequest data. */
+        public data: string;
 
         /**
          * Creates a new PingRequest instance using the specified properties.
@@ -3341,11 +3341,11 @@ export namespace proto {
     /** Properties of a PingResponse. */
     interface IPingResponse {
 
-        /** PingResponse Error */
-        Error?: (proto.IError|null);
+        /** PingResponse error */
+        error?: (proto.IError|null);
 
-        /** PingResponse Result */
-        Result?: (proto.IPingResult|null);
+        /** PingResponse result */
+        result?: (proto.IPingResult|null);
     }
 
     /** Represents a PingResponse. */
@@ -3357,11 +3357,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IPingResponse);
 
-        /** PingResponse Error. */
-        public Error?: (proto.IError|null);
+        /** PingResponse error. */
+        public error?: (proto.IError|null);
 
-        /** PingResponse Result. */
-        public Result?: (proto.IPingResult|null);
+        /** PingResponse result. */
+        public result?: (proto.IPingResult|null);
 
         /**
          * Creates a new PingResponse instance using the specified properties.
@@ -3437,8 +3437,8 @@ export namespace proto {
     /** Properties of a PingResult. */
     interface IPingResult {
 
-        /** PingResult Data */
-        Data?: (string|null);
+        /** PingResult data */
+        data?: (string|null);
     }
 
     /** Represents a PingResult. */
@@ -3450,8 +3450,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IPingResult);
 
-        /** PingResult Data. */
-        public Data: string;
+        /** PingResult data. */
+        public data: string;
 
         /**
          * Creates a new PingResult instance using the specified properties.
@@ -3527,8 +3527,8 @@ export namespace proto {
     /** Properties of a RPCRequest. */
     interface IRPCRequest {
 
-        /** RPCRequest Data */
-        Data?: (Uint8Array|null);
+        /** RPCRequest data */
+        data?: (Uint8Array|null);
     }
 
     /** Represents a RPCRequest. */
@@ -3540,8 +3540,8 @@ export namespace proto {
          */
         constructor(properties?: proto.IRPCRequest);
 
-        /** RPCRequest Data. */
-        public Data: Uint8Array;
+        /** RPCRequest data. */
+        public data: Uint8Array;
 
         /**
          * Creates a new RPCRequest instance using the specified properties.
@@ -3617,11 +3617,11 @@ export namespace proto {
     /** Properties of a RPCResponse. */
     interface IRPCResponse {
 
-        /** RPCResponse Error */
-        Error?: (proto.IError|null);
+        /** RPCResponse error */
+        error?: (proto.IError|null);
 
-        /** RPCResponse Result */
-        Result?: (Uint8Array|null);
+        /** RPCResponse result */
+        result?: (Uint8Array|null);
     }
 
     /** Represents a RPCResponse. */
@@ -3633,11 +3633,11 @@ export namespace proto {
          */
         constructor(properties?: proto.IRPCResponse);
 
-        /** RPCResponse Error. */
-        public Error?: (proto.IError|null);
+        /** RPCResponse error. */
+        public error?: (proto.IError|null);
 
-        /** RPCResponse Result. */
-        public Result: Uint8Array;
+        /** RPCResponse result. */
+        public result: Uint8Array;
 
         /**
          * Creates a new RPCResponse instance using the specified properties.
@@ -3710,101 +3710,11 @@ export namespace proto {
         public toJSON(): { [k: string]: any };
     }
 
-    /** Properties of a MessageRequest. */
-    interface IMessageRequest {
-
-        /** MessageRequest Data */
-        Data?: (Uint8Array|null);
-    }
-
-    /** Represents a MessageRequest. */
-    class MessageRequest implements IMessageRequest {
+    /** Represents a Centrifuge */
+    class Centrifuge extends $protobuf.rpc.Service {
 
         /**
-         * Constructs a new MessageRequest.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: proto.IMessageRequest);
-
-        /** MessageRequest Data. */
-        public Data: Uint8Array;
-
-        /**
-         * Creates a new MessageRequest instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns MessageRequest instance
-         */
-        public static create(properties?: proto.IMessageRequest): proto.MessageRequest;
-
-        /**
-         * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
-         * @param message MessageRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
-         * @param message MessageRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a MessageRequest message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns MessageRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.MessageRequest;
-
-        /**
-         * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns MessageRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.MessageRequest;
-
-        /**
-         * Verifies a MessageRequest message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns MessageRequest
-         */
-        public static fromObject(object: { [k: string]: any }): proto.MessageRequest;
-
-        /**
-         * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
-         * @param message MessageRequest
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: proto.MessageRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this MessageRequest to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-    }
-
-    /** Represents a Centrifugo */
-    class Centrifugo extends $protobuf.rpc.Service {
-
-        /**
-         * Constructs a new Centrifugo service.
+         * Constructs a new Centrifuge service.
          * @param rpcImpl RPC implementation
          * @param [requestDelimited=false] Whether requests are length-delimited
          * @param [responseDelimited=false] Whether responses are length-delimited
@@ -3812,20 +3722,20 @@ export namespace proto {
         constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
 
         /**
-         * Creates new Centrifugo service using the specified rpc implementation.
+         * Creates new Centrifuge service using the specified rpc implementation.
          * @param rpcImpl RPC implementation
          * @param [requestDelimited=false] Whether requests are length-delimited
          * @param [responseDelimited=false] Whether responses are length-delimited
          * @returns RPC service. Useful where requests and/or responses are streamed.
          */
-        public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Centrifugo;
+        public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Centrifuge;
 
         /**
          * Calls Communicate.
          * @param request Command message or plain object
          * @param callback Node-style callback called with the error, if any, and Reply
          */
-        public communicate(request: proto.ICommand, callback: proto.Centrifugo.CommunicateCallback): void;
+        public communicate(request: proto.ICommand, callback: proto.Centrifuge.CommunicateCallback): void;
 
         /**
          * Calls Communicate.
@@ -3835,10 +3745,10 @@ export namespace proto {
         public communicate(request: proto.ICommand): Promise<proto.Reply>;
     }
 
-    namespace Centrifugo {
+    namespace Centrifuge {
 
         /**
-         * Callback as used by {@link proto.Centrifugo#communicate}.
+         * Callback as used by {@link proto.Centrifuge#communicate}.
          * @param error Error, if any
          * @param [response] Reply
          */

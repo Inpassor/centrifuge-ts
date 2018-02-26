@@ -15,14 +15,8 @@ import {proto} from './proto/client';
 import {
     ISockJSOptions,
     ICentrifugeConfig,
-    ICentrifugeError,
     ICentrifugeCredentials,
     ICentrifugeMessage,
-    ICentrifugeConnectMessage,
-    ICentrifugePingMessage,
-    ICentrifugeSubscribeMessage,
-    ICentrifugeUnsubscribeMessage,
-    ICentrifugeRefreshMessage,
     ICentrifugeConnectResponse,
     ICentrifugeRefreshResponse,
     ICentrifugeSubscribeResponse,
@@ -45,8 +39,8 @@ export class Centrifuge extends Observable {
     private _refreshTimeout: any = null;
     private _pongTimeout: any = null;
     private _pingInterval: any = null;
-    private _messageId = 0;
-    private _messages: ICentrifugeMessage[] = [];
+    private _commandId = 0;
+    private _commands: proto.ICommand[] = [];
     private _isBatching = false;
     private _isAuthBatching = false;
     private _authChannels: any = {};
@@ -91,10 +85,10 @@ export class Centrifuge extends Observable {
     }
 
     public ping(): void {
-        this.addMessage(<ICentrifugePingMessage>{
-            method: 'ping'
+        this.addCommand({
+            method: proto.MethodType.PING
         }).then((response: any) => {
-        }, (error: ICentrifugeError) => {
+        }, (error: proto.IError) => {
         });
     }
 
@@ -113,9 +107,9 @@ export class Centrifuge extends Observable {
 
     public flush(): void {
         // send batched messages to Centrifuge
-        const messages = [...this._messages];
-        this._send(messages);
-        this._messages = [];
+        const commands = [...this._commands];
+        this._send(commands);
+        this._commands = [];
     }
 
     public startAuthBatching(): void {
@@ -154,13 +148,9 @@ export class Centrifuge extends Observable {
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
-                        this._subscribeError(<ICentrifugeError>{
-                            error: 'authorization request failed',
-                            advice: 'fix',
-                            body: {
-                                channel,
-                            }
-                        });
+                        this._subscribeError({
+                            message: 'authorization request failed',
+                        }, channel);
                     }
                 }
                 return;
@@ -178,40 +168,33 @@ export class Centrifuge extends Observable {
                     channel = channels[i];
                     const channelResponse = _data[channel];
                     if (!channelResponse) {
-                        this._subscribeError(<ICentrifugeError>{
-                            error: 'channel not found in authorization response',
-                            advice: 'fix',
-                            body: {
-                                channel,
-                            }
-                        });
+                        this._subscribeError({
+                            message: 'channel not found in authorization response',
+                        }, channel);
                         continue;
                     }
                     if (!channelResponse.status || channelResponse.status === 200) {
-                        const msg = <ICentrifugeSubscribeMessage>{
-                            method: 'subscribe',
-                            params: {
+                        const msg = {
+                            method: proto.MethodType.SUBSCRIBE,
+                            params: <any> {
                                 channel: channel,
                                 client: this._clientID,
                                 info: channelResponse.info,
                                 sign: channelResponse.sign
-                            }
+                            },
                         };
                         if (this._recover(channel) === true) {
                             msg.params.recover = true;
                             msg.params.last = this._getLastID(channel);
                         }
-                        this.addMessage(msg).then((response: ICentrifugeSubscribeResponse) => {
+                        this.addCommand(msg).then((response: ICentrifugeSubscribeResponse) => {
                             this._subscribeResponse(response);
-                        }, (error: ICentrifugeError) => {
+                        }, (error: proto.IError) => {
                         });
                     } else {
-                        this._subscribeError(<ICentrifugeError>{
-                            error: channelResponse.status,
-                            body: {
-                                channel: channel
-                            }
-                        });
+                        this._subscribeError({
+                            message: channelResponse.status,
+                        }, channel);
                     }
                 }
             }
@@ -295,9 +278,9 @@ export class Centrifuge extends Observable {
                 this.stopAuthBatching();
             }
         } else {
-            const msg = <ICentrifugeSubscribeMessage>{
-                method: 'subscribe',
-                params: {
+            const msg = {
+                method: proto.MethodType.SUBSCRIBE,
+                params: <any> {
                     channel,
                 }
             };
@@ -305,10 +288,10 @@ export class Centrifuge extends Observable {
                 msg.params.recover = true;
                 msg.params.last = this._getLastID(channel);
             }
-            this.addMessage(msg).then((response: ICentrifugeSubscribeResponse) => {
+            this.addCommand(msg).then((response: ICentrifugeSubscribeResponse) => {
                 this._subscribeResponse(response);
-            }, (error: ICentrifugeError) => {
-                this._subscribeError(error);
+            }, (error: proto.IError) => {
+                this._subscribeError(error, channel);
             });
         }
     }
@@ -316,48 +299,40 @@ export class Centrifuge extends Observable {
     public unsubscribeSub(sub: Subscription): void {
         if (this.isConnected) {
             // No need to unsubscribe in disconnected state - i.e. client already unsubscribed.
-            this.addMessage(<ICentrifugeUnsubscribeMessage>{
-                method: 'unsubscribe',
-                params: {
+            this.addCommand({
+                method: proto.MethodType.UNSUBSCRIBE,
+                params: <any> {
                     channel: sub.channel
                 }
-            }).then((response: ICentrifugeUnsubscribeResponse) => {
+            }).then((response: any) => {
                 this._unsubscribeResponse(response);
-            }, (error: ICentrifugeError) => {
+            }, (error: proto.IError) => {
             });
         }
     }
 
-    public addMessage(message: ICentrifugeMessage): Promise<any> {
+    public addCommand(command: proto.ICommand): Promise<any> {
         return new Promise((callback: Function, errback: Function) => {
-            const uid = this._getNextMessageId() + '';
-            message.uid = uid;
+            const id = this._getNextCommandId();
+            command.id = id;
             if (this._isBatching === true) {
-                this._messages.push(message);
+                this._commands.push(command);
             } else {
-                this._send([message]);
+                this._send([command]);
             }
-            this._callbacks[uid] = {
+            this._callbacks[id] = {
                 callback,
                 errback,
             };
             setTimeout(() => {
-                delete this._callbacks[uid];
+                delete this._callbacks[id];
                 if (isFunction(errback)) {
-                    errback(Centrifuge.createErrorObject('timeout', 'retry'));
+                    errback({
+                        message: 'Timeout',
+                    });
                 }
             }, this._config.timeout);
         });
-    }
-
-    public static createErrorObject(error: string, advice?: string): ICentrifugeError {
-        const result: ICentrifugeError = {
-            error,
-        };
-        if (advice) {
-            result.advice = advice;
-        }
-        return result;
     }
 
     public static log(...args: any[]): void {
@@ -553,7 +528,9 @@ export class Centrifuge extends Observable {
                 const callbacks = this._callbacks[uid];
                 const errback = callbacks.errback;
                 if (isFunction(errback)) {
-                    errback(Centrifuge.createErrorObject('disconnected', 'retry'));
+                    errback({
+                        message: 'Disconnected',
+                    });
                 }
             }
         }
@@ -617,22 +594,22 @@ export class Centrifuge extends Observable {
         }
     }
 
-    private _send(messages: ICentrifugeMessage[]): void {
-        if (!messages.length) {
+    private _send(commands: proto.ICommand[]): void {
+        if (!commands.length) {
             return;
         }
-        const encodedMessages = [];
-        for (const i in messages) {
-            if (messages.hasOwnProperty(i)) {
-                encodedMessages.push(JSON.stringify(messages[i]));
+        const encodedCommands = [];
+        for (const i in commands) {
+            if (commands.hasOwnProperty(i)) {
+                encodedCommands.push(JSON.stringify(commands[i]));
             }
         }
-        this._transport.send(encodedMessages.join("\n"));
-        this._debug('Send', messages);
+        this._transport.send(encodedCommands.join("\n"));
+        this._debug('Send', commands);
     }
 
-    private _getNextMessageId(): number {
-        return ++this._messageId;
+    private _getNextCommandId(): number {
+        return ++this._commandId;
     }
 
     private _stopPing(): void {
@@ -736,12 +713,12 @@ export class Centrifuge extends Observable {
                 this.connect();
             } else {
                 this._debug('Send refreshed credentials');
-                this.addMessage(<ICentrifugeRefreshMessage>{
-                    method: 'refresh',
-                    params: data,
+                this.addCommand({
+                    method: proto.MethodType.REFRESH,
+                    params: <any> data,
                 }).then((response: ICentrifugeRefreshResponse) => {
                     this._refreshResponse(response);
-                }, (error: ICentrifugeError) => {
+                }, (error: proto.IError) => {
                 });
             }
         };
@@ -842,8 +819,7 @@ export class Centrifuge extends Observable {
         sub.setSubscribeSuccess(recovered);
     }
 
-    private _subscribeError(error: ICentrifugeError): void {
-        const channel = error.channel;
+    private _subscribeError(error: proto.IError, channel: string): void {
         const sub = this._getSub(channel);
         if (!sub || !sub.isSubscribing) {
             return;
@@ -910,26 +886,24 @@ export class Centrifuge extends Observable {
         sub.trigger('message', [body]);
     }
 
-    private _handleResponse(message: ICentrifugeMessage): void {
-        const uid = message.uid;
-        if (!(uid in this._callbacks)) {
+    private _handleReply(reply: proto.IReply): void {
+        const id = reply.id;
+        if (!(id in this._callbacks)) {
             return;
         }
-        const callbacks = this._callbacks[uid];
-        delete this._callbacks[uid];
-        if (!errorExists(message)) {
+        const callbacks = this._callbacks[id];
+        delete this._callbacks[id];
+        if (!errorExists(reply)) {
             const callback = callbacks.callback;
             if (isFunction(callback)) {
-                callback(message.body);
+                callback(reply.result);
             }
         } else {
             const errback = callbacks.errback;
             if (isFunction(errback)) {
-                errback(Centrifuge.createErrorObject(message.error, message.advice));
+                errback(reply.error);
             }
-            this.trigger('error', [{
-                message,
-            }]);
+            this.trigger('error', [reply.error]);
         }
     }
 
@@ -949,7 +923,7 @@ export class Centrifuge extends Observable {
                 this._messageResponse(message);
                 break;
             default:
-                this._handleResponse(message);
+                this._handleReply(message);
         }
     }
 
@@ -995,9 +969,9 @@ export class Centrifuge extends Observable {
 
             this._resetRetry();
 
-            const msg: ICentrifugeConnectMessage = {
-                method: 'connect',
-                params: {
+            const msg = {
+                method: proto.MethodType.CONNECT,
+                params: <any> {
                     user: this._config.user,
                     info: this._config.info,
                 }
@@ -1009,9 +983,9 @@ export class Centrifuge extends Observable {
                 msg.params.sign = this._config.sign;
             }
             this._latencyStart = new Date();
-            this.addMessage(msg).then((response: ICentrifugeConnectResponse) => {
+            this.addCommand(msg).then((response: ICentrifugeConnectResponse) => {
                 this._connectResponse(response);
-            }, (error: ICentrifugeError) => {
+            }, (error: proto.IError) => {
             });
         };
 

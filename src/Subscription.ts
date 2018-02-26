@@ -4,18 +4,16 @@ import {
 import {Observable} from 'js-observable';
 import {Centrifuge} from './Centrifuge';
 import {
-    ICentrifugeMessage,
-    ICentrifugeError,
-    ISubscriptionMessage,
     ISubscriptionSuccess,
 } from './interfaces';
+import {proto} from './proto/client';
 
 export class Subscription extends Observable {
 
     public channel: string = null;
 
     private _status = 'new';
-    private _error: ICentrifugeError = null;
+    private _error: proto.IError = null;
     private _centrifuge: Centrifuge = null;
     private _isResubscribe = false;
     private _recovered = false;
@@ -97,15 +95,14 @@ export class Subscription extends Observable {
         this._resolve(successContext);
     }
 
-    public setSubscribeError(error: ICentrifugeError): void {
+    public setSubscribeError(error: proto.IError): void {
         if (this._status === 'error') {
             return;
         }
         this._status = 'error';
         this._error = error;
-        const errContext = this._getSubscribeError();
-        this.trigger('error', [errContext]);
-        this._reject(errContext);
+        this.trigger('error', [error]);
+        this._reject(error);
     }
 
     public triggerUnsubscribe(): void {
@@ -123,7 +120,7 @@ export class Subscription extends Observable {
             if (this.isSuccess) {
                 callback(this._getSubscribeSuccess());
             } else {
-                errback(this._getSubscribeError());
+                errback(this._error);
             }
         }
     }
@@ -142,15 +139,15 @@ export class Subscription extends Observable {
     }
 
     public publish(data: any): Promise<any> {
-        return this._request('publish', data);
+        return this._request(proto.MethodType.PUBLISH, data);
     }
 
     public presence(): Promise<any> {
-        return this._request('presence');
+        return this._request(proto.MethodType.PRESENCE);
     }
 
     public history(): Promise<any> {
-        return this._request('history');
+        return this._request(proto.MethodType.HISTORY);
     }
 
     private _initializePromise(): void {
@@ -175,22 +172,19 @@ export class Subscription extends Observable {
         };
     }
 
-    private _getSubscribeError(): ICentrifugeError {
-        const subscribeError = this._error;
-        subscribeError.channel = this.channel;
-        subscribeError.isResubscribe = this._isResubscribe;
-        return subscribeError;
-    }
-
-    private _request(method: string, data?: any): Promise<any> {
+    private _request(method: number, data?: any): Promise<any> {
         return new Promise((resolve: Function, reject: Function) => {
             if (this.isUnsubscribed) {
-                reject(Centrifuge.createErrorObject('subscription unsubscribed', 'fix'));
+                reject({
+                    message: 'Subscription unsubscribed',
+                });
                 return;
             }
             this._promise.then(() => {
                 if (!this._centrifuge.isConnected) {
-                    reject(Centrifuge.createErrorObject('disconnected', 'retry'));
+                    reject({
+                        message: 'Disconnected',
+                    });
                     return;
                 }
                 const params = {
@@ -199,12 +193,12 @@ export class Subscription extends Observable {
                 if (data) {
                     params['data'] = data;
                 }
-                this._centrifuge.addMessage(<ISubscriptionMessage>{
+                this._centrifuge.addCommand({
                     method,
-                    params,
-                }).then((response: ICentrifugeMessage) => {
+                    params: <any> params,
+                }).then((response: any) => {
                     resolve(response);
-                }, (error: ICentrifugeError) => {
+                }, (error: proto.IError) => {
                     reject(error);
                 });
             }, (err: any) => {
