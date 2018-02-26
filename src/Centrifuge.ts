@@ -10,7 +10,7 @@ import {
 } from './Functions';
 import {Observable} from 'js-observable';
 import {Subscription} from './Subscription';
-import {proto} from './proto/client';
+import {proto} from './Proto';
 
 import {
     ISockJSOptions,

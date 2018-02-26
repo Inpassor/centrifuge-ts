@@ -1,13 +1,9 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
-const entry = './src/Centrifuge.ts';
+const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 
 module.exports = {
-    entry: {
-        'centrifuge': entry,
-        'centrifuge.min': entry
-    },
+    entry: './src/Centrifuge.ts',
     module: {
         rules: [
             {
@@ -18,18 +14,16 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts', '.tsx']
+        extensions: ['.ts', '.tsx', '.js']
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',
+        filename: 'centrifuge.min.js',
         libraryTarget: 'umd'
-    },
+    }
+    ,
     plugins: [
         new UglifyJsPlugin({
-            include: [
-                /\.min\.js$/
-            ],
             extractComments: false,
             uglifyOptions: {
                 minimize: true,
@@ -51,6 +45,7 @@ module.exports = {
                     negate_iife: false
                 }
             }
-        })
+        }),
+        new UnminifiedWebpackPlugin()
     ]
 };

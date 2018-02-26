@@ -6,7 +6,7 @@ import {Centrifuge} from './Centrifuge';
 import {
     ISubscriptionSuccess,
 } from './interfaces';
-import {proto} from './proto/client';
+import {proto} from './Proto';
 
 export class Subscription extends Observable {
 

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+CUR_DIR="$(pwd)"
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ -d "node_modules/centrifuge" ]; then
+    cd node_modules/centrifuge
+    git pull
+else
+    git clone https://github.com/centrifugal/centrifuge.git -b master node_modules/centrifuge
+fi
+cd "$CUR_DIR"
