@@ -791,9 +791,7 @@ export class Centrifuge extends Observable {
             publications = publications.reverse();
             for (const i in publications) {
                 if (publications.hasOwnProperty(i)) {
-                    this._messageResult({
-                        body: publications[i]
-                    });
+                    this._publicationResult(publications[i]);
                 }
             }
         } else {
@@ -816,22 +814,6 @@ export class Centrifuge extends Observable {
         sub.setSubscribeError(error);
     }
 
-    private _joinResult(result: any): void {
-        // const sub = this._getSub(result.channel);
-        // if (!sub) {
-        //     return;
-        // }
-        // sub.trigger('join', [result]);
-    }
-
-    private _leaveResult(result: any): void {
-        // const sub = this._getSub(result.channel);
-        // if (!sub) {
-        //     return;
-        // }
-        // sub.trigger('leave', [result]);
-    }
-
     private _refreshResult(result: proto.IRefreshResult): void {
         if (this._refreshTimeout) {
             clearTimeout(this._refreshTimeout);
@@ -850,18 +832,34 @@ export class Centrifuge extends Observable {
         }
     }
 
-    private _messageResult(message: any): void {
-        const body = message.body;
-        const channel = body.channel;
+    private _joinResult(result: proto.IMessage): void {
+        const sub = this._getSub(result.channel);
+        if (!sub) {
+            return;
+        }
+        sub.trigger('join', [result]);
+    }
+
+    private _leaveResult(result: proto.IMessage): void {
+        const sub = this._getSub(result.channel);
+        if (!sub) {
+            return;
+        }
+        sub.trigger('leave', [result]);
+    }
+
+    private _publicationResult(message: proto.IMessage): void {
+        const data = <proto.IPublication> message.data;
+        const channel = message.channel;
 
         // keep last uid received from channel.
-        this._lastMessageID[channel] = body.uid;
+        this._lastMessageID[channel] = data.uid;
 
         const sub = this._getSub(channel);
         if (!sub) {
             return;
         }
-        sub.trigger('message', [body]);
+        sub.trigger('message', [data]);
     }
 
     private _handleReply(reply: proto.IReply): void {
@@ -890,15 +888,15 @@ export class Centrifuge extends Observable {
             this._debug('Dispatch: got undefined or null message');
             return;
         }
-        switch (message.method) {
-            case 'join':
+        switch (message.type) {
+            case proto.MessageType.JOIN:
                 this._joinResult(message);
                 break;
-            case 'leave':
+            case proto.MessageType.LEAVE:
                 this._leaveResult(message);
                 break;
-            case 'message':
-                this._messageResult(message);
+            case proto.MessageType.PUBLICATION:
+                this._publicationResult(message);
                 break;
             default:
                 this._handleReply(message);
