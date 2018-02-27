@@ -20,6 +20,7 @@ import {
 export class Centrifuge extends Observable {
 
     private _config: ICentrifugeConfig = {};
+    private _endpoint: string = null;
     private _status = 'disconnected';
     private _isSockJS = false;
     private _transport: any = null;
@@ -343,6 +344,7 @@ export class Centrifuge extends Observable {
     private _configure(config: ICentrifugeConfig): void {
         this._debug('Configuring Centrifuge with', config);
         config = Object.assign({
+            format: 'json',
             retry: 1000,
             maxRetry: 20000,
             timeout: 5000,
@@ -365,10 +367,16 @@ export class Centrifuge extends Observable {
             authParams: {},
         }, config);
 
+        config.format = config.format.toLowerCase();
+        if (['json', 'protobuf'].indexOf(config.format) === -1) {
+            config.format = 'json';
+        }
+
         if (!config.url) {
             throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = stripSlash(config.url);
+        this._endpoint = config.url;
 
         if (isFunction(config.sockJS)) {
             this._isSockJS = true;
@@ -386,10 +394,25 @@ export class Centrifuge extends Observable {
                     'jsonp-polling'
                 ];
             }
+            this._endpoint = this._endpoint
+                .replace('ws://', 'http://')
+                .replace('wss://', 'https://');
+            if (!endsWith(this._endpoint, 'connection/sockjs')) {
+                this._endpoint = this._endpoint + '/connection/sockjs';
+            }
         } else {
             if (!isFunction(WebSocket)) {
                 throw new Error('No Websocket support and no SockJS configured, can not connect');
             }
+            this._endpoint = this._endpoint
+                .replace('http://', 'ws://')
+                .replace('https://', 'wss://');
+            if (!endsWith(this._endpoint, 'connection/websocket')) {
+                this._endpoint = this._endpoint + '/connection/websocket';
+            }
+        }
+        if (config.format === 'protobuf') {
+            this._endpoint += '?format=protobuf';
         }
 
         if (!config.user) {
@@ -465,30 +488,6 @@ export class Centrifuge extends Observable {
         }).catch((error: any) => {
             Centrifuge.error('Network response error', error);
         });
-    }
-
-    private _getSockjsEndpoint(): string {
-        let url = this._config.url;
-        url = url
-            .replace('ws://', 'http://')
-            .replace('wss://', 'https://');
-        url = stripSlash(url);
-        if (!endsWith(this._config.url, 'connection')) {
-            url = url + '/connection';
-        }
-        return url;
-    }
-
-    private _getWebsocketEndpoint(): string {
-        let url = this._config.url;
-        url = url
-            .replace('http://', 'ws://')
-            .replace('https://', 'wss://');
-        url = stripSlash(url);
-        if (!endsWith(this._config.url, 'connection/websocket')) {
-            url = url + '/connection/websocket';
-        }
-        return url;
     }
 
     private _recover(channel: string): boolean {
@@ -925,9 +924,9 @@ export class Centrifuge extends Observable {
             if (this._config.server) {
                 sockjsOptions.server = this._config.server;
             }
-            this._transport = new this._config.sockJS(this._getSockjsEndpoint(), null, sockjsOptions);
+            this._transport = new this._config.sockJS(this._endpoint, null, sockjsOptions);
         } else {
-            this._transport = new WebSocket(this._getWebsocketEndpoint());
+            this._transport = new WebSocket(this._endpoint);
         }
 
         this._transport.onopen = () => {

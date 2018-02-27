@@ -10332,6 +10332,7 @@ var Centrifuge_Centrifuge = (function (_super) {
     function Centrifuge(config) {
         var _this = _super.call(this) || this;
         _this._config = {};
+        _this._endpoint = null;
         _this._status = 'disconnected';
         _this._isSockJS = false;
         _this._transport = null;
@@ -10628,6 +10629,7 @@ var Centrifuge_Centrifuge = (function (_super) {
     Centrifuge.prototype._configure = function (config) {
         this._debug('Configuring Centrifuge with', config);
         config = Object.assign({
+            format: 'json',
             retry: 1000,
             maxRetry: 20000,
             timeout: 5000,
@@ -10649,10 +10651,15 @@ var Centrifuge_Centrifuge = (function (_super) {
             authHeaders: {},
             authParams: {},
         }, config);
+        config.format = config.format.toLowerCase();
+        if (['json', 'protobuf'].indexOf(config.format) === -1) {
+            config.format = 'json';
+        }
         if (!config.url) {
             throw new Error('Missing required configuration parameter \'url\' specifying server URL');
         }
         config.url = stripSlash(config.url);
+        this._endpoint = config.url;
         if (isFunction(config.sockJS)) {
             this._isSockJS = true;
             if (!config.transports || !config.transports.length) {
@@ -10669,11 +10676,26 @@ var Centrifuge_Centrifuge = (function (_super) {
                     'jsonp-polling'
                 ];
             }
+            this._endpoint = this._endpoint
+                .replace('ws://', 'http://')
+                .replace('wss://', 'https://');
+            if (!endsWith(this._endpoint, 'connection/sockjs')) {
+                this._endpoint = this._endpoint + '/connection/sockjs';
+            }
         }
         else {
             if (!isFunction(WebSocket)) {
                 throw new Error('No Websocket support and no SockJS configured, can not connect');
             }
+            this._endpoint = this._endpoint
+                .replace('http://', 'ws://')
+                .replace('https://', 'wss://');
+            if (!endsWith(this._endpoint, 'connection/websocket')) {
+                this._endpoint = this._endpoint + '/connection/websocket';
+            }
+        }
+        if (config.format === 'protobuf') {
+            this._endpoint += '?format=protobuf';
         }
         if (!config.user) {
             if (!config.insecure) {
@@ -10749,28 +10771,6 @@ var Centrifuge_Centrifuge = (function (_super) {
         }).catch(function (error) {
             Centrifuge.error('Network response error', error);
         });
-    };
-    Centrifuge.prototype._getSockjsEndpoint = function () {
-        var url = this._config.url;
-        url = url
-            .replace('ws://', 'http://')
-            .replace('wss://', 'https://');
-        url = stripSlash(url);
-        if (!endsWith(this._config.url, 'connection')) {
-            url = url + '/connection';
-        }
-        return url;
-    };
-    Centrifuge.prototype._getWebsocketEndpoint = function () {
-        var url = this._config.url;
-        url = url
-            .replace('http://', 'ws://')
-            .replace('https://', 'wss://');
-        url = stripSlash(url);
-        if (!endsWith(this._config.url, 'connection/websocket')) {
-            url = url + '/connection/websocket';
-        }
-        return url;
     };
     Centrifuge.prototype._recover = function (channel) {
         return channel in this._lastMessageID;
@@ -11037,9 +11037,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             publications = publications.reverse();
             for (var i in publications) {
                 if (publications.hasOwnProperty(i)) {
-                    this._messageResult({
-                        body: publications[i]
-                    });
+                    this._publicationResult(publications[i]);
                 }
             }
         }
@@ -11060,10 +11058,6 @@ var Centrifuge_Centrifuge = (function (_super) {
             }]);
         sub.setSubscribeError(error);
     };
-    Centrifuge.prototype._joinResult = function (result) {
-    };
-    Centrifuge.prototype._leaveResult = function (result) {
-    };
     Centrifuge.prototype._refreshResult = function (result) {
         var _this = this;
         if (this._refreshTimeout) {
@@ -11082,15 +11076,29 @@ var Centrifuge_Centrifuge = (function (_super) {
             }, result.ttl * 1000);
         }
     };
-    Centrifuge.prototype._messageResult = function (message) {
-        var body = message.body;
-        var channel = body.channel;
-        this._lastMessageID[channel] = body.uid;
+    Centrifuge.prototype._joinResult = function (result) {
+        var sub = this._getSub(result.channel);
+        if (!sub) {
+            return;
+        }
+        sub.trigger('join', [result]);
+    };
+    Centrifuge.prototype._leaveResult = function (result) {
+        var sub = this._getSub(result.channel);
+        if (!sub) {
+            return;
+        }
+        sub.trigger('leave', [result]);
+    };
+    Centrifuge.prototype._publicationResult = function (message) {
+        var data = message.data;
+        var channel = message.channel;
+        this._lastMessageID[channel] = data.uid;
         var sub = this._getSub(channel);
         if (!sub) {
             return;
         }
-        sub.trigger('message', [body]);
+        sub.trigger('message', [data]);
     };
     Centrifuge.prototype._handleReply = function (reply) {
         var id = reply.id;
@@ -11118,15 +11126,15 @@ var Centrifuge_Centrifuge = (function (_super) {
             this._debug('Dispatch: got undefined or null message');
             return;
         }
-        switch (message.method) {
-            case 'join':
+        switch (message.type) {
+            case Proto["proto"].MessageType.JOIN:
                 this._joinResult(message);
                 break;
-            case 'leave':
+            case Proto["proto"].MessageType.LEAVE:
                 this._leaveResult(message);
                 break;
-            case 'message':
-                this._messageResult(message);
+            case Proto["proto"].MessageType.PUBLICATION:
+                this._publicationResult(message);
                 break;
             default:
                 this._handleReply(message);
@@ -11153,10 +11161,10 @@ var Centrifuge_Centrifuge = (function (_super) {
             if (this._config.server) {
                 sockjsOptions.server = this._config.server;
             }
-            this._transport = new this._config.sockJS(this._getSockjsEndpoint(), null, sockjsOptions);
+            this._transport = new this._config.sockJS(this._endpoint, null, sockjsOptions);
         }
         else {
-            this._transport = new WebSocket(this._getWebsocketEndpoint());
+            this._transport = new WebSocket(this._endpoint);
         }
         this._transport.onopen = function () {
             _this._transportClosed = false;

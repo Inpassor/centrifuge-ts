@@ -1,4 +1,5 @@
 export interface ICentrifugeConfig {
+    format?: string;
     sockJS?: any;
     server?: string;
     transports?: string[];
