@@ -196,8 +196,21 @@ export class Subscription extends Observable {
                 this._centrifuge.addCommand({
                     method,
                     params: <any> params,
-                }).then((response: any) => {
-                    resolve(response);
+                }).then((result: any) => {
+                    if (result instanceof Uint8Array) {
+                        switch (method) {
+                            case proto.MethodType.PUBLISH:
+                                result = proto.PublishResult.decode(result);
+                                break;
+                            case proto.MethodType.PRESENCE:
+                                result = proto.PresenceResult.decode(result);
+                                break;
+                            case proto.MethodType.HISTORY:
+                                result = proto.HistoryResult.decode(result);
+                                break;
+                        }
+                    }
+                    resolve(result);
                 }, (error: proto.IError) => {
                     reject(error);
                 });

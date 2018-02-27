@@ -81,7 +81,7 @@ export class Centrifuge extends Observable {
     public ping(): void {
         this.addCommand({
             method: proto.MethodType.PING
-        }).then((result: proto.IPingResult) => {
+        }).then((result: any) => {
         }, (error: proto.IError) => {
         });
     }
@@ -180,7 +180,10 @@ export class Centrifuge extends Observable {
                             msg.params.recover = true;
                             msg.params.last = this._getLastID(channel);
                         }
-                        this.addCommand(msg).then((result: proto.ISubscribeResult) => {
+                        this.addCommand(msg).then((result: any) => {
+                            if (result instanceof Uint8Array) {
+                                result = proto.SubscribeResult.decode(result);
+                            }
                             this._subscribeResult(result, channel);
                         }, (error: proto.IError) => {
                         });
@@ -281,7 +284,10 @@ export class Centrifuge extends Observable {
                 msg.params.recover = true;
                 msg.params.last = this._getLastID(channel);
             }
-            this.addCommand(msg).then((result: proto.ISubscribeResult) => {
+            this.addCommand(msg).then((result: any) => {
+                if (result instanceof Uint8Array) {
+                    result = proto.SubscribeResult.decode(result);
+                }
                 this._subscribeResult(result, channel);
             }, (error: proto.IError) => {
                 this._subscribeError(error, channel);
@@ -297,7 +303,7 @@ export class Centrifuge extends Observable {
                 params: <any> {
                     channel: sub.channel
                 }
-            }).then((result: proto.IUnsubscribeResult) => {
+            }).then((result: any) => {
                 sub.setUnsubscribed();
             }, (error: proto.IError) => {
             });
@@ -670,7 +676,7 @@ export class Centrifuge extends Observable {
                 return;
             }
             this.ping();
-            this._pongTimeout = setTimeout(function () {
+            this._pongTimeout = setTimeout(() => {
                 this._disconnect('no ping', true);
             }, this._config.pongWaitTimeout);
         }, this._config.pingInterval);
@@ -755,7 +761,10 @@ export class Centrifuge extends Observable {
                 this.addCommand({
                     method: proto.MethodType.REFRESH,
                     params: <any> data,
-                }).then((result: proto.IRefreshResult) => {
+                }).then((result: any) => {
+                    if (result instanceof Uint8Array) {
+                        result = proto.RefreshResult.decode(result);
+                    }
                     this._refreshResult(result);
                 }, (error: proto.IError) => {
                 });
@@ -1007,7 +1016,10 @@ export class Centrifuge extends Observable {
                 msg.params.sign = this._config.sign;
             }
             this._latencyStart = new Date();
-            this.addCommand(msg).then((result: proto.IConnectResult) => {
+            this.addCommand(msg).then((result: any) => {
+                if (result instanceof Uint8Array) {
+                    result = proto.ConnectResult.decode(result);
+                }
                 this._connectResult(result);
             }, (error: proto.IError) => {
             });
@@ -1063,12 +1075,13 @@ export class Centrifuge extends Observable {
         this._transport.onmessage = (event: any) => {
             let reader;
             if (this._config.format === 'protobuf') {
-                reader = protobuf.Reader.create(new Uint8Array(event.data));
+                const buffer = new Uint8Array(event.data.length);
+                Array.prototype.forEach.call(event.data, (c, i) => buffer[i] = c.charCodeAt(0));
+                reader = protobuf.Reader.create(buffer);
                 while (reader.pos < reader.len) {
                     const reply = proto.Reply.decodeDelimited(reader);
-                    console.log(reply);
-                    // reply.result = <any> proto.Message.decode(reply.result);
-                    // var str = new TextDecoder("utf-8").decode(message.Data);
+                    this._debug('Received', reply);
+                    this._receive(reply);
                 }
             } else {
                 const replies = event.data.split("\n");
