@@ -14861,6 +14861,12 @@ var objectToQuery = function (object) {
     }
     return p.join('&');
 };
+var anyToUint8Array = function (data) {
+    data = JSON.stringify(data);
+    var buffer = new Uint8Array(data.length);
+    Array.prototype.forEach.call(data, function (c, i) { return buffer[i] = c.charCodeAt(0); });
+    return buffer;
+};
 
 // EXTERNAL MODULE: ./node_modules/js-observable/dist/observable.js
 var observable = __webpack_require__(9);
@@ -15670,7 +15676,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                             break;
                         case Proto["proto"].MethodType.PUBLISH:
                             params = command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = Proto["proto"].PublishRequest.encode(params).finish();
                             break;
                         case Proto["proto"].MethodType.PRESENCE:
@@ -15687,12 +15693,12 @@ var Centrifuge_Centrifuge = (function (_super) {
                             break;
                         case Proto["proto"].MethodType.RPC:
                             params = command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = Proto["proto"].RPCRequest.encode(params).finish();
                             break;
                         case Proto["proto"].MethodType.MESSAGE:
                             params = command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = Proto["proto"].Message.encode(params).finish();
                             break;
                     }

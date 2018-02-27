@@ -7,6 +7,7 @@ import {
     endsWith,
     errorExists,
     objectToQuery,
+    anyToUint8Array,
 } from './Functions';
 import {Observable} from 'js-observable';
 import * as protobuf from 'protobufjs';
@@ -620,7 +621,7 @@ export class Centrifuge extends Observable {
                             break;
                         case proto.MethodType.PUBLISH:
                             params = <proto.IPublishRequest> command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = proto.PublishRequest.encode(params).finish();
                             break;
                         case proto.MethodType.PRESENCE:
@@ -637,12 +638,12 @@ export class Centrifuge extends Observable {
                             break;
                         case proto.MethodType.RPC:
                             params = <proto.IRPCRequest> command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = proto.RPCRequest.encode(params).finish();
                             break;
                         case proto.MethodType.MESSAGE:
                             params = <proto.IMessage> command.params;
-                            params.data = new Uint8Array(params.data);
+                            params.data = anyToUint8Array(params.data);
                             command.params = proto.Message.encode(params).finish();
                             break;
                     }
