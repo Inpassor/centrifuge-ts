@@ -591,7 +591,49 @@ export class Centrifuge extends Observable {
         const encodedCommands = [];
         for (const i in commands) {
             if (commands.hasOwnProperty(i)) {
-                encodedCommands.push(JSON.stringify(commands[i]));
+                const command = commands[i];
+                let encodedCommand;
+                if (this._config.format === 'protobuf') {
+                    switch (command.method) {
+                        case proto.MethodType.CONNECT:
+                            command.params = proto.ConnectRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.REFRESH:
+                            command.params = proto.RefreshRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.SUBSCRIBE:
+                            command.params = proto.SubscribeRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.UNSUBSCRIBE:
+                            command.params = proto.UnsubscribeRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.PUBLISH:
+                            command.params = proto.PublishRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.PRESENCE:
+                            command.params = proto.PresenceRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.PRESENCE_STATS:
+                            command.params = proto.PresenceStatsRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.HISTORY:
+                            command.params = proto.HistoryRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.PING:
+                            command.params = proto.PingRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.RPC:
+                            command.params = proto.RPCRequest.encode(<any> command.params).finish();
+                            break;
+                        case proto.MethodType.MESSAGE:
+                            command.params = proto.Message.encode(<any> command.params).finish();
+                            break;
+                    }
+                    encodedCommand = proto.Command.encode(command).finish();
+                } else {
+                    encodedCommand = JSON.stringify(command);
+                }
+                encodedCommands.push(encodedCommand);
             }
         }
         this._transport.send(encodedCommands.join("\n"));
@@ -1014,12 +1056,16 @@ export class Centrifuge extends Observable {
         this._transport.onmessage = (event: any) => {
             const replies = event.data.split("\n");
             for (const i in replies) {
-                if (!replies[i]) {
-                    continue;
+                if (replies.hasOwnProperty(i)) {
+                    let data;
+                    if (this._config.format === 'protobuf') {
+                        data = proto.Command.decode(replies[i]);
+                    } else {
+                        data = JSON.parse(replies[i]);
+                    }
+                    this._debug('Received', data);
+                    this._receive(data);
                 }
-                const data = JSON.parse(replies[i]);
-                this._debug('Received', data);
-                this._receive(data);
             }
             this._restartPing();
         };

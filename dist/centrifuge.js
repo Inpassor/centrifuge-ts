@@ -10860,7 +10860,50 @@ var Centrifuge_Centrifuge = (function (_super) {
         var encodedCommands = [];
         for (var i in commands) {
             if (commands.hasOwnProperty(i)) {
-                encodedCommands.push(JSON.stringify(commands[i]));
+                var command = commands[i];
+                var encodedCommand = void 0;
+                if (this._config.format === 'protobuf') {
+                    switch (command.method) {
+                        case Proto["proto"].MethodType.CONNECT:
+                            command.params = Proto["proto"].ConnectRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.REFRESH:
+                            command.params = Proto["proto"].RefreshRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.SUBSCRIBE:
+                            command.params = Proto["proto"].SubscribeRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.UNSUBSCRIBE:
+                            command.params = Proto["proto"].UnsubscribeRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.PUBLISH:
+                            command.params = Proto["proto"].PublishRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.PRESENCE:
+                            command.params = Proto["proto"].PresenceRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.PRESENCE_STATS:
+                            command.params = Proto["proto"].PresenceStatsRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.HISTORY:
+                            command.params = Proto["proto"].HistoryRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.PING:
+                            command.params = Proto["proto"].PingRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.RPC:
+                            command.params = Proto["proto"].RPCRequest.encode(command.params).finish();
+                            break;
+                        case Proto["proto"].MethodType.MESSAGE:
+                            command.params = Proto["proto"].Message.encode(command.params).finish();
+                            break;
+                    }
+                    encodedCommand = Proto["proto"].Command.encode(command).finish();
+                }
+                else {
+                    encodedCommand = JSON.stringify(command);
+                }
+                encodedCommands.push(encodedCommand);
             }
         }
         this._transport.send(encodedCommands.join("\n"));
@@ -11238,12 +11281,17 @@ var Centrifuge_Centrifuge = (function (_super) {
         this._transport.onmessage = function (event) {
             var replies = event.data.split("\n");
             for (var i in replies) {
-                if (!replies[i]) {
-                    continue;
+                if (replies.hasOwnProperty(i)) {
+                    var data = void 0;
+                    if (_this._config.format === 'protobuf') {
+                        data = Proto["proto"].Command.decode(replies[i]);
+                    }
+                    else {
+                        data = JSON.parse(replies[i]);
+                    }
+                    _this._debug('Received', data);
+                    _this._receive(data);
                 }
-                var data = JSON.parse(replies[i]);
-                _this._debug('Received', data);
-                _this._receive(data);
             }
             _this._restartPing();
         };
