@@ -7,7 +7,6 @@ import {
     endsWith,
     errorExists,
     objectToQuery,
-    anyToUint8Array,
 } from './Functions';
 import {Observable} from 'js-observable';
 import * as protobuf from 'protobufjs';
@@ -592,6 +591,10 @@ export class Centrifuge extends Observable {
         }
     }
 
+    private _encodeParams(params: any, protoClass: any): Uint8Array {
+        return params ? protoClass.encode(params).finish() : null;
+    }
+
     private _send(commands: proto.ICommand[]): void {
         if (!commands.length) {
             return;
@@ -605,46 +608,39 @@ export class Centrifuge extends Observable {
             if (commands.hasOwnProperty(i)) {
                 const command = Object.assign({}, commands[i]);
                 if (this._config.format === 'protobuf') {
-                    let params;
                     switch (command.method) {
                         case proto.MethodType.CONNECT:
-                            command.params = proto.ConnectRequest.encode(<proto.IConnectRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.ConnectRequest);
                             break;
                         case proto.MethodType.REFRESH:
-                            command.params = proto.RefreshRequest.encode(<proto.IRefreshRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.RefreshRequest);
                             break;
                         case proto.MethodType.SUBSCRIBE:
-                            command.params = proto.SubscribeRequest.encode(<proto.ISubscribeRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.SubscribeRequest);
                             break;
                         case proto.MethodType.UNSUBSCRIBE:
-                            command.params = proto.UnsubscribeRequest.encode(<proto.IUnsubscribeRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.UnsubscribeRequest);
                             break;
                         case proto.MethodType.PUBLISH:
-                            params = <proto.IPublishRequest> command.params;
-                            params.data = anyToUint8Array(params.data);
-                            command.params = proto.PublishRequest.encode(params).finish();
+                            command.params = this._encodeParams(command.params, proto.PublishRequest);
                             break;
                         case proto.MethodType.PRESENCE:
-                            command.params = proto.PresenceRequest.encode(<proto.IPresenceRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.PresenceRequest);
                             break;
                         case proto.MethodType.PRESENCE_STATS:
-                            command.params = proto.PresenceStatsRequest.encode(<proto.IPresenceStatsRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.PresenceStatsRequest);
                             break;
                         case proto.MethodType.HISTORY:
-                            command.params = proto.HistoryRequest.encode(<proto.IHistoryRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.HistoryRequest);
                             break;
                         case proto.MethodType.PING:
-                            command.params = proto.PingRequest.encode(<proto.IPingRequest> command.params).finish();
+                            command.params = this._encodeParams(command.params, proto.PingRequest);
                             break;
                         case proto.MethodType.RPC:
-                            params = <proto.IRPCRequest> command.params;
-                            params.data = anyToUint8Array(params.data);
-                            command.params = proto.RPCRequest.encode(params).finish();
+                            command.params = this._encodeParams(command.params, proto.RPCRequest);
                             break;
                         case proto.MethodType.MESSAGE:
-                            params = <proto.IMessage> command.params;
-                            params.data = anyToUint8Array(params.data);
-                            command.params = proto.Message.encode(params).finish();
+                            command.params = this._encodeParams(command.params, proto.Message);
                             break;
                     }
                     proto.Command.encodeDelimited(command, writer);

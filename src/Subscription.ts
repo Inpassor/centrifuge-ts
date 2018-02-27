@@ -138,7 +138,7 @@ export class Subscription extends Observable {
         this._centrifuge.unsubscribeSub(this);
     }
 
-    public publish(data: any): Promise<any> {
+    public publish(data: Uint8Array): Promise<any> {
         return this._request(proto.MethodType.PUBLISH, data);
     }
 
