@@ -709,7 +709,7 @@ export class Centrifuge extends Observable {
                 return;
             }
             this.ping();
-            this._pongTimeout = setTimeout(function () {
+            this._pongTimeout = setTimeout(() => {
                 this._disconnect('no ping', true);
             }, this._config.pongWaitTimeout);
         }, this._config.pingInterval);
