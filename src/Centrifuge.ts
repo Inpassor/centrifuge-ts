@@ -9,6 +9,7 @@ import {
     objectToQuery,
 } from './Functions';
 import {Observable} from 'js-observable';
+import * as protobuf from 'protobufjs';
 import {Subscription} from './Subscription';
 import {proto} from './Proto';
 
@@ -589,10 +590,13 @@ export class Centrifuge extends Observable {
             return;
         }
         const encodedCommands = [];
+        let writer;
+        if (this._config.format === 'protobuf') {
+            writer = protobuf.Writer.create();
+        }
         for (const i in commands) {
             if (commands.hasOwnProperty(i)) {
-                const command = commands[i];
-                let encodedCommand;
+                const command = Object.assign({}, commands[i]);
                 if (this._config.format === 'protobuf') {
                     switch (command.method) {
                         case proto.MethodType.CONNECT:
@@ -629,14 +633,17 @@ export class Centrifuge extends Observable {
                             command.params = proto.Message.encode(<any> command.params).finish();
                             break;
                     }
-                    encodedCommand = proto.Command.encode(command).finish();
+                    proto.Command.encodeDelimited(command, writer);
                 } else {
-                    encodedCommand = JSON.stringify(command);
+                    encodedCommands.push(JSON.stringify(command));
                 }
-                encodedCommands.push(encodedCommand);
             }
         }
-        this._transport.send(encodedCommands.join("\n"));
+        if (this._config.format === 'protobuf') {
+            this._transport.send(writer.finish());
+        } else {
+            this._transport.send(encodedCommands.join("\n"));
+        }
         this._debug('Send', commands);
     }
 
@@ -1054,17 +1061,23 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onmessage = (event: any) => {
-            const replies = event.data.split("\n");
-            for (const i in replies) {
-                if (replies.hasOwnProperty(i)) {
-                    let data;
-                    if (this._config.format === 'protobuf') {
-                        data = proto.Command.decode(replies[i]);
-                    } else {
-                        data = JSON.parse(replies[i]);
+            let reader;
+            if (this._config.format === 'protobuf') {
+                reader = protobuf.Reader.create(new Uint8Array(event.data));
+                while (reader.pos < reader.len) {
+                    const reply = proto.Reply.decodeDelimited(reader);
+                    console.log(reply);
+                    // reply.result = <any> proto.Message.decode(reply.result);
+                    // var str = new TextDecoder("utf-8").decode(message.Data);
+                }
+            } else {
+                const replies = event.data.split("\n");
+                for (const i in replies) {
+                    if (replies.hasOwnProperty(i)) {
+                        const data = JSON.parse(replies[i]);
+                        this._debug('Received', data);
+                        this._receive(data);
                     }
-                    this._debug('Received', data);
-                    this._receive(data);
                 }
             }
             this._restartPing();
