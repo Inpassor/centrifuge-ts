@@ -11241,6 +11241,9 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
         else {
             this._transport = new WebSocket(this._endpoint);
+            if (this._config.format === 'protobuf') {
+                this._transport.binaryType = 'arraybuffer';
+            }
         }
         this._transport.onopen = function () {
             _this._transportClosed = false;

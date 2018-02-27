@@ -985,6 +985,9 @@ export class Centrifuge extends Observable {
             this._transport = new this._config.sockJS(this._endpoint, null, sockjsOptions);
         } else {
             this._transport = new WebSocket(this._endpoint);
+            if (this._config.format === 'protobuf') {
+                this._transport.binaryType = 'arraybuffer';
+            }
         }
 
         this._transport.onopen = () => {
