@@ -604,39 +604,46 @@ export class Centrifuge extends Observable {
             if (commands.hasOwnProperty(i)) {
                 const command = Object.assign({}, commands[i]);
                 if (this._config.format === 'protobuf') {
+                    let params;
                     switch (command.method) {
                         case proto.MethodType.CONNECT:
-                            command.params = proto.ConnectRequest.encode(<any> command.params).finish();
+                            command.params = proto.ConnectRequest.encode(<proto.IConnectRequest> command.params).finish();
                             break;
                         case proto.MethodType.REFRESH:
-                            command.params = proto.RefreshRequest.encode(<any> command.params).finish();
+                            command.params = proto.RefreshRequest.encode(<proto.IRefreshRequest> command.params).finish();
                             break;
                         case proto.MethodType.SUBSCRIBE:
-                            command.params = proto.SubscribeRequest.encode(<any> command.params).finish();
+                            command.params = proto.SubscribeRequest.encode(<proto.ISubscribeRequest> command.params).finish();
                             break;
                         case proto.MethodType.UNSUBSCRIBE:
-                            command.params = proto.UnsubscribeRequest.encode(<any> command.params).finish();
+                            command.params = proto.UnsubscribeRequest.encode(<proto.IUnsubscribeRequest> command.params).finish();
                             break;
                         case proto.MethodType.PUBLISH:
-                            command.params = proto.PublishRequest.encode(<any> command.params).finish();
+                            params = <proto.IPublishRequest> command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = proto.PublishRequest.encode(params).finish();
                             break;
                         case proto.MethodType.PRESENCE:
-                            command.params = proto.PresenceRequest.encode(<any> command.params).finish();
+                            command.params = proto.PresenceRequest.encode(<proto.IPresenceRequest> command.params).finish();
                             break;
                         case proto.MethodType.PRESENCE_STATS:
-                            command.params = proto.PresenceStatsRequest.encode(<any> command.params).finish();
+                            command.params = proto.PresenceStatsRequest.encode(<proto.IPresenceStatsRequest> command.params).finish();
                             break;
                         case proto.MethodType.HISTORY:
-                            command.params = proto.HistoryRequest.encode(<any> command.params).finish();
+                            command.params = proto.HistoryRequest.encode(<proto.IHistoryRequest> command.params).finish();
                             break;
                         case proto.MethodType.PING:
-                            command.params = proto.PingRequest.encode(<any> command.params).finish();
+                            command.params = proto.PingRequest.encode(<proto.IPingRequest> command.params).finish();
                             break;
                         case proto.MethodType.RPC:
-                            command.params = proto.RPCRequest.encode(<any> command.params).finish();
+                            params = <proto.IRPCRequest> command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = proto.RPCRequest.encode(params).finish();
                             break;
                         case proto.MethodType.MESSAGE:
-                            command.params = proto.Message.encode(<any> command.params).finish();
+                            params = <proto.IMessage> command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = proto.Message.encode(params).finish();
                             break;
                     }
                     proto.Command.encodeDelimited(command, writer);

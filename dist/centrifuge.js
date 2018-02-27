@@ -15654,6 +15654,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             if (commands.hasOwnProperty(i)) {
                 var command = Object.assign({}, commands[i]);
                 if (this._config.format === 'protobuf') {
+                    var params = void 0;
                     switch (command.method) {
                         case Proto["proto"].MethodType.CONNECT:
                             command.params = Proto["proto"].ConnectRequest.encode(command.params).finish();
@@ -15668,7 +15669,9 @@ var Centrifuge_Centrifuge = (function (_super) {
                             command.params = Proto["proto"].UnsubscribeRequest.encode(command.params).finish();
                             break;
                         case Proto["proto"].MethodType.PUBLISH:
-                            command.params = Proto["proto"].PublishRequest.encode(command.params).finish();
+                            params = command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = Proto["proto"].PublishRequest.encode(params).finish();
                             break;
                         case Proto["proto"].MethodType.PRESENCE:
                             command.params = Proto["proto"].PresenceRequest.encode(command.params).finish();
@@ -15683,10 +15686,14 @@ var Centrifuge_Centrifuge = (function (_super) {
                             command.params = Proto["proto"].PingRequest.encode(command.params).finish();
                             break;
                         case Proto["proto"].MethodType.RPC:
-                            command.params = Proto["proto"].RPCRequest.encode(command.params).finish();
+                            params = command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = Proto["proto"].RPCRequest.encode(params).finish();
                             break;
                         case Proto["proto"].MethodType.MESSAGE:
-                            command.params = Proto["proto"].Message.encode(command.params).finish();
+                            params = command.params;
+                            params.data = new Uint8Array(params.data);
+                            command.params = Proto["proto"].Message.encode(params).finish();
                             break;
                     }
                     Proto["proto"].Command.encodeDelimited(command, writer);
