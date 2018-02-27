@@ -15641,9 +15641,6 @@ var Centrifuge_Centrifuge = (function (_super) {
             this._transport.close();
         }
     };
-    Centrifuge.prototype._encodeParams = function (params, protoClass) {
-        return params ? protoClass.encode(params).finish() : null;
-    };
     Centrifuge.prototype._send = function (commands) {
         if (!commands.length) {
             return;
@@ -15659,37 +15656,37 @@ var Centrifuge_Centrifuge = (function (_super) {
                 if (this._config.format === 'protobuf') {
                     switch (command.method) {
                         case Proto["proto"].MethodType.CONNECT:
-                            command.params = this._encodeParams(command.params, Proto["proto"].ConnectRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].ConnectRequest);
                             break;
                         case Proto["proto"].MethodType.REFRESH:
-                            command.params = this._encodeParams(command.params, Proto["proto"].RefreshRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].RefreshRequest);
                             break;
                         case Proto["proto"].MethodType.SUBSCRIBE:
-                            command.params = this._encodeParams(command.params, Proto["proto"].SubscribeRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].SubscribeRequest);
                             break;
                         case Proto["proto"].MethodType.UNSUBSCRIBE:
-                            command.params = this._encodeParams(command.params, Proto["proto"].UnsubscribeRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].UnsubscribeRequest);
                             break;
                         case Proto["proto"].MethodType.PUBLISH:
-                            command.params = this._encodeParams(command.params, Proto["proto"].PublishRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].PublishRequest);
                             break;
                         case Proto["proto"].MethodType.PRESENCE:
-                            command.params = this._encodeParams(command.params, Proto["proto"].PresenceRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].PresenceRequest);
                             break;
                         case Proto["proto"].MethodType.PRESENCE_STATS:
-                            command.params = this._encodeParams(command.params, Proto["proto"].PresenceStatsRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].PresenceStatsRequest);
                             break;
                         case Proto["proto"].MethodType.HISTORY:
-                            command.params = this._encodeParams(command.params, Proto["proto"].HistoryRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].HistoryRequest);
                             break;
                         case Proto["proto"].MethodType.PING:
-                            command.params = this._encodeParams(command.params, Proto["proto"].PingRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].PingRequest);
                             break;
                         case Proto["proto"].MethodType.RPC:
-                            command.params = this._encodeParams(command.params, Proto["proto"].RPCRequest);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].RPCRequest);
                             break;
                         case Proto["proto"].MethodType.MESSAGE:
-                            command.params = this._encodeParams(command.params, Proto["proto"].Message);
+                            command.params = Centrifuge._encodeParams(command.params, Proto["proto"].Message);
                             break;
                     }
                     Proto["proto"].Command.encodeDelimited(command, writer);
@@ -15697,6 +15694,10 @@ var Centrifuge_Centrifuge = (function (_super) {
                 else {
                     encodedCommands.push(JSON.stringify(command));
                 }
+                if (this._config.debug === true && commands[i].params && commands[i].params['data']) {
+                    commands[i].params['data'] = new window['TextDecoder']('utf-8').decode(commands[i].params['data']);
+                }
+                this._debug('Send', commands[i]);
             }
         }
         if (this._config.format === 'protobuf') {
@@ -15705,7 +15706,6 @@ var Centrifuge_Centrifuge = (function (_super) {
         else {
             this._transport.send(encodedCommands.join("\n"));
         }
-        this._debug('Send', commands);
     };
     Centrifuge.prototype._getNextCommandId = function () {
         return ++this._commandId;
@@ -16106,6 +16106,9 @@ var Centrifuge_Centrifuge = (function (_super) {
             }
             _this._restartPing();
         };
+    };
+    Centrifuge._encodeParams = function (params, protoClass) {
+        return params ? protoClass.encode(params).finish() : null;
     };
     return Centrifuge;
 }(observable["Observable"]));
