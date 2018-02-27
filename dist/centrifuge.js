@@ -15079,6 +15079,7 @@ var Subscription_Subscription = (function (_super) {
                                 break;
                         }
                     }
+                    _this._centrifuge.debug('Received', result);
                     resolve(result);
                 }, function (error) {
                     reject(error);
@@ -15155,15 +15156,24 @@ var Centrifuge_Centrifuge = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Centrifuge.prototype.debug = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (this._config.debug === true) {
+            log.apply(void 0, ['debug'].concat(args));
+        }
+    };
     Centrifuge.prototype.connect = function () {
         if (this.isConnected) {
-            this._debug('Connect called when already connected');
+            this.debug('Connect called when already connected');
             return;
         }
         if (this._status === 'connecting') {
             return;
         }
-        this._debug('Start connecting');
+        this.debug('Start connecting');
         this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
@@ -15217,7 +15227,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
         var cb = function (err, _data) {
             if (err === true) {
-                _this._debug('Authorization request failed');
+                _this.debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
@@ -15261,6 +15271,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                             if (result instanceof Uint8Array) {
                                 result = Proto["proto"].SubscribeResult.decode(result);
                             }
+                            _this.debug('Received', result);
                             _this._subscribeResult(result, channel);
                         }, function (error) {
                         });
@@ -15347,6 +15358,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 if (result instanceof Uint8Array) {
                     result = Proto["proto"].SubscribeResult.decode(result);
                 }
+                _this.debug('Received', result);
                 _this._subscribeResult(result, channel);
             }, function (error) {
                 _this._subscribeError(error, channel);
@@ -15354,6 +15366,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
     };
     Centrifuge.prototype.unsubscribeSub = function (sub) {
+        var _this = this;
         if (this.isConnected) {
             this.addCommand({
                 method: Proto["proto"].MethodType.UNSUBSCRIBE,
@@ -15361,6 +15374,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                     channel: sub.channel
                 }
             }).then(function (result) {
+                _this.debug('Received', result);
                 sub.setUnsubscribed();
             }, function (error) {
             });
@@ -15405,17 +15419,8 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
         log.apply(void 0, ['error'].concat(args));
     };
-    Centrifuge.prototype._debug = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (this._config.debug === true) {
-            log.apply(void 0, ['debug'].concat(args));
-        }
-    };
     Centrifuge.prototype._configure = function (config) {
-        this._debug('Configuring Centrifuge with', config);
+        this.debug('Configuring Centrifuge with', config);
         config = Object.assign({
             format: 'json',
             retry: 1000,
@@ -15490,7 +15495,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 throw new Error('Missing required configuration parameter \'user\' specifying user\'s unique ID in your application');
             }
             else {
-                this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
+                this.debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
             }
         }
         else {
@@ -15503,7 +15508,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 throw new Error('Missing required configuration parameter \'time\'');
             }
             else {
-                this._debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
+                this.debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
             }
         }
         else {
@@ -15516,7 +15521,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 throw new Error('Missing required configuration parameter \'sign\' specifying the sign of authorization request');
             }
             else {
-                this._debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
+                this.debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
             }
         }
         else {
@@ -15530,7 +15535,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         this._config = config;
     };
     Centrifuge.prototype._request = function (url, params, headers, data, callback) {
-        this._debug('Sending POST request to', url);
+        this.debug('Sending POST request to', url);
         var query = objectToQuery(params);
         if (query.length > 0) {
             query = '?' + query;
@@ -15566,11 +15571,11 @@ var Centrifuge_Centrifuge = (function (_super) {
     Centrifuge.prototype._getLastID = function (channel) {
         var lastUID = this._lastMessageID[channel];
         if (lastUID) {
-            this._debug('Last uid found and sent for channel', channel);
+            this.debug('Last uid found and sent for channel', channel);
             return lastUID;
         }
         else {
-            this._debug('No last uid found for channel', channel);
+            this.debug('No last uid found for channel', channel);
             return '';
         }
     };
@@ -15611,7 +15616,7 @@ var Centrifuge_Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._setStatus = function (status) {
         if (this._status !== status) {
-            this._debug('Status:', this._status, '->', status);
+            this.debug('Status:', this._status, '->', status);
             this._status = status;
         }
     };
@@ -15620,7 +15625,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         if (this.isDisconnected) {
             return;
         }
-        this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
+        this.debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
         if (shouldReconnect === false) {
             this._reconnect = false;
         }
@@ -15697,7 +15702,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 if (this._config.debug === true && commands[i].params && commands[i].params['data']) {
                     commands[i].params['data'] = new window['TextDecoder']('utf-8').decode(commands[i].params['data']);
                 }
-                this._debug('Send', commands[i]);
+                this.debug('Send', commands[i]);
             }
         }
         if (this._config.format === 'protobuf') {
@@ -15739,7 +15744,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         this._startPing();
     };
     Centrifuge.prototype._resetRetry = function () {
-        this._debug('Reset retries count to 0');
+        this.debug('Reset retries count to 0');
         this._retries = 0;
     };
     Centrifuge.prototype._getRetryInterval = function () {
@@ -15762,9 +15767,9 @@ var Centrifuge_Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._refresh = function () {
         var _this = this;
-        this._debug('Refresh credentials');
+        this.debug('Refresh credentials');
         if (this._config.refreshAttempts === 0) {
-            this._debug('Refresh attempts set to 0, do not send refresh request at all');
+            this.debug('Refresh attempts set to 0, do not send refresh request at all');
             this._refreshFailed();
             return;
         }
@@ -15773,7 +15778,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
         var cb = function (err, data) {
             if (err === true) {
-                _this._debug('Error getting connection credentials from refresh endpoint', data);
+                _this.debug('Error getting connection credentials from refresh endpoint', data);
                 _this._numRefreshFailed++;
                 if (_this._refreshTimeout) {
                     clearTimeout(_this._refreshTimeout);
@@ -15798,11 +15803,11 @@ var Centrifuge_Centrifuge = (function (_super) {
                 data.info = '';
             }
             if (_this.isDisconnected) {
-                _this._debug('Credentials refreshed, connect from scratch');
+                _this.debug('Credentials refreshed, connect from scratch');
                 _this.connect();
             }
             else {
-                _this._debug('Send refreshed credentials');
+                _this.debug('Send refreshed credentials');
                 _this.addCommand({
                     method: Proto["proto"].MethodType.REFRESH,
                     params: data,
@@ -15810,6 +15815,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                     if (result instanceof Uint8Array) {
                         result = Proto["proto"].RefreshResult.decode(result);
                     }
+                    _this.debug('Received', result);
                     _this._refreshResult(result);
                 }, function (error) {
                 });
@@ -15921,6 +15927,7 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
     };
     Centrifuge.prototype._joinResult = function (result) {
+        this.debug('Received JOIN result', result);
         var sub = this._getSub(result.channel);
         if (!sub) {
             return;
@@ -15928,15 +15935,17 @@ var Centrifuge_Centrifuge = (function (_super) {
         sub.trigger('join', [result]);
     };
     Centrifuge.prototype._leaveResult = function (result) {
+        this.debug('Received LEAVE result', result);
         var sub = this._getSub(result.channel);
         if (!sub) {
             return;
         }
         sub.trigger('leave', [result]);
     };
-    Centrifuge.prototype._publicationResult = function (message) {
-        var data = message.data;
-        var channel = message.channel;
+    Centrifuge.prototype._publicationResult = function (result) {
+        this.debug('Received PUBLICATION result', result);
+        var data = result.data;
+        var channel = result.channel;
         this._lastMessageID[channel] = data.uid;
         var sub = this._getSub(channel);
         if (!sub) {
@@ -15967,7 +15976,7 @@ var Centrifuge_Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._dispatchMessage = function (message) {
         if (message === undefined || message === null) {
-            this._debug('Dispatch: got undefined or null message');
+            this.debug('Dispatch: got undefined or null message');
             return;
         }
         switch (message.type) {
@@ -16042,12 +16051,13 @@ var Centrifuge_Centrifuge = (function (_super) {
                 if (result instanceof Uint8Array) {
                     result = Proto["proto"].ConnectResult.decode(result);
                 }
+                _this.debug('Received', result);
                 _this._connectResult(result);
             }, function (error) {
             });
         };
         this._transport.onerror = function (error) {
-            _this._debug('Transport level error', error);
+            _this.debug('Transport level error', error);
         };
         this._transport.onclose = function (event) {
             _this._transportClosed = true;
@@ -16056,13 +16066,13 @@ var Centrifuge_Centrifuge = (function (_super) {
             if (event && 'reason' in event && event.reason) {
                 try {
                     var advice = JSON.parse(event.reason);
-                    _this._debug(reason + '. Reason is an advice object:', advice);
+                    _this.debug(reason + '. Reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 }
                 catch (e) {
                     reason = event.reason;
-                    _this._debug(reason + '. Reason is a plain string:', reason);
+                    _this.debug(reason + '. Reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }
@@ -16077,7 +16087,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             if (_this._reconnect === true) {
                 _this._reconnecting = true;
                 var interval = _this._getRetryInterval();
-                _this._debug('Reconnect after ' + interval + ' milliseconds');
+                _this.debug('Reconnect after ' + interval + ' milliseconds');
                 setTimeout(function () {
                     if (_this._reconnect === true) {
                         _this.connect();
@@ -16089,18 +16099,14 @@ var Centrifuge_Centrifuge = (function (_super) {
             if (_this._config.format === 'protobuf') {
                 var reader = protobufjs["Reader"].create(new Uint8Array(event.data));
                 while (reader.pos < reader.len) {
-                    var reply = Proto["proto"].Reply.decodeDelimited(reader);
-                    _this._debug('Received', reply);
-                    _this._receive(reply);
+                    _this._receive(Proto["proto"].Reply.decodeDelimited(reader));
                 }
             }
             else {
                 var replies = event.data.split("\n");
                 for (var i in replies) {
                     if (replies.hasOwnProperty(i)) {
-                        var data = JSON.parse(replies[i]);
-                        _this._debug('Received', data);
-                        _this._receive(data);
+                        _this._receive(JSON.parse(replies[i]));
                     }
                 }
             }

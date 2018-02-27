@@ -59,15 +59,21 @@ export class Centrifuge extends Observable {
         return this._status === 'disconnected';
     }
 
+    public debug(...args: any[]): void {
+        if (this._config.debug === true) {
+            log('debug', ...args);
+        }
+    }
+
     public connect(): void {
         if (this.isConnected) {
-            this._debug('Connect called when already connected');
+            this.debug('Connect called when already connected');
             return;
         }
         if (this._status === 'connecting') {
             return;
         }
-        this._debug('Start connecting');
+        this.debug('Start connecting');
         this._setStatus('connecting');
         this._clientID = null;
         this._reconnect = true;
@@ -137,7 +143,7 @@ export class Centrifuge extends Observable {
 
         const cb = (err: boolean, _data: any) => {
             if (err === true) {
-                this._debug('Authorization request failed');
+                this.debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
@@ -184,6 +190,7 @@ export class Centrifuge extends Observable {
                             if (result instanceof Uint8Array) {
                                 result = proto.SubscribeResult.decode(result);
                             }
+                            this.debug('Received', result);
                             this._subscribeResult(result, channel);
                         }, (error: proto.IError) => {
                         });
@@ -288,6 +295,7 @@ export class Centrifuge extends Observable {
                 if (result instanceof Uint8Array) {
                     result = proto.SubscribeResult.decode(result);
                 }
+                this.debug('Received', result);
                 this._subscribeResult(result, channel);
             }, (error: proto.IError) => {
                 this._subscribeError(error, channel);
@@ -304,6 +312,7 @@ export class Centrifuge extends Observable {
                     channel: sub.channel
                 }
             }).then((result: any) => {
+                this.debug('Received', result);
                 sub.setUnsubscribed();
             }, (error: proto.IError) => {
             });
@@ -342,14 +351,8 @@ export class Centrifuge extends Observable {
         log('error', ...args);
     }
 
-    private _debug(...args: any[]): void {
-        if (this._config.debug === true) {
-            log('debug', ...args);
-        }
-    }
-
     private _configure(config: ICentrifugeConfig): void {
-        this._debug('Configuring Centrifuge with', config);
+        this.debug('Configuring Centrifuge with', config);
         config = Object.assign({
             format: 'json',
             retry: 1000,
@@ -426,7 +429,7 @@ export class Centrifuge extends Observable {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'user\' specifying user\'s unique ID in your application');
             } else {
-                this._debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
+                this.debug('Configuration parameter \'user\' not found but this is OK for insecure mode - anonymous access will be used');
             }
         } else {
             if (!isString(config.user)) {
@@ -438,7 +441,7 @@ export class Centrifuge extends Observable {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'time\'');
             } else {
-                this._debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
+                this.debug('Configuration parameter \'exp\' not found but this is OK for insecure mode');
             }
         } else {
             if (!isString(config.exp)) {
@@ -450,7 +453,7 @@ export class Centrifuge extends Observable {
             if (!config.insecure) {
                 throw new Error('Missing required configuration parameter \'sign\' specifying the sign of authorization request');
             } else {
-                this._debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
+                this.debug('Configuration parameter \'sign\' not found but this is OK for insecure mode');
             }
         } else {
             if (!isString(config.sign)) {
@@ -466,7 +469,7 @@ export class Centrifuge extends Observable {
     }
 
     private _request(url: string, params: any, headers: any, data: any, callback: Function): void {
-        this._debug('Sending POST request to', url);
+        this.debug('Sending POST request to', url);
         let query = objectToQuery(params);
         if (query.length > 0) {
             query = '?' + query;
@@ -504,10 +507,10 @@ export class Centrifuge extends Observable {
     private _getLastID(channel: string): string {
         const lastUID = this._lastMessageID[channel];
         if (lastUID) {
-            this._debug('Last uid found and sent for channel', channel);
+            this.debug('Last uid found and sent for channel', channel);
             return lastUID;
         } else {
-            this._debug('No last uid found for channel', channel);
+            this.debug('No last uid found for channel', channel);
             return '';
         }
     }
@@ -556,7 +559,7 @@ export class Centrifuge extends Observable {
 
     private _setStatus(status: string): void {
         if (this._status !== status) {
-            this._debug('Status:', this._status, '->', status);
+            this.debug('Status:', this._status, '->', status);
             this._status = status;
         }
     }
@@ -565,7 +568,7 @@ export class Centrifuge extends Observable {
         if (this.isDisconnected) {
             return;
         }
-        this._debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
+        this.debug('Disconnected:', reason + '.', 'shouldReconnect:', shouldReconnect);
 
         if (shouldReconnect === false) {
             this._reconnect = false;
@@ -647,7 +650,7 @@ export class Centrifuge extends Observable {
                 if (this._config.debug === true && commands[i].params && commands[i].params['data']) {
                     commands[i].params['data'] = new window['TextDecoder']('utf-8').decode(commands[i].params['data']);
                 }
-                this._debug('Send', commands[i]);
+                this.debug('Send', commands[i]);
             }
         }
         if (this._config.format === 'protobuf') {
@@ -692,7 +695,7 @@ export class Centrifuge extends Observable {
     }
 
     private _resetRetry(): void {
-        this._debug('Reset retries count to 0');
+        this.debug('Reset retries count to 0');
         this._retries = 0;
     }
 
@@ -718,10 +721,10 @@ export class Centrifuge extends Observable {
 
     private _refresh(): void {
         // ask web app for connection parameters - user ID, time, info and sign
-        this._debug('Refresh credentials');
+        this.debug('Refresh credentials');
 
         if (this._config.refreshAttempts === 0) {
-            this._debug('Refresh attempts set to 0, do not send refresh request at all');
+            this.debug('Refresh attempts set to 0, do not send refresh request at all');
             this._refreshFailed();
             return;
         }
@@ -734,7 +737,7 @@ export class Centrifuge extends Observable {
             if (err === true) {
                 // We don't perform any connection status related actions here as we are
                 // relying on Centrifugo that must close connection eventually.
-                this._debug('Error getting connection credentials from refresh endpoint', data);
+                this.debug('Error getting connection credentials from refresh endpoint', data);
                 this._numRefreshFailed++;
                 if (this._refreshTimeout) {
                     clearTimeout(this._refreshTimeout);
@@ -758,10 +761,10 @@ export class Centrifuge extends Observable {
                 data.info = '';
             }
             if (this.isDisconnected) {
-                this._debug('Credentials refreshed, connect from scratch');
+                this.debug('Credentials refreshed, connect from scratch');
                 this.connect();
             } else {
-                this._debug('Send refreshed credentials');
+                this.debug('Send refreshed credentials');
                 this.addCommand({
                     method: proto.MethodType.REFRESH,
                     params: <any> data,
@@ -769,6 +772,7 @@ export class Centrifuge extends Observable {
                     if (result instanceof Uint8Array) {
                         result = proto.RefreshResult.decode(result);
                     }
+                    this.debug('Received', result);
                     this._refreshResult(result);
                 }, (error: proto.IError) => {
                 });
@@ -894,6 +898,7 @@ export class Centrifuge extends Observable {
     }
 
     private _joinResult(result: proto.IMessage): void {
+        this.debug('Received JOIN result', result);
         const sub = this._getSub(result.channel);
         if (!sub) {
             return;
@@ -902,6 +907,7 @@ export class Centrifuge extends Observable {
     }
 
     private _leaveResult(result: proto.IMessage): void {
+        this.debug('Received LEAVE result', result);
         const sub = this._getSub(result.channel);
         if (!sub) {
             return;
@@ -909,9 +915,10 @@ export class Centrifuge extends Observable {
         sub.trigger('leave', [result]);
     }
 
-    private _publicationResult(message: proto.IMessage): void {
-        const data = <proto.IPublication> message.data;
-        const channel = message.channel;
+    private _publicationResult(result: proto.IMessage): void {
+        this.debug('Received PUBLICATION result', result);
+        const data = <proto.IPublication> result.data;
+        const channel = result.channel;
 
         // keep last uid received from channel.
         this._lastMessageID[channel] = data.uid;
@@ -946,7 +953,7 @@ export class Centrifuge extends Observable {
 
     private _dispatchMessage(message: any): void {
         if (message === undefined || message === null) {
-            this._debug('Dispatch: got undefined or null message');
+            this.debug('Dispatch: got undefined or null message');
             return;
         }
         switch (message.type) {
@@ -1027,13 +1034,14 @@ export class Centrifuge extends Observable {
                 if (result instanceof Uint8Array) {
                     result = proto.ConnectResult.decode(result);
                 }
+                this.debug('Received', result);
                 this._connectResult(result);
             }, (error: proto.IError) => {
             });
         };
 
         this._transport.onerror = (error: any) => {
-            this._debug('Transport level error', error);
+            this.debug('Transport level error', error);
         };
 
         this._transport.onclose = (event: any) => {
@@ -1043,12 +1051,12 @@ export class Centrifuge extends Observable {
             if (event && 'reason' in event && event.reason) {
                 try {
                     const advice = JSON.parse(event.reason);
-                    this._debug(reason + '. Reason is an advice object:', advice);
+                    this.debug(reason + '. Reason is an advice object:', advice);
                     reason = advice.reason;
                     reconnect = advice.reconnect;
                 } catch (e) {
                     reason = event.reason;
-                    this._debug(reason + '. Reason is a plain string:', reason);
+                    this.debug(reason + '. Reason is a plain string:', reason);
                     reconnect = reason !== 'disconnect';
                 }
             }
@@ -1070,7 +1078,7 @@ export class Centrifuge extends Observable {
             if (this._reconnect === true) {
                 this._reconnecting = true;
                 const interval = this._getRetryInterval();
-                this._debug('Reconnect after ' + interval + ' milliseconds');
+                this.debug('Reconnect after ' + interval + ' milliseconds');
                 setTimeout(() => {
                     if (this._reconnect === true) {
                         this.connect();
@@ -1083,17 +1091,13 @@ export class Centrifuge extends Observable {
             if (this._config.format === 'protobuf') {
                 const reader = protobuf.Reader.create(new Uint8Array(event.data));
                 while (reader.pos < reader.len) {
-                    const reply = proto.Reply.decodeDelimited(reader);
-                    this._debug('Received', reply);
-                    this._receive(reply);
+                    this._receive(proto.Reply.decodeDelimited(reader));
                 }
             } else {
                 const replies = event.data.split("\n");
                 for (const i in replies) {
                     if (replies.hasOwnProperty(i)) {
-                        const data = JSON.parse(replies[i]);
-                        this._debug('Received', data);
-                        this._receive(data);
+                        this._receive(JSON.parse(replies[i]));
                     }
                 }
             }

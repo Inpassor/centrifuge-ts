@@ -210,6 +210,7 @@ export class Subscription extends Observable {
                                 break;
                         }
                     }
+                    this._centrifuge.debug('Received', result);
                     resolve(result);
                 }, (error: proto.IError) => {
                     reject(error);
