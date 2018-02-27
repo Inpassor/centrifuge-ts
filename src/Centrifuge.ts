@@ -1076,11 +1076,8 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onmessage = (event: any) => {
-            let reader;
             if (this._config.format === 'protobuf') {
-                const buffer = new Uint8Array(event.data.length);
-                Array.prototype.forEach.call(event.data, (c, i) => buffer[i] = c.charCodeAt(0));
-                reader = protobuf.Reader.create(buffer);
+                const reader = protobuf.Reader.create(new Uint8Array(event.data));
                 while (reader.pos < reader.len) {
                     const reply = proto.Reply.decodeDelimited(reader);
                     this._debug('Received', reply);
