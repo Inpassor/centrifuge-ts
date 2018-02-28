@@ -649,11 +649,7 @@ export class Centrifuge extends Observable {
                 } else {
                     encodedCommands.push(JSON.stringify(command));
                 }
-
-                if (this._config.debug === true && commands[i].params && commands[i].params['data']) {
-                    commands[i].params['data'] = new window['TextDecoder']('utf-8').decode(commands[i].params['data']);
-                }
-                this.debug('Send', commands[i]);
+                this.debug('Sent', commands[i]);
             }
         }
         if (isProto) {
