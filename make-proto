@@ -2,13 +2,13 @@
 CUR_DIR="$(pwd)"
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$PROJECT_DIR"
-if [ -d "node_modules/centrifuge" ]; then
-    cd node_modules/centrifuge
+if [ -d "centrifuge" ]; then
+    cd centrifuge
     git pull
 else
-    git clone https://github.com/centrifugal/centrifuge.git -b master node_modules/centrifuge
+    git clone https://github.com/centrifugal/centrifuge.git -b master
 fi
 cd "$PROJECT_DIR"
-./node_modules/.bin/pbjs ./node_modules/centrifuge/misc/proto/client.proto -t static-module -o ./src/Proto.js
+./node_modules/.bin/pbjs ./centrifuge/misc/proto/client.proto -t static-module -o ./src/Proto.js
 ./node_modules/.bin/pbts -o ./src/Proto.d.ts ./src/Proto.js
 cd "$CUR_DIR"

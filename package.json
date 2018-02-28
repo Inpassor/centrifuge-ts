@@ -4,7 +4,7 @@
     "description": "Centrifuge javascript client",
     "main": "dist/centrifuge.js",
     "dependencies": {
-        "js-observable": "^1.0.0"
+        "js-observable": "^1.1.0"
     },
     "devDependencies": {
         "@types/node": "^9.4.6",
