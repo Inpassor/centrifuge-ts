@@ -15011,6 +15011,9 @@ var Subscription_Subscription = (function (_super) {
         this._centrifuge.unsubscribeSub(this);
     };
     Subscription.prototype.publish = function (data) {
+        if (this._centrifuge.isProtobufFormat && !(data instanceof Uint8Array)) {
+            throw new Error('Illegal argument type: data must be a Uint8Array');
+        }
         return this._request(Proto["proto"].MethodType.PUBLISH, data);
     };
     Subscription.prototype.presence = function () {
@@ -15066,20 +15069,17 @@ var Subscription_Subscription = (function (_super) {
                     method: method,
                     params: params,
                 }).then(function (result) {
-                    if (result instanceof Uint8Array) {
-                        switch (method) {
-                            case Proto["proto"].MethodType.PUBLISH:
-                                result = Proto["proto"].PublishResult.decode(result);
-                                break;
-                            case Proto["proto"].MethodType.PRESENCE:
-                                result = Proto["proto"].PresenceResult.decode(result);
-                                break;
-                            case Proto["proto"].MethodType.HISTORY:
-                                result = Proto["proto"].HistoryResult.decode(result);
-                                break;
-                        }
+                    switch (method) {
+                        case Proto["proto"].MethodType.PUBLISH:
+                            result = _this._centrifuge.decodeResult(result, Proto["proto"].PublishResult);
+                            break;
+                        case Proto["proto"].MethodType.PRESENCE:
+                            result = _this._centrifuge.decodeResult(result, Proto["proto"].PresenceResult);
+                            break;
+                        case Proto["proto"].MethodType.HISTORY:
+                            result = _this._centrifuge.decodeResult(result, Proto["proto"].HistoryResult);
+                            break;
                     }
-                    _this._centrifuge.debug('Received', result);
                     resolve(result);
                 }, function (error) {
                     reject(error);
@@ -15142,6 +15142,13 @@ var Centrifuge_Centrifuge = (function (_super) {
         _this._configure(config);
         return _this;
     }
+    Object.defineProperty(Centrifuge.prototype, "isProtobufFormat", {
+        get: function () {
+            return this._config.format === 'protobuf';
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Centrifuge.prototype, "isConnected", {
         get: function () {
             return this._status === 'connected';
@@ -15185,8 +15192,6 @@ var Centrifuge_Centrifuge = (function (_super) {
     Centrifuge.prototype.ping = function () {
         this.addCommand({
             method: Proto["proto"].MethodType.PING
-        }).then(function (result) {
-        }, function (error) {
         });
     };
     Centrifuge.prototype.startBatching = function () {
@@ -15268,12 +15273,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                             msg.params.last = _this._getLastID(channel);
                         }
                         _this.addCommand(msg).then(function (result) {
-                            if (result instanceof Uint8Array) {
-                                result = Proto["proto"].SubscribeResult.decode(result);
-                            }
-                            _this.debug('Received', result);
-                            _this._subscribeResult(result, channel);
-                        }, function (error) {
+                            _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
                         });
                     }
                     else {
@@ -15355,11 +15355,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 msg.params.last = this._getLastID(channel);
             }
             this.addCommand(msg).then(function (result) {
-                if (result instanceof Uint8Array) {
-                    result = Proto["proto"].SubscribeResult.decode(result);
-                }
-                _this.debug('Received', result);
-                _this._subscribeResult(result, channel);
+                _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
             }, function (error) {
                 _this._subscribeError(error, channel);
             });
@@ -15374,9 +15370,8 @@ var Centrifuge_Centrifuge = (function (_super) {
                     channel: sub.channel
                 }
             }).then(function (result) {
-                _this.debug('Received', result);
+                _this.decodeResult(result, Proto["proto"].UnsubscribeResult);
                 sub.setUnsubscribed();
-            }, function (error) {
             });
         }
     };
@@ -15404,6 +15399,19 @@ var Centrifuge_Centrifuge = (function (_super) {
                 }
             }, _this._config.timeout);
         });
+    };
+    Centrifuge.prototype.decodeResult = function (result, protoClass) {
+        var resultName = '';
+        if (protoClass) {
+            if (result instanceof Uint8Array) {
+                result = protoClass.decode(result);
+            }
+            else {
+                resultName = ' ' + protoClass.name;
+            }
+        }
+        this.debug('Received' + resultName, result);
+        return result;
     };
     Centrifuge.log = function () {
         var args = [];
@@ -15650,15 +15658,16 @@ var Centrifuge_Centrifuge = (function (_super) {
         if (!commands.length) {
             return;
         }
+        var isProto = this.isProtobufFormat;
         var encodedCommands = [];
         var writer;
-        if (this._config.format === 'protobuf') {
+        if (isProto) {
             writer = protobufjs["Writer"].create();
         }
         for (var i in commands) {
             if (commands.hasOwnProperty(i)) {
                 var command = Object.assign({}, commands[i]);
-                if (this._config.format === 'protobuf') {
+                if (isProto) {
                     switch (command.method) {
                         case Proto["proto"].MethodType.CONNECT:
                             command.params = Centrifuge._encodeParams(command.params, Proto["proto"].ConnectRequest);
@@ -15705,7 +15714,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 this.debug('Send', commands[i]);
             }
         }
-        if (this._config.format === 'protobuf') {
+        if (isProto) {
             this._transport.send(writer.finish());
         }
         else {
@@ -15812,12 +15821,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                     method: Proto["proto"].MethodType.REFRESH,
                     params: data,
                 }).then(function (result) {
-                    if (result instanceof Uint8Array) {
-                        result = Proto["proto"].RefreshResult.decode(result);
-                    }
-                    _this.debug('Received', result);
-                    _this._refreshResult(result);
-                }, function (error) {
+                    _this._refreshResult(_this.decodeResult(result, Proto["proto"].RefreshResult));
                 });
             }
         };
@@ -16007,18 +16011,19 @@ var Centrifuge_Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._setTransport = function () {
         var _this = this;
+        var isProto = this.isProtobufFormat;
         if (this._isSockJS) {
             var sockjsOptions = {
                 transports: this._config.transports
             };
             if (this._config.server) {
-                sockjsOptions.server = this._config.server;
+                sockjsOptions['server'] = this._config.server;
             }
             this._transport = new this._config.sockJS(this._endpoint, null, sockjsOptions);
         }
         else {
             this._transport = new WebSocket(this._endpoint);
-            if (this._config.format === 'protobuf') {
+            if (isProto) {
                 this._transport.binaryType = 'arraybuffer';
             }
         }
@@ -16048,12 +16053,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             }
             _this._latencyStart = new Date();
             _this.addCommand(msg).then(function (result) {
-                if (result instanceof Uint8Array) {
-                    result = Proto["proto"].ConnectResult.decode(result);
-                }
-                _this.debug('Received', result);
-                _this._connectResult(result);
-            }, function (error) {
+                _this._connectResult(_this.decodeResult(result, Proto["proto"].ConnectResult));
             });
         };
         this._transport.onerror = function (error) {
@@ -16096,7 +16096,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             }
         };
         this._transport.onmessage = function (event) {
-            if (_this._config.format === 'protobuf') {
+            if (isProto) {
                 var reader = protobufjs["Reader"].create(new Uint8Array(event.data));
                 while (reader.pos < reader.len) {
                     _this._receive(Proto["proto"].Reply.decodeDelimited(reader));
@@ -16105,7 +16105,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             else {
                 var replies = event.data.split("\n");
                 for (var i in replies) {
-                    if (replies.hasOwnProperty(i)) {
+                    if (replies.hasOwnProperty(i) && replies[i]) {
                         _this._receive(JSON.parse(replies[i]));
                     }
                 }
@@ -16569,8 +16569,8 @@ var base10Re    = /^[1-9][0-9]*$/,
     base8NegRe  = /^-?0[0-7]+$/,
     numberRe    = /^(?![eE])[0-9]*(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?$/,
     nameRe      = /^[a-zA-Z_][a-zA-Z_0-9]*$/,
-    typeRefRe   = /^(?:\.?[a-zA-Z_][a-zA-Z_0-9]*)(?:\.[a-zA-Z_][a-zA-Z_0-9]*)*$/,
-    fqTypeRefRe = /^(?:\.[a-zA-Z_][a-zA-Z_0-9]*)+$/;
+    typeRefRe   = /^(?:\.?[a-zA-Z_][a-zA-Z_0-9]*)+$/,
+    fqTypeRefRe = /^(?:\.[a-zA-Z][a-zA-Z_0-9]*)+$/;
 
 /**
  * Result object returned from {@link parse}.

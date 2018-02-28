@@ -13,10 +13,7 @@ import * as protobuf from 'protobufjs';
 import {Subscription} from './Subscription';
 import {proto} from './Proto';
 
-import {
-    ISockJSOptions,
-    ICentrifugeConfig,
-} from './interfaces';
+import {ICentrifugeConfig} from './interfaces';
 
 export class Centrifuge extends Observable {
 
@@ -49,6 +46,10 @@ export class Centrifuge extends Observable {
     constructor(config: ICentrifugeConfig) {
         super();
         this._configure(config);
+    }
+
+    public get isProtobufFormat(): boolean {
+        return this._config.format === 'protobuf';
     }
 
     public get isConnected(): boolean {
@@ -87,8 +88,6 @@ export class Centrifuge extends Observable {
     public ping(): void {
         this.addCommand({
             method: proto.MethodType.PING
-        }).then((result: any) => {
-        }, (error: proto.IError) => {
         });
     }
 
@@ -187,12 +186,7 @@ export class Centrifuge extends Observable {
                             msg.params.last = this._getLastID(channel);
                         }
                         this.addCommand(msg).then((result: any) => {
-                            if (result instanceof Uint8Array) {
-                                result = proto.SubscribeResult.decode(result);
-                            }
-                            this.debug('Received', result);
-                            this._subscribeResult(result, channel);
-                        }, (error: proto.IError) => {
+                            this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
                         });
                     } else {
                         this._subscribeError({
@@ -292,11 +286,7 @@ export class Centrifuge extends Observable {
                 msg.params.last = this._getLastID(channel);
             }
             this.addCommand(msg).then((result: any) => {
-                if (result instanceof Uint8Array) {
-                    result = proto.SubscribeResult.decode(result);
-                }
-                this.debug('Received', result);
-                this._subscribeResult(result, channel);
+                this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
             }, (error: proto.IError) => {
                 this._subscribeError(error, channel);
             });
@@ -312,9 +302,8 @@ export class Centrifuge extends Observable {
                     channel: sub.channel
                 }
             }).then((result: any) => {
-                this.debug('Received', result);
+                this.decodeResult(result, proto.UnsubscribeResult);
                 sub.setUnsubscribed();
-            }, (error: proto.IError) => {
             });
         }
     }
@@ -341,6 +330,19 @@ export class Centrifuge extends Observable {
                 }
             }, this._config.timeout);
         });
+    }
+
+    public decodeResult(result: any, protoClass?: any) {
+        let resultName = '';
+        if (protoClass) {
+            if (result instanceof Uint8Array) {
+                result = protoClass.decode(result);
+            } else {
+                resultName = ' ' + protoClass.name;
+            }
+        }
+        this.debug('Received' + resultName, result);
+        return result;
     }
 
     public static log(...args: any[]): void {
@@ -598,15 +600,16 @@ export class Centrifuge extends Observable {
         if (!commands.length) {
             return;
         }
+        const isProto = this.isProtobufFormat;
         const encodedCommands = [];
         let writer;
-        if (this._config.format === 'protobuf') {
+        if (isProto) {
             writer = protobuf.Writer.create();
         }
         for (const i in commands) {
             if (commands.hasOwnProperty(i)) {
                 const command = Object.assign({}, commands[i]);
-                if (this._config.format === 'protobuf') {
+                if (isProto) {
                     switch (command.method) {
                         case proto.MethodType.CONNECT:
                             command.params = Centrifuge._encodeParams(command.params, proto.ConnectRequest);
@@ -653,7 +656,7 @@ export class Centrifuge extends Observable {
                 this.debug('Send', commands[i]);
             }
         }
-        if (this._config.format === 'protobuf') {
+        if (isProto) {
             this._transport.send(writer.finish());
         } else {
             this._transport.send(encodedCommands.join("\n"));
@@ -769,12 +772,7 @@ export class Centrifuge extends Observable {
                     method: proto.MethodType.REFRESH,
                     params: <any> data,
                 }).then((result: any) => {
-                    if (result instanceof Uint8Array) {
-                        result = proto.RefreshResult.decode(result);
-                    }
-                    this.debug('Received', result);
-                    this._refreshResult(result);
-                }, (error: proto.IError) => {
+                    this._refreshResult(this.decodeResult(result, proto.RefreshResult));
                 });
             }
         };
@@ -986,17 +984,19 @@ export class Centrifuge extends Observable {
     }
 
     private _setTransport(): void {
+        const isProto = this.isProtobufFormat;
+
         if (this._isSockJS) {
-            const sockjsOptions: ISockJSOptions = {
+            const sockjsOptions = {
                 transports: this._config.transports
             };
             if (this._config.server) {
-                sockjsOptions.server = this._config.server;
+                sockjsOptions['server'] = this._config.server;
             }
             this._transport = new this._config.sockJS(this._endpoint, null, sockjsOptions);
         } else {
             this._transport = new WebSocket(this._endpoint);
-            if (this._config.format === 'protobuf') {
+            if (isProto) {
                 this._transport.binaryType = 'arraybuffer';
             }
         }
@@ -1031,12 +1031,7 @@ export class Centrifuge extends Observable {
             }
             this._latencyStart = new Date();
             this.addCommand(msg).then((result: any) => {
-                if (result instanceof Uint8Array) {
-                    result = proto.ConnectResult.decode(result);
-                }
-                this.debug('Received', result);
-                this._connectResult(result);
-            }, (error: proto.IError) => {
+                this._connectResult(this.decodeResult(result, proto.ConnectResult));
             });
         };
 
@@ -1088,7 +1083,7 @@ export class Centrifuge extends Observable {
         };
 
         this._transport.onmessage = (event: any) => {
-            if (this._config.format === 'protobuf') {
+            if (isProto) {
                 const reader = protobuf.Reader.create(new Uint8Array(event.data));
                 while (reader.pos < reader.len) {
                     this._receive(proto.Reply.decodeDelimited(reader));
@@ -1096,7 +1091,7 @@ export class Centrifuge extends Observable {
             } else {
                 const replies = event.data.split("\n");
                 for (const i in replies) {
-                    if (replies.hasOwnProperty(i)) {
+                    if (replies.hasOwnProperty(i) && replies[i]) {
                         this._receive(JSON.parse(replies[i]));
                     }
                 }

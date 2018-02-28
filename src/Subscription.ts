@@ -3,9 +3,6 @@ import {
 } from './Functions';
 import {Observable} from 'js-observable';
 import {Centrifuge} from './Centrifuge';
-import {
-    ISubscriptionSuccess,
-} from './interfaces';
 import {proto} from './Proto';
 
 export class Subscription extends Observable {
@@ -138,7 +135,10 @@ export class Subscription extends Observable {
         this._centrifuge.unsubscribeSub(this);
     }
 
-    public publish(data: Uint8Array): Promise<any> {
+    public publish(data: any): Promise<any> {
+        if (this._centrifuge.isProtobufFormat && !(data instanceof Uint8Array)) {
+            throw new Error('Illegal argument type: data must be a Uint8Array');
+        }
         return this._request(proto.MethodType.PUBLISH, data);
     }
 
@@ -164,7 +164,7 @@ export class Subscription extends Observable {
         });
     }
 
-    private _getSubscribeSuccess(): ISubscriptionSuccess {
+    private _getSubscribeSuccess(): Object {
         return {
             channel: this.channel,
             isResubscribe: this._isResubscribe,
@@ -197,20 +197,17 @@ export class Subscription extends Observable {
                     method,
                     params: <any> params,
                 }).then((result: any) => {
-                    if (result instanceof Uint8Array) {
-                        switch (method) {
-                            case proto.MethodType.PUBLISH:
-                                result = proto.PublishResult.decode(result);
-                                break;
-                            case proto.MethodType.PRESENCE:
-                                result = proto.PresenceResult.decode(result);
-                                break;
-                            case proto.MethodType.HISTORY:
-                                result = proto.HistoryResult.decode(result);
-                                break;
-                        }
+                    switch (method) {
+                        case proto.MethodType.PUBLISH:
+                            result = this._centrifuge.decodeResult(result, proto.PublishResult);
+                            break;
+                        case proto.MethodType.PRESENCE:
+                            result = this._centrifuge.decodeResult(result, proto.PresenceResult);
+                            break;
+                        case proto.MethodType.HISTORY:
+                            result = this._centrifuge.decodeResult(result, proto.HistoryResult);
+                            break;
                     }
-                    this._centrifuge.debug('Received', result);
                     resolve(result);
                 }, (error: proto.IError) => {
                     reject(error);
