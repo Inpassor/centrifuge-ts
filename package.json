@@ -8,18 +8,17 @@
     },
     "devDependencies": {
         "@types/node": "^9.4.6",
-        "protobufjs": "^6.8.5",
+        "protobufjs": "^6.8.6",
         "ts-loader": "^4.0.0",
         "tslint": "^5.9.1",
         "typescript": "^2.7.2",
         "uglifyjs-webpack-plugin": "^1.2.2",
         "unminified-webpack-plugin": "^1.4.2",
-        "webpack": "^4.0.0",
+        "webpack": "^4.0.1",
         "webpack-cli": "^2.0.9"
     },
     "scripts": {
-        "install": "install",
-        "proto": "pbjs ./node_modules/centrifuge/misc/proto/client.proto -t static-module -o ./src/Proto.js && pbts -o ./src/Proto.d.ts ./src/Proto.js",
+        "proto": "make-proto",
         "build": "node_modules/.bin/webpack --mode production",
         "watch": "node_modules/.bin/webpack --mode production --watch"
     },
