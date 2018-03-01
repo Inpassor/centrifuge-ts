@@ -7,6 +7,7 @@ import {
     endsWith,
     errorExists,
     objectToQuery,
+    getKeyByValue,
 } from './Functions';
 import {Observable} from 'js-observable';
 import * as protobuf from 'protobufjs';
@@ -88,6 +89,8 @@ export class Centrifuge extends Observable {
     public ping(): void {
         this.addCommand({
             method: proto.MethodType.PING
+        }).then(() => {
+        }, () => {
         });
     }
 
@@ -187,6 +190,7 @@ export class Centrifuge extends Observable {
                         }
                         this.addCommand(msg).then((result: any) => {
                             this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
+                        }, () => {
                         });
                     } else {
                         this._subscribeError({
@@ -304,12 +308,13 @@ export class Centrifuge extends Observable {
             }).then((result: any) => {
                 this.decodeResult(result, proto.UnsubscribeResult);
                 sub.setUnsubscribed();
+            }, () => {
             });
         }
     }
 
     public addCommand(command: proto.ICommand): Promise<any> {
-        return new Promise((callback: Function, errback: Function) => {
+        return new Promise((resolve, reject) => {
             const id = this._getNextCommandId();
             command.id = id;
             if (this._isBatching === true) {
@@ -318,16 +323,14 @@ export class Centrifuge extends Observable {
                 this._send([command]);
             }
             this._callbacks[id] = {
-                callback,
-                errback,
+                resolve,
+                reject,
             };
             setTimeout(() => {
                 delete this._callbacks[id];
-                if (isFunction(errback)) {
-                    errback({
-                        message: 'Timeout',
-                    });
-                }
+                reject({
+                    message: 'Timeout',
+                });
             }, this._config.timeout);
         });
     }
@@ -525,15 +528,11 @@ export class Centrifuge extends Observable {
         this._clientID = null;
 
         // fire errbacks of registered calls.
-        for (const uid in this._callbacks) {
-            if (this._callbacks.hasOwnProperty(uid)) {
-                const callbacks = this._callbacks[uid];
-                const errback = callbacks.errback;
-                if (isFunction(errback)) {
-                    errback({
-                        message: 'Disconnected',
-                    });
-                }
+        for (const id in this._callbacks) {
+            if (this._callbacks.hasOwnProperty(id)) {
+                this._callbacks[id].reject({
+                    message: 'Disconnected',
+                });
             }
         }
         this._callbacks = {};
@@ -649,7 +648,9 @@ export class Centrifuge extends Observable {
                 } else {
                     encodedCommands.push(JSON.stringify(command));
                 }
-                this.debug('Sent', commands[i]);
+                if (this._config.debug === true) {
+                    this.debug('Sent', getKeyByValue(proto.MethodType, command.method) || command.method, commands[i]);
+                }
             }
         }
         if (isProto) {
@@ -691,11 +692,6 @@ export class Centrifuge extends Observable {
     private _restartPing(): void {
         this._stopPing();
         this._startPing();
-    }
-
-    private _resetRetry(): void {
-        this.debug('Reset retries count to 0');
-        this._retries = 0;
     }
 
     private _getRetryInterval(): number {
@@ -769,6 +765,7 @@ export class Centrifuge extends Observable {
                     params: <any> data,
                 }).then((result: any) => {
                     this._refreshResult(this.decodeResult(result, proto.RefreshResult));
+                }, () => {
                 });
             }
         };
@@ -930,19 +927,13 @@ export class Centrifuge extends Observable {
             return;
         }
         const callbacks = this._callbacks[id];
-        delete this._callbacks[id];
         if (!errorExists(reply)) {
-            const callback = callbacks.callback;
-            if (isFunction(callback)) {
-                callback(reply.result);
-            }
+            callbacks.resolve(reply.result);
         } else {
-            const errback = callbacks.errback;
-            if (isFunction(errback)) {
-                errback(reply.error);
-            }
+            callbacks.reject(reply.error);
             this.trigger('error', [reply.error]);
         }
+        delete this._callbacks[id];
     }
 
     private _dispatchMessage(message: any): void {
@@ -1010,7 +1001,10 @@ export class Centrifuge extends Observable {
                 this._transportName = 'raw-websocket';
             }
 
-            this._resetRetry();
+            if (this._retries) {
+                this.debug('Reset retries count to 0');
+                this._retries = 0;
+            }
 
             const msg = {
                 method: proto.MethodType.CONNECT,
@@ -1028,6 +1022,7 @@ export class Centrifuge extends Observable {
             this._latencyStart = new Date();
             this.addCommand(msg).then((result: any) => {
                 this._connectResult(this.decodeResult(result, proto.ConnectResult));
+            }, () => {
             });
         };
 

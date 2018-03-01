@@ -14867,6 +14867,12 @@ var objectToQuery = function (object) {
     }
     return p.join('&');
 };
+var getKeyByValue = function (object, value, strict) {
+    if (strict === void 0) { strict = true; }
+    var fn = function (key) { return object[key] + '' === value + ''; };
+    var fnStrict = function (key) { return object[key] === value; };
+    return Object.keys(object).find(strict ? fnStrict : fn);
+};
 
 // EXTERNAL MODULE: ./node_modules/js-observable/dist/observable.js
 var observable = __webpack_require__(9);
@@ -15198,6 +15204,8 @@ var Centrifuge_Centrifuge = (function (_super) {
     Centrifuge.prototype.ping = function () {
         this.addCommand({
             method: Proto["proto"].MethodType.PING
+        }).then(function () {
+        }, function () {
         });
     };
     Centrifuge.prototype.startBatching = function () {
@@ -15280,6 +15288,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                         }
                         _this.addCommand(msg).then(function (result) {
                             _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
+                        }, function () {
                         });
                     }
                     else {
@@ -15378,12 +15387,13 @@ var Centrifuge_Centrifuge = (function (_super) {
             }).then(function (result) {
                 _this.decodeResult(result, Proto["proto"].UnsubscribeResult);
                 sub.setUnsubscribed();
+            }, function () {
             });
         }
     };
     Centrifuge.prototype.addCommand = function (command) {
         var _this = this;
-        return new Promise(function (callback, errback) {
+        return new Promise(function (resolve, reject) {
             var id = _this._getNextCommandId();
             command.id = id;
             if (_this._isBatching === true) {
@@ -15393,16 +15403,14 @@ var Centrifuge_Centrifuge = (function (_super) {
                 _this._send([command]);
             }
             _this._callbacks[id] = {
-                callback: callback,
-                errback: errback,
+                resolve: resolve,
+                reject: reject,
             };
             setTimeout(function () {
                 delete _this._callbacks[id];
-                if (isFunction(errback)) {
-                    errback({
-                        message: 'Timeout',
-                    });
-                }
+                reject({
+                    message: 'Timeout',
+                });
             }, _this._config.timeout);
         });
     };
@@ -15598,15 +15606,11 @@ var Centrifuge_Centrifuge = (function (_super) {
     };
     Centrifuge.prototype._clearConnectedState = function (reconnect) {
         this._clientID = null;
-        for (var uid in this._callbacks) {
-            if (this._callbacks.hasOwnProperty(uid)) {
-                var callbacks = this._callbacks[uid];
-                var errback = callbacks.errback;
-                if (isFunction(errback)) {
-                    errback({
-                        message: 'Disconnected',
-                    });
-                }
+        for (var id in this._callbacks) {
+            if (this._callbacks.hasOwnProperty(id)) {
+                this._callbacks[id].reject({
+                    message: 'Disconnected',
+                });
             }
         }
         this._callbacks = {};
@@ -15714,7 +15718,9 @@ var Centrifuge_Centrifuge = (function (_super) {
                 else {
                     encodedCommands.push(JSON.stringify(command));
                 }
-                this.debug('Sent', commands[i]);
+                if (this._config.debug === true) {
+                    this.debug('Sent', getKeyByValue(Proto["proto"].MethodType, command.method) || command.method, commands[i]);
+                }
             }
         }
         if (isProto) {
@@ -15754,10 +15760,6 @@ var Centrifuge_Centrifuge = (function (_super) {
     Centrifuge.prototype._restartPing = function () {
         this._stopPing();
         this._startPing();
-    };
-    Centrifuge.prototype._resetRetry = function () {
-        this.debug('Reset retries count to 0');
-        this._retries = 0;
     };
     Centrifuge.prototype._getRetryInterval = function () {
         this._retries += 1;
@@ -15825,6 +15827,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                     params: data,
                 }).then(function (result) {
                     _this._refreshResult(_this.decodeResult(result, Proto["proto"].RefreshResult));
+                }, function () {
                 });
             }
         };
@@ -15966,20 +15969,14 @@ var Centrifuge_Centrifuge = (function (_super) {
             return;
         }
         var callbacks = this._callbacks[id];
-        delete this._callbacks[id];
         if (!errorExists(reply)) {
-            var callback = callbacks.callback;
-            if (isFunction(callback)) {
-                callback(reply.result);
-            }
+            callbacks.resolve(reply.result);
         }
         else {
-            var errback = callbacks.errback;
-            if (isFunction(errback)) {
-                errback(reply.error);
-            }
+            callbacks.reject(reply.error);
             this.trigger('error', [reply.error]);
         }
+        delete this._callbacks[id];
     };
     Centrifuge.prototype._dispatchMessage = function (message) {
         if (message === undefined || message === null) {
@@ -16042,7 +16039,10 @@ var Centrifuge_Centrifuge = (function (_super) {
             else {
                 _this._transportName = 'raw-websocket';
             }
-            _this._resetRetry();
+            if (_this._retries) {
+                _this.debug('Reset retries count to 0');
+                _this._retries = 0;
+            }
             var msg = {
                 method: Proto["proto"].MethodType.CONNECT,
                 params: {
@@ -16057,6 +16057,7 @@ var Centrifuge_Centrifuge = (function (_super) {
             _this._latencyStart = new Date();
             _this.addCommand(msg).then(function (result) {
                 _this._connectResult(_this.decodeResult(result, Proto["proto"].ConnectResult));
+            }, function () {
             });
         };
         this._transport.onerror = function (error) {

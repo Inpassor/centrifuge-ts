@@ -32,11 +32,17 @@ export const errorExists = (data: any): boolean => {
 };
 
 export const objectToQuery = (object: any): string => {
-    let p = [];
+    const p = [];
     for (const i in object) {
         if (object.hasOwnProperty(i)) {
             p.push(encodeURIComponent(i) + (object[i] ? '=' + encodeURIComponent(object[i]) : ''));
         }
     }
     return p.join('&');
+};
+
+export const getKeyByValue = (object: any, value: any, strict = true): any => {
+    const fn = (key: any) => object[key] + '' === value + '';
+    const fnStrict = (key: any) => object[key] === value;
+    return Object.keys(object).find(strict ? fnStrict : fn);
 };
