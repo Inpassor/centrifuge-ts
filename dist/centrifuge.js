@@ -15241,17 +15241,17 @@ var Centrifuge_Centrifuge = (function (_super) {
             }
         }
         this._authChannels = {};
-        if (channels.length === 0) {
+        if (!channels.length) {
             return;
         }
-        var cb = function (err, _data) {
-            if (err === true) {
+        var cb = function (error, _data) {
+            if (error === true) {
                 _this.debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
                         _this._subscribeError({
-                            message: 'authorization request failed',
+                            message: 'Authorization request failed',
                         }, channel);
                     }
                 }
@@ -15268,27 +15268,16 @@ var Centrifuge_Centrifuge = (function (_super) {
                     var channelResponse = _data[channel];
                     if (!channelResponse) {
                         _this._subscribeError({
-                            message: 'channel not found in authorization response',
+                            message: 'Channel not found in authorization response',
                         }, channel);
                         continue;
                     }
                     if (!channelResponse.status || channelResponse.status === 200) {
-                        var msg = {
-                            method: Proto["proto"].MethodType.SUBSCRIBE,
-                            params: {
-                                channel: channel,
-                                client: _this._clientID,
-                                info: channelResponse.info,
-                                sign: channelResponse.sign
-                            },
-                        };
-                        if (_this._recover(channel) === true) {
-                            msg.params.recover = true;
-                            msg.params.last = _this._getLastID(channel);
-                        }
-                        _this.addCommand(msg).then(function (result) {
-                            _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
-                        }, function () {
+                        _this._subscribe({
+                            channel: channel,
+                            client: _this._clientID,
+                            info: channelResponse.info,
+                            sign: channelResponse.sign
                         });
                     }
                     else {
@@ -15338,7 +15327,6 @@ var Centrifuge_Centrifuge = (function (_super) {
         }
     };
     Centrifuge.prototype.subscribeSub = function (sub) {
-        var _this = this;
         var channel = sub.channel;
         if (!(channel in this._subs)) {
             this._subs[channel] = sub;
@@ -15359,20 +15347,8 @@ var Centrifuge_Centrifuge = (function (_super) {
             }
         }
         else {
-            var msg = {
-                method: Proto["proto"].MethodType.SUBSCRIBE,
-                params: {
-                    channel: channel,
-                }
-            };
-            if (this._recover(channel) === true) {
-                msg.params.recover = true;
-                msg.params.last = this._getLastID(channel);
-            }
-            this.addCommand(msg).then(function (result) {
-                _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
-            }, function (error) {
-                _this._subscribeError(error, channel);
+            this._subscribe({
+                channel: channel,
             });
         }
     };
@@ -15585,6 +15561,23 @@ var Centrifuge_Centrifuge = (function (_super) {
             callback(false, callbackData);
         }).catch(function (error) {
             Centrifuge.error('Network response error', error);
+        });
+    };
+    Centrifuge.prototype._subscribe = function (params) {
+        var _this = this;
+        var channel = params.channel;
+        var msg = {
+            method: Proto["proto"].MethodType.SUBSCRIBE,
+            params: params,
+        };
+        if (this._recover(channel) === true) {
+            msg.params.recover = true;
+            msg.params.last = this._getLastID(channel);
+        }
+        this.addCommand(msg).then(function (result) {
+            _this._subscribeResult(_this.decodeResult(result, Proto["proto"].SubscribeResult), channel);
+        }, function (error) {
+            _this._subscribeError(error, channel);
         });
     };
     Centrifuge.prototype._recover = function (channel) {

@@ -121,11 +121,11 @@ export class Centrifuge extends Observable {
     }
 
     public stopAuthBatching(): void {
+        // create request to authEndpoint with collected private channels
+        // to ask if this client can subscribe on each channel
         let i: string;
         let channel: string;
 
-        // create request to authEndpoint with collected private channels
-        // to ask if this client can subscribe on each channel
         this._isAuthBatching = false;
         const channels = [];
 
@@ -139,18 +139,18 @@ export class Centrifuge extends Observable {
         }
         this._authChannels = {};
 
-        if (channels.length === 0) {
+        if (!channels.length) {
             return;
         }
 
-        const cb = (err: boolean, _data: any) => {
-            if (err === true) {
+        const cb = (error: boolean, _data: any) => {
+            if (error === true) {
                 this.debug('Authorization request failed');
                 for (i in channels) {
                     if (channels.hasOwnProperty(i)) {
                         channel = channels[i];
                         this._subscribeError({
-                            message: 'authorization request failed',
+                            message: 'Authorization request failed',
                         }, channel);
                     }
                 }
@@ -170,27 +170,16 @@ export class Centrifuge extends Observable {
                     const channelResponse = _data[channel];
                     if (!channelResponse) {
                         this._subscribeError({
-                            message: 'channel not found in authorization response',
+                            message: 'Channel not found in authorization response',
                         }, channel);
                         continue;
                     }
                     if (!channelResponse.status || channelResponse.status === 200) {
-                        const msg = {
-                            method: proto.MethodType.SUBSCRIBE,
-                            params: <any> {
-                                channel: channel,
-                                client: this._clientID,
-                                info: channelResponse.info,
-                                sign: channelResponse.sign
-                            },
-                        };
-                        if (this._recover(channel) === true) {
-                            msg.params.recover = true;
-                            msg.params.last = this._getLastID(channel);
-                        }
-                        this.addCommand(msg).then((result: any) => {
-                            this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
-                        }, () => {
+                        this._subscribe({
+                            channel,
+                            client: this._clientID,
+                            info: channelResponse.info,
+                            sign: channelResponse.sign
                         });
                     } else {
                         this._subscribeError({
@@ -279,20 +268,8 @@ export class Centrifuge extends Observable {
                 this.stopAuthBatching();
             }
         } else {
-            const msg = {
-                method: proto.MethodType.SUBSCRIBE,
-                params: <any> {
-                    channel,
-                }
-            };
-            if (this._recover(channel) === true) {
-                msg.params.recover = true;
-                msg.params.last = this._getLastID(channel);
-            }
-            this.addCommand(msg).then((result: any) => {
-                this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
-            }, (error: proto.IError) => {
-                this._subscribeError(error, channel);
+            this._subscribe({
+                channel,
             });
         }
     }
@@ -502,6 +479,23 @@ export class Centrifuge extends Observable {
             callback(false, callbackData);
         }).catch((error: any) => {
             Centrifuge.error('Network response error', error);
+        });
+    }
+
+    private _subscribe(params: any) {
+        const channel = params.channel;
+        const msg = {
+            method: proto.MethodType.SUBSCRIBE,
+            params,
+        };
+        if (this._recover(channel) === true) {
+            msg.params.recover = true;
+            msg.params.last = this._getLastID(channel);
+        }
+        this.addCommand(msg).then((result: any) => {
+            this._subscribeResult(this.decodeResult(result, proto.SubscribeResult), channel);
+        }, (error: proto.IError) => {
+            this._subscribeError(error, channel);
         });
     }
 
