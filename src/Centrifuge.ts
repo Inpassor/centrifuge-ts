@@ -192,7 +192,6 @@ export class Centrifuge extends Observable {
             if (batch) {
                 this.stopBatching(true);
             }
-
         };
 
         const data = {
