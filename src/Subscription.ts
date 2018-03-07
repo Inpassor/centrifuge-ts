@@ -135,18 +135,18 @@ export class Subscription extends Observable {
         this._centrifuge.unsubscribeSub(this);
     }
 
-    public publish(data: any): Promise<any> {
+    public publish(data: any): Promise<proto.PublishResult> {
         if (this._centrifuge.isProtobufFormat && !(data instanceof Uint8Array)) {
             throw new Error('Illegal argument type: data must be a Uint8Array');
         }
         return this._request(proto.MethodType.PUBLISH, data);
     }
 
-    public presence(): Promise<any> {
+    public presence(): Promise<proto.PresenceResult> {
         return this._request(proto.MethodType.PRESENCE);
     }
 
-    public history(): Promise<any> {
+    public history(): Promise<proto.HistoryResult> {
         return this._request(proto.MethodType.HISTORY);
     }
 

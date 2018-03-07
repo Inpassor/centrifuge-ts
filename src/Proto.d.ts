@@ -912,7 +912,7 @@ export namespace proto {
         exp?: (string|null);
 
         /** ConnectRequest info */
-        info?: (string|null);
+        info?: (Uint8Array|null);
 
         /** ConnectRequest opts */
         opts?: (string|null);
@@ -937,7 +937,7 @@ export namespace proto {
         public exp: string;
 
         /** ConnectRequest info. */
-        public info: string;
+        public info: Uint8Array;
 
         /** ConnectRequest opts. */
         public opts: string;
@@ -1236,7 +1236,7 @@ export namespace proto {
         exp?: (string|null);
 
         /** RefreshRequest info */
-        info?: (string|null);
+        info?: (Uint8Array|null);
 
         /** RefreshRequest opts */
         opts?: (string|null);
@@ -1261,7 +1261,7 @@ export namespace proto {
         public exp: string;
 
         /** RefreshRequest info. */
-        public info: string;
+        public info: Uint8Array;
 
         /** RefreshRequest opts. */
         public opts: string;
@@ -1560,7 +1560,7 @@ export namespace proto {
         client?: (string|null);
 
         /** SubscribeRequest info */
-        info?: (string|null);
+        info?: (Uint8Array|null);
 
         /** SubscribeRequest sign */
         sign?: (string|null);
@@ -1588,7 +1588,7 @@ export namespace proto {
         public client: string;
 
         /** SubscribeRequest info. */
-        public info: string;
+        public info: Uint8Array;
 
         /** SubscribeRequest sign. */
         public sign: string;
@@ -3621,7 +3621,7 @@ export namespace proto {
         error?: (proto.IError|null);
 
         /** RPCResponse result */
-        result?: (Uint8Array|null);
+        result?: (proto.IRPCResult|null);
     }
 
     /** Represents a RPCResponse. */
@@ -3637,7 +3637,7 @@ export namespace proto {
         public error?: (proto.IError|null);
 
         /** RPCResponse result. */
-        public result: Uint8Array;
+        public result?: (proto.IRPCResult|null);
 
         /**
          * Creates a new RPCResponse instance using the specified properties.
@@ -3705,6 +3705,186 @@ export namespace proto {
 
         /**
          * Converts this RPCResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a RPCResult. */
+    interface IRPCResult {
+
+        /** RPCResult data */
+        data?: (Uint8Array|null);
+    }
+
+    /** Represents a RPCResult. */
+    class RPCResult implements IRPCResult {
+
+        /**
+         * Constructs a new RPCResult.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: proto.IRPCResult);
+
+        /** RPCResult data. */
+        public data: Uint8Array;
+
+        /**
+         * Creates a new RPCResult instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RPCResult instance
+         */
+        public static create(properties?: proto.IRPCResult): proto.RPCResult;
+
+        /**
+         * Encodes the specified RPCResult message. Does not implicitly {@link proto.RPCResult.verify|verify} messages.
+         * @param message RPCResult message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: proto.IRPCResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified RPCResult message, length delimited. Does not implicitly {@link proto.RPCResult.verify|verify} messages.
+         * @param message RPCResult message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: proto.IRPCResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RPCResult message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RPCResult
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.RPCResult;
+
+        /**
+         * Decodes a RPCResult message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns RPCResult
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.RPCResult;
+
+        /**
+         * Verifies a RPCResult message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a RPCResult message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns RPCResult
+         */
+        public static fromObject(object: { [k: string]: any }): proto.RPCResult;
+
+        /**
+         * Creates a plain object from a RPCResult message. Also converts values to other types if specified.
+         * @param message RPCResult
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: proto.RPCResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this RPCResult to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
+    /** Properties of a MessageRequest. */
+    interface IMessageRequest {
+
+        /** MessageRequest data */
+        data?: (Uint8Array|null);
+    }
+
+    /** Represents a MessageRequest. */
+    class MessageRequest implements IMessageRequest {
+
+        /**
+         * Constructs a new MessageRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: proto.IMessageRequest);
+
+        /** MessageRequest data. */
+        public data: Uint8Array;
+
+        /**
+         * Creates a new MessageRequest instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns MessageRequest instance
+         */
+        public static create(properties?: proto.IMessageRequest): proto.MessageRequest;
+
+        /**
+         * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+         * @param message MessageRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+         * @param message MessageRequest message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: proto.IMessageRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a MessageRequest message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns MessageRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.MessageRequest;
+
+        /**
+         * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns MessageRequest
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.MessageRequest;
+
+        /**
+         * Verifies a MessageRequest message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns MessageRequest
+         */
+        public static fromObject(object: { [k: string]: any }): proto.MessageRequest;
+
+        /**
+         * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
+         * @param message MessageRequest
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: proto.MessageRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this MessageRequest to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };

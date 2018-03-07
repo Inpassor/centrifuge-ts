@@ -1,12 +1,12 @@
 export interface ICentrifugeConfig {
     format?: string;
+    url?: string;
     sockJS?: any;
     server?: string;
     transports?: string[];
     retry?: number;
     maxRetry?: number;
     timeout?: number;
-    info?: string;
     resubscribe?: boolean;
     ping?: boolean;
     pingInterval?: number;
@@ -29,6 +29,6 @@ export interface ICentrifugeConfig {
     authParams?: Object;
     user?: string;
     exp?: string;
+    info?: any;
     sign?: string;
-    url?: string;
 }

@@ -2215,7 +2215,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
              * @interface IConnectRequest
              * @property {string|null} [user] ConnectRequest user
              * @property {string|null} [exp] ConnectRequest exp
-             * @property {string|null} [info] ConnectRequest info
+             * @property {Uint8Array|null} [info] ConnectRequest info
              * @property {string|null} [opts] ConnectRequest opts
              * @property {string|null} [sign] ConnectRequest sign
              */
@@ -2253,11 +2253,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     
             /**
              * ConnectRequest info.
-             * @member {string} info
+             * @member {Uint8Array} info
              * @memberof proto.ConnectRequest
              * @instance
              */
-            ConnectRequest.prototype.info = "";
+            ConnectRequest.prototype.info = $util.newBuffer([]);
     
             /**
              * ConnectRequest opts.
@@ -2304,7 +2304,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.exp != null && message.hasOwnProperty("exp"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.exp);
                 if (message.info != null && message.hasOwnProperty("info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.info);
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.opts);
                 if (message.sign != null && message.hasOwnProperty("sign"))
@@ -2350,7 +2350,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         message.exp = reader.string();
                         break;
                     case 3:
-                        message.info = reader.string();
+                        message.info = reader.bytes();
                         break;
                     case 4:
                         message.opts = reader.string();
@@ -2400,8 +2400,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     if (!$util.isString(message.exp))
                         return "exp: string expected";
                 if (message.info != null && message.hasOwnProperty("info"))
-                    if (!$util.isString(message.info))
-                        return "info: string expected";
+                    if (!(message.info && typeof message.info.length === "number" || $util.isString(message.info)))
+                        return "info: buffer expected";
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     if (!$util.isString(message.opts))
                         return "opts: string expected";
@@ -2428,7 +2428,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (object.exp != null)
                     message.exp = String(object.exp);
                 if (object.info != null)
-                    message.info = String(object.info);
+                    if (typeof object.info === "string")
+                        $util.base64.decode(object.info, message.info = $util.newBuffer($util.base64.length(object.info)), 0);
+                    else if (object.info.length)
+                        message.info = object.info;
                 if (object.opts != null)
                     message.opts = String(object.opts);
                 if (object.sign != null)
@@ -2452,7 +2455,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (options.defaults) {
                     object.user = "";
                     object.exp = "";
-                    object.info = "";
+                    object.info = options.bytes === String ? "" : [];
                     object.opts = "";
                     object.sign = "";
                 }
@@ -2461,7 +2464,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.exp != null && message.hasOwnProperty("exp"))
                     object.exp = message.exp;
                 if (message.info != null && message.hasOwnProperty("info"))
-                    object.info = message.info;
+                    object.info = options.bytes === String ? $util.base64.encode(message.info, 0, message.info.length) : options.bytes === Array ? Array.prototype.slice.call(message.info) : message.info;
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     object.opts = message.opts;
                 if (message.sign != null && message.hasOwnProperty("sign"))
@@ -2987,7 +2990,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
              * @interface IRefreshRequest
              * @property {string|null} [user] RefreshRequest user
              * @property {string|null} [exp] RefreshRequest exp
-             * @property {string|null} [info] RefreshRequest info
+             * @property {Uint8Array|null} [info] RefreshRequest info
              * @property {string|null} [opts] RefreshRequest opts
              * @property {string|null} [sign] RefreshRequest sign
              */
@@ -3025,11 +3028,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     
             /**
              * RefreshRequest info.
-             * @member {string} info
+             * @member {Uint8Array} info
              * @memberof proto.RefreshRequest
              * @instance
              */
-            RefreshRequest.prototype.info = "";
+            RefreshRequest.prototype.info = $util.newBuffer([]);
     
             /**
              * RefreshRequest opts.
@@ -3076,7 +3079,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.exp != null && message.hasOwnProperty("exp"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.exp);
                 if (message.info != null && message.hasOwnProperty("info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.info);
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.opts);
                 if (message.sign != null && message.hasOwnProperty("sign"))
@@ -3122,7 +3125,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         message.exp = reader.string();
                         break;
                     case 3:
-                        message.info = reader.string();
+                        message.info = reader.bytes();
                         break;
                     case 4:
                         message.opts = reader.string();
@@ -3172,8 +3175,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     if (!$util.isString(message.exp))
                         return "exp: string expected";
                 if (message.info != null && message.hasOwnProperty("info"))
-                    if (!$util.isString(message.info))
-                        return "info: string expected";
+                    if (!(message.info && typeof message.info.length === "number" || $util.isString(message.info)))
+                        return "info: buffer expected";
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     if (!$util.isString(message.opts))
                         return "opts: string expected";
@@ -3200,7 +3203,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (object.exp != null)
                     message.exp = String(object.exp);
                 if (object.info != null)
-                    message.info = String(object.info);
+                    if (typeof object.info === "string")
+                        $util.base64.decode(object.info, message.info = $util.newBuffer($util.base64.length(object.info)), 0);
+                    else if (object.info.length)
+                        message.info = object.info;
                 if (object.opts != null)
                     message.opts = String(object.opts);
                 if (object.sign != null)
@@ -3224,7 +3230,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (options.defaults) {
                     object.user = "";
                     object.exp = "";
-                    object.info = "";
+                    object.info = options.bytes === String ? "" : [];
                     object.opts = "";
                     object.sign = "";
                 }
@@ -3233,7 +3239,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.exp != null && message.hasOwnProperty("exp"))
                     object.exp = message.exp;
                 if (message.info != null && message.hasOwnProperty("info"))
-                    object.info = message.info;
+                    object.info = options.bytes === String ? $util.base64.encode(message.info, 0, message.info.length) : options.bytes === Array ? Array.prototype.slice.call(message.info) : message.info;
                 if (message.opts != null && message.hasOwnProperty("opts"))
                     object.opts = message.opts;
                 if (message.sign != null && message.hasOwnProperty("sign"))
@@ -3759,7 +3765,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
              * @interface ISubscribeRequest
              * @property {string|null} [channel] SubscribeRequest channel
              * @property {string|null} [client] SubscribeRequest client
-             * @property {string|null} [info] SubscribeRequest info
+             * @property {Uint8Array|null} [info] SubscribeRequest info
              * @property {string|null} [sign] SubscribeRequest sign
              * @property {boolean|null} [recover] SubscribeRequest recover
              * @property {string|null} [last] SubscribeRequest last
@@ -3798,11 +3804,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     
             /**
              * SubscribeRequest info.
-             * @member {string} info
+             * @member {Uint8Array} info
              * @memberof proto.SubscribeRequest
              * @instance
              */
-            SubscribeRequest.prototype.info = "";
+            SubscribeRequest.prototype.info = $util.newBuffer([]);
     
             /**
              * SubscribeRequest sign.
@@ -3857,7 +3863,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.client != null && message.hasOwnProperty("client"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.client);
                 if (message.info != null && message.hasOwnProperty("info"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.info);
+                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.info);
                 if (message.sign != null && message.hasOwnProperty("sign"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.sign);
                 if (message.recover != null && message.hasOwnProperty("recover"))
@@ -3905,7 +3911,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         message.client = reader.string();
                         break;
                     case 3:
-                        message.info = reader.string();
+                        message.info = reader.bytes();
                         break;
                     case 4:
                         message.sign = reader.string();
@@ -3958,8 +3964,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     if (!$util.isString(message.client))
                         return "client: string expected";
                 if (message.info != null && message.hasOwnProperty("info"))
-                    if (!$util.isString(message.info))
-                        return "info: string expected";
+                    if (!(message.info && typeof message.info.length === "number" || $util.isString(message.info)))
+                        return "info: buffer expected";
                 if (message.sign != null && message.hasOwnProperty("sign"))
                     if (!$util.isString(message.sign))
                         return "sign: string expected";
@@ -3989,7 +3995,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (object.client != null)
                     message.client = String(object.client);
                 if (object.info != null)
-                    message.info = String(object.info);
+                    if (typeof object.info === "string")
+                        $util.base64.decode(object.info, message.info = $util.newBuffer($util.base64.length(object.info)), 0);
+                    else if (object.info.length)
+                        message.info = object.info;
                 if (object.sign != null)
                     message.sign = String(object.sign);
                 if (object.recover != null)
@@ -4015,7 +4024,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (options.defaults) {
                     object.channel = "";
                     object.client = "";
-                    object.info = "";
+                    object.info = options.bytes === String ? "" : [];
                     object.sign = "";
                     object.recover = false;
                     object.last = "";
@@ -4025,7 +4034,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.client != null && message.hasOwnProperty("client"))
                     object.client = message.client;
                 if (message.info != null && message.hasOwnProperty("info"))
-                    object.info = message.info;
+                    object.info = options.bytes === String ? $util.base64.encode(message.info, 0, message.info.length) : options.bytes === Array ? Array.prototype.slice.call(message.info) : message.info;
                 if (message.sign != null && message.hasOwnProperty("sign"))
                     object.sign = message.sign;
                 if (message.recover != null && message.hasOwnProperty("recover"))
@@ -8328,7 +8337,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
              * @memberof proto
              * @interface IRPCResponse
              * @property {proto.IError|null} [error] RPCResponse error
-             * @property {Uint8Array|null} [result] RPCResponse result
+             * @property {proto.IRPCResult|null} [result] RPCResponse result
              */
     
             /**
@@ -8356,11 +8365,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     
             /**
              * RPCResponse result.
-             * @member {Uint8Array} result
+             * @member {proto.IRPCResult|null|undefined} result
              * @memberof proto.RPCResponse
              * @instance
              */
-            RPCResponse.prototype.result = $util.newBuffer([]);
+            RPCResponse.prototype.result = null;
     
             /**
              * Creates a new RPCResponse instance using the specified properties.
@@ -8389,7 +8398,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (message.error != null && message.hasOwnProperty("error"))
                     $root.proto.Error.encode(message.error, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                 if (message.result != null && message.hasOwnProperty("result"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.result);
+                    $root.proto.RPCResult.encode(message.result, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 return writer;
             };
     
@@ -8428,7 +8437,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         message.error = $root.proto.Error.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.result = reader.bytes();
+                        message.result = $root.proto.RPCResult.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -8470,9 +8479,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     if (error)
                         return "error." + error;
                 }
-                if (message.result != null && message.hasOwnProperty("result"))
-                    if (!(message.result && typeof message.result.length === "number" || $util.isString(message.result)))
-                        return "result: buffer expected";
+                if (message.result != null && message.hasOwnProperty("result")) {
+                    var error = $root.proto.RPCResult.verify(message.result);
+                    if (error)
+                        return "result." + error;
+                }
                 return null;
             };
     
@@ -8493,11 +8504,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                         throw TypeError(".proto.RPCResponse.error: object expected");
                     message.error = $root.proto.Error.fromObject(object.error);
                 }
-                if (object.result != null)
-                    if (typeof object.result === "string")
-                        $util.base64.decode(object.result, message.result = $util.newBuffer($util.base64.length(object.result)), 0);
-                    else if (object.result.length)
-                        message.result = object.result;
+                if (object.result != null) {
+                    if (typeof object.result !== "object")
+                        throw TypeError(".proto.RPCResponse.result: object expected");
+                    message.result = $root.proto.RPCResult.fromObject(object.result);
+                }
                 return message;
             };
     
@@ -8516,12 +8527,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 var object = {};
                 if (options.defaults) {
                     object.error = null;
-                    object.result = options.bytes === String ? "" : [];
+                    object.result = null;
                 }
                 if (message.error != null && message.hasOwnProperty("error"))
                     object.error = $root.proto.Error.toObject(message.error, options);
                 if (message.result != null && message.hasOwnProperty("result"))
-                    object.result = options.bytes === String ? $util.base64.encode(message.result, 0, message.result.length) : options.bytes === Array ? Array.prototype.slice.call(message.result) : message.result;
+                    object.result = $root.proto.RPCResult.toObject(message.result, options);
                 return object;
             };
     
@@ -8537,6 +8548,386 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             };
     
             return RPCResponse;
+        })();
+    
+        proto.RPCResult = (function() {
+    
+            /**
+             * Properties of a RPCResult.
+             * @memberof proto
+             * @interface IRPCResult
+             * @property {Uint8Array|null} [data] RPCResult data
+             */
+    
+            /**
+             * Constructs a new RPCResult.
+             * @memberof proto
+             * @classdesc Represents a RPCResult.
+             * @implements IRPCResult
+             * @constructor
+             * @param {proto.IRPCResult=} [properties] Properties to set
+             */
+            function RPCResult(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+    
+            /**
+             * RPCResult data.
+             * @member {Uint8Array} data
+             * @memberof proto.RPCResult
+             * @instance
+             */
+            RPCResult.prototype.data = $util.newBuffer([]);
+    
+            /**
+             * Creates a new RPCResult instance using the specified properties.
+             * @function create
+             * @memberof proto.RPCResult
+             * @static
+             * @param {proto.IRPCResult=} [properties] Properties to set
+             * @returns {proto.RPCResult} RPCResult instance
+             */
+            RPCResult.create = function create(properties) {
+                return new RPCResult(properties);
+            };
+    
+            /**
+             * Encodes the specified RPCResult message. Does not implicitly {@link proto.RPCResult.verify|verify} messages.
+             * @function encode
+             * @memberof proto.RPCResult
+             * @static
+             * @param {proto.IRPCResult} message RPCResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RPCResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.data);
+                return writer;
+            };
+    
+            /**
+             * Encodes the specified RPCResult message, length delimited. Does not implicitly {@link proto.RPCResult.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.RPCResult
+             * @static
+             * @param {proto.IRPCResult} message RPCResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            RPCResult.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+    
+            /**
+             * Decodes a RPCResult message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.RPCResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.RPCResult} RPCResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RPCResult.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.proto.RPCResult();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.data = reader.bytes();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+    
+            /**
+             * Decodes a RPCResult message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.RPCResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.RPCResult} RPCResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            RPCResult.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+    
+            /**
+             * Verifies a RPCResult message.
+             * @function verify
+             * @memberof proto.RPCResult
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            RPCResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
+                return null;
+            };
+    
+            /**
+             * Creates a RPCResult message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.RPCResult
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.RPCResult} RPCResult
+             */
+            RPCResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.proto.RPCResult)
+                    return object;
+                var message = new $root.proto.RPCResult();
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
+                return message;
+            };
+    
+            /**
+             * Creates a plain object from a RPCResult message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.RPCResult
+             * @static
+             * @param {proto.RPCResult} message RPCResult
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            RPCResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.data = options.bytes === String ? "" : [];
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
+                return object;
+            };
+    
+            /**
+             * Converts this RPCResult to JSON.
+             * @function toJSON
+             * @memberof proto.RPCResult
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            RPCResult.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+    
+            return RPCResult;
+        })();
+    
+        proto.MessageRequest = (function() {
+    
+            /**
+             * Properties of a MessageRequest.
+             * @memberof proto
+             * @interface IMessageRequest
+             * @property {Uint8Array|null} [data] MessageRequest data
+             */
+    
+            /**
+             * Constructs a new MessageRequest.
+             * @memberof proto
+             * @classdesc Represents a MessageRequest.
+             * @implements IMessageRequest
+             * @constructor
+             * @param {proto.IMessageRequest=} [properties] Properties to set
+             */
+            function MessageRequest(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+    
+            /**
+             * MessageRequest data.
+             * @member {Uint8Array} data
+             * @memberof proto.MessageRequest
+             * @instance
+             */
+            MessageRequest.prototype.data = $util.newBuffer([]);
+    
+            /**
+             * Creates a new MessageRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest=} [properties] Properties to set
+             * @returns {proto.MessageRequest} MessageRequest instance
+             */
+            MessageRequest.create = function create(properties) {
+                return new MessageRequest(properties);
+            };
+    
+            /**
+             * Encodes the specified MessageRequest message. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MessageRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.data != null && message.hasOwnProperty("data"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.data);
+                return writer;
+            };
+    
+            /**
+             * Encodes the specified MessageRequest message, length delimited. Does not implicitly {@link proto.MessageRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.IMessageRequest} message MessageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            MessageRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+    
+            /**
+             * Decodes a MessageRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.MessageRequest} MessageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MessageRequest.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.proto.MessageRequest();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.data = reader.bytes();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+    
+            /**
+             * Decodes a MessageRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.MessageRequest} MessageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MessageRequest.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+    
+            /**
+             * Verifies a MessageRequest message.
+             * @function verify
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            MessageRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.data != null && message.hasOwnProperty("data"))
+                    if (!(message.data && typeof message.data.length === "number" || $util.isString(message.data)))
+                        return "data: buffer expected";
+                return null;
+            };
+    
+            /**
+             * Creates a MessageRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.MessageRequest} MessageRequest
+             */
+            MessageRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.proto.MessageRequest)
+                    return object;
+                var message = new $root.proto.MessageRequest();
+                if (object.data != null)
+                    if (typeof object.data === "string")
+                        $util.base64.decode(object.data, message.data = $util.newBuffer($util.base64.length(object.data)), 0);
+                    else if (object.data.length)
+                        message.data = object.data;
+                return message;
+            };
+    
+            /**
+             * Creates a plain object from a MessageRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.MessageRequest
+             * @static
+             * @param {proto.MessageRequest} message MessageRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            MessageRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.data = options.bytes === String ? "" : [];
+                if (message.data != null && message.hasOwnProperty("data"))
+                    object.data = options.bytes === String ? $util.base64.encode(message.data, 0, message.data.length) : options.bytes === Array ? Array.prototype.slice.call(message.data) : message.data;
+                return object;
+            };
+    
+            /**
+             * Converts this MessageRequest to JSON.
+             * @function toJSON
+             * @memberof proto.MessageRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            MessageRequest.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+    
+            return MessageRequest;
         })();
     
         proto.Centrifuge = (function() {
@@ -15527,9 +15918,6 @@ var Centrifuge_Centrifuge = (function (_super) {
                 Centrifuge.log('Configuration parameter \'sign\' expected to be string');
             }
         }
-        if (config.info && !isString(config.info)) {
-            Centrifuge.log('Configuration parameter \'info\' expected to be string');
-        }
         this._config = config;
     };
     Centrifuge.prototype._request = function (url, params, headers, data, callback) {
@@ -15807,7 +16195,7 @@ var Centrifuge_Centrifuge = (function (_super) {
                 _this._config.info = data.info;
             }
             else {
-                data.info = '';
+                data.info = null;
             }
             if (_this.isDisconnected) {
                 _this.debug('Credentials refreshed, connect from scratch');
