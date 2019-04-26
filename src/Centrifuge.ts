@@ -1011,10 +1011,10 @@ export class Centrifuge extends Observable {
         }
         switch (message.method) {
             case 'join':
-                this._joinResponse(message);
+                this._joinResponse(message.body);
                 break;
             case 'leave':
-                this._leaveResponse(message);
+                this._leaveResponse(message.body);
                 break;
             case 'message':
                 this._messageResponse(message);
