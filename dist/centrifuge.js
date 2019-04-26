@@ -693,7 +693,7 @@ var Centrifuge = (function (_super) {
             }
             _this.ping();
             _this._pongTimeout = setTimeout(function () {
-                this._disconnect('no ping', true);
+                _this._disconnect('no ping', true);
             }, _this._config.pongWaitTimeout);
         }, this._config.pingInterval);
     };
@@ -960,10 +960,10 @@ var Centrifuge = (function (_super) {
         }
         switch (message.method) {
             case 'join':
-                this._joinResponse(message);
+                this._joinResponse(message.body);
                 break;
             case 'leave':
-                this._leaveResponse(message);
+                this._leaveResponse(message.body);
                 break;
             case 'message':
                 this._messageResponse(message);
@@ -1166,7 +1166,7 @@ var objectToQuery = function (object) {
 		var a = factory();
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(typeof self !== 'undefined' ? self : this, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1213,6 +1213,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -1228,6 +1233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
@@ -1237,7 +1243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+__webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Observable", function() { return Observable; });
 var Observable = (function () {
     function Observable() {
